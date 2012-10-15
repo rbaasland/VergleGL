@@ -12,12 +12,18 @@ public class Assets {
     public static Texture background;
     public static TextureRegion backgroundRegion;
     
-    public static Texture mainMenu;
-    public static TextureRegion mainMenuRegion;
+    public static Texture mainMenuButtons;
+    public static TextureRegion mainMenuButtonsRegion;
     
     public static Texture soundToggle;
     public static TextureRegion soundOnRegion;
     public static TextureRegion soundOffRegion;
+    
+    public static Texture gameGridBackground;
+    public static TextureRegion gameGridBackgroundRegion;
+    
+    public static Texture backArrow;
+    public static TextureRegion backArrowRegion;
     
     public static Texture boundOverlay;
     public static TextureRegion boundOverlayRegion;
@@ -55,12 +61,18 @@ public class Assets {
         background = new Texture(game, "background.png");
         backgroundRegion = new TextureRegion(background, 0, 0, 1280, 800);
         
-        mainMenu = new Texture(game, "mainmenu.png");
-        mainMenuRegion = new TextureRegion(mainMenu, 0, 0, 1280, 800);
+        mainMenuButtons = new Texture(game, "mainmenubuttons.png");
+        mainMenuButtonsRegion = new TextureRegion(mainMenuButtons, 0, 0, 1280, 800);
         
         soundToggle = new Texture(game, "volumetoggle.png");
         soundOnRegion = new TextureRegion(soundToggle, 0, 0, 160, 160);
         soundOffRegion = new TextureRegion(soundToggle, 160, 0, 160, 160);
+        
+        gameGridBackground = new Texture(game, "gamegridbackground.png");
+        gameGridBackgroundRegion = new TextureRegion(gameGridBackground, 0, 0, 1280, 800);
+        
+        backArrow = new Texture(game, "backarrow.png");
+        backArrowRegion = new TextureRegion(backArrow, 0, 0, 160, 160);
         
         boundOverlay = new Texture(game, "boundoverlay.png");
         boundOverlayRegion = new TextureRegion(boundOverlay, 0, 0, 1280, 800);
@@ -120,7 +132,7 @@ public class Assets {
     
     public static void reload() {
         background.reload();
-        mainMenu.reload();
+        mainMenuButtons.reload();
         soundToggle.reload();
         boundOverlay.reload();
         items.reload();

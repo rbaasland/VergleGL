@@ -16,7 +16,6 @@ import android.view.WindowManager;
 import com.dbz.framework.Audio;
 import com.dbz.framework.FileIO;
 import com.dbz.framework.Game;
-import com.dbz.framework.Graphics;
 import com.dbz.framework.Input;
 import com.dbz.framework.Screen;
 
@@ -147,11 +146,6 @@ public abstract class GLGame extends Activity implements Game, Renderer {
     @Override
     public FileIO getFileIO() {
         return fileIO;
-    }
-
-    @Override
-    public Graphics getGraphics() {
-        throw new IllegalStateException("We are using OpenGL!");
     }
 
     @Override

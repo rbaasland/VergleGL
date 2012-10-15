@@ -46,13 +46,13 @@ public class SpriteBatcher {
         vertices.unbind();
     }
     
+    // Modified from Ch. 9's SpriteBatcher to take the bottom left coordinates, instead of the center.
+    // This was done to avoid having to calculate two different x, y values (one for drawing and one for logic).
     public void drawSprite(float x, float y, float width, float height, TextureRegion region) {
-        float halfWidth = width / 2;
-        float halfHeight = height / 2;
-        float x1 = x - halfWidth;
-        float y1 = y - halfHeight;
-        float x2 = x + halfWidth;
-        float y2 = y + halfHeight;
+        float x1 = x;
+        float y1 = y;
+        float x2 = x + width;
+        float y2 = y + height;
         
         verticesBuffer[bufferIndex++] = x1;
         verticesBuffer[bufferIndex++] = y1;
@@ -77,6 +77,7 @@ public class SpriteBatcher {
         numSprites++;
     }
     
+    // ***THIS SPRITE CALL STILL NEEDS TO BE UPDATED TO USE THE BOTTOM LEFT COORDINATES INSTEAD OF THE CENTER COORDINATES***
     public void drawSprite(float x, float y, float width, float height, float angle, TextureRegion region) {
         float halfWidth = width / 2;
         float halfHeight = height / 2;

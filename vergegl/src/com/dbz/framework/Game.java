@@ -5,8 +5,6 @@ public interface Game {
 
     public FileIO getFileIO();
 
-    public Graphics getGraphics();
-
     public Audio getAudio();
 
     public void setScreen(Screen screen);

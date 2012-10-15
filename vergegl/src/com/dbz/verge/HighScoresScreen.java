@@ -13,7 +13,7 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 
-public class HighscoresScreen extends GLScreen {
+public class HighScoresScreen extends GLScreen {
     Camera2D guiCam;
     SpriteBatcher batcher;
     Rectangle backBounds;
@@ -21,7 +21,7 @@ public class HighscoresScreen extends GLScreen {
     String[] highScores;  
     float xOffset = 0;
     
-    public HighscoresScreen(Game game) {
+    public HighScoresScreen(Game game) {
         super(game);
         
         guiCam = new Camera2D(glGraphics, 1280, 800);
