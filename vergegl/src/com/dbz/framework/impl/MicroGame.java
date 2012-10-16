@@ -31,7 +31,7 @@ public abstract class MicroGame extends GLScreen {
 	
 	public abstract void updateRunning(float deltaTime);
 	
-	public abstract void updatePaused(float deltaTime);
+	public abstract void updatePaused();
 	
 	public abstract void updateWon();
 	
