@@ -259,12 +259,12 @@ public class BroFistMicroGame extends MicroGame {
 	    gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 	    gl.glEnable(GL10.GL_TEXTURE_2D);
 	    
-	    renderer.render(); // ***???***
+	    // renderer.render(); // ***???***
 	    
 	    guiCam.setViewportAndMatrices();
 	    gl.glEnable(GL10.GL_BLEND);
 	    gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-	    batcher.beginBatch(Assets.items); // NEED TO COMPILE ALL REQUIRE ASSETS IN ONE SPRITE SHEET FOR THIS.
+	    //batcher.beginBatch(Assets.items); // NEED TO COMPILE ALL REQUIRE ASSETS IN ONE SPRITE SHEET FOR THIS.
 	    switch(microGameState) {
 	    case Ready:
 	        presentReady();
@@ -282,41 +282,67 @@ public class BroFistMicroGame extends MicroGame {
 	        presentLost();
 	        break;
 	    }
-	    batcher.endBatch();
+	    //batcher.endBatch();
 	    gl.glDisable(GL10.GL_BLEND);
 	    fpsCounter.logFrame();
 	}
 	
 	@Override
 	public void presentReady() {
-	    batcher.drawSprite(160, 240, 192, 32, Assets.ready);
+//		batcher.beginBatch(Assets.items);
+//	    batcher.drawSprite(160, 240, 192, 32, Assets.ready);
+//	    batcher.endBatch();
 	    
+	    // Back arrow drawn.
+        batcher.beginBatch(Assets.backArrow);
+        batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+        batcher.endBatch();
 	    
 	    // Need change difficulty region (not entirely sure)
 	    // batcher.drawSprite(0, 0, 0, 0, Assets.readyRegion);
 	    // batcher.drawSprite(0, 0, 0, 0, Assets.quitRegion); // Could also name it backRegion
 	    
 	    // Bounding Boxes
-	    // ...
+	    batcher.beginBatch(Assets.boundOverlay);
+	    batcher.drawSprite(160, 160, 960, 480, Assets.boundOverlayRegion); // Ready Bounding Box
+	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+	    batcher.endBatch();
 	}
 	
 	@Override
 	public void presentRunning() {
-	    batcher.drawSprite(1280 - 32, 800 - 32, 64, 64, Assets.pause);
-	    Assets.font.drawText(batcher, scoreString, 16, 800-20);
+//	    batcher.drawSprite(1280 - 32, 800 - 32, 64, 64, Assets.pause);
+//	    Assets.font.drawText(batcher, scoreString, 16, 800-20);
 	    
+		// Draw pause symbol.
+		batcher.beginBatch(Assets.pauseToggle);
+		batcher.drawSprite(1130, 640, 160, 160, Assets.pauseRegion);
+		batcher.endBatch();
+		
 	    // batcher.drawSprite(480, 280, 320, 240, Assets.brofistRegion);
 	    // batcher.drawSprite(1120, 640, 160, 160, Assets.pauseToggleRegion);
 	    // Assets.font.drawText(batcher, timerString, ?, ?);
 	    
 	    // Bounding Boxes
-	    // ...
+		batcher.beginBatch(Assets.boundOverlay);
+	    batcher.drawSprite(1130, 640, 160, 160, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
+	    batcher.endBatch();
 	}
 	
 	@Override
 	public void presentPaused() {        
-	    batcher.drawSprite(160, 240, 192, 96, Assets.pauseMenu);
-	    Assets.font.drawText(batcher, scoreString, 16, 800-20);
+//	    batcher.drawSprite(160, 240, 192, 96, Assets.pauseMenu);
+//	    Assets.font.drawText(batcher, scoreString, 16, 800-20);
+	    
+		// Draw unpause symbol.
+		batcher.beginBatch(Assets.pauseToggle);
+		batcher.drawSprite(1130, 640, 160, 160, Assets.unpauseRegion);
+		batcher.endBatch();
+		
+	    // Back arrow drawn.
+        batcher.beginBatch(Assets.backArrow);
+        batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+        batcher.endBatch();
 	    
 	    // Need change difficulty region, and retry.
 	    // batcher.drawSprite(0, 0, 0, 0, Assets.pauseMenuRegion);
@@ -324,27 +350,44 @@ public class BroFistMicroGame extends MicroGame {
 	    // batcher.drawSprite(0, 0, 0, 0, Assets.quitRegion); // Could also name it backRegion
 	    
 	    // Bounding Boxes
-	    // ...
+        batcher.beginBatch(Assets.boundOverlay);
+	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+	    batcher.drawSprite(1130, 640, 160, 160, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
+	    batcher.endBatch();
 	}
 	
 	@Override
 	public void presentWon() {
+		// Back arrow drawn.
+        batcher.beginBatch(Assets.backArrow);
+        batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+        batcher.endBatch();
+		
 		// Need change difficulty region, and retry.
 		// batcher.drawSprite(0, 0, 0, 0, Assets.winMessageRegion);
 		// batcher.drawSprite(0, 0, 0, 0, Assets.quitRegion); // Could also name it backRegion
 		
 		// Bounding Boxes
-		// ...
+        batcher.beginBatch(Assets.boundOverlay);
+	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+	    batcher.endBatch();
 	}
 	
 	@Override
 	public void presentLost() {
+		// Back arrow drawn.
+        batcher.beginBatch(Assets.backArrow);
+        batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+        batcher.endBatch();
+        
 		// Need change difficulty region, and retry.
 		// batcher.drawSprite(0, 0, 0, 0, Assets.loseMessageRegion);
 		// batcher.drawSprite(0, 0, 0, 0, Assets.quitRegion); // Could also name it backRegion
 		
 		// Bounding Boxes
-		// ...
+        batcher.beginBatch(Assets.boundOverlay);
+	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+	    batcher.endBatch();
 	}
 
 	// *** Android State Management ***

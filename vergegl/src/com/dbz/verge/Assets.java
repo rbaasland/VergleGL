@@ -25,6 +25,10 @@ public class Assets {
     public static Texture backArrow;
     public static TextureRegion backArrowRegion;
     
+    public static Texture pauseToggle;
+    public static TextureRegion pauseRegion;
+    public static TextureRegion unpauseRegion;
+    
     public static Texture boundOverlay;
     public static TextureRegion boundOverlayRegion;
     
@@ -73,6 +77,10 @@ public class Assets {
         
         backArrow = new Texture(game, "backarrow.png");
         backArrowRegion = new TextureRegion(backArrow, 0, 0, 160, 160);
+        
+        pauseToggle = new Texture(game, "pausetoggle.png");
+        pauseRegion = new TextureRegion(pauseToggle, 0, 0, 160, 160);
+        unpauseRegion = new TextureRegion(pauseToggle, 160, 0, 160, 160);
         
         boundOverlay = new Texture(game, "boundoverlay.png");
         boundOverlayRegion = new TextureRegion(boundOverlay, 0, 0, 1280, 800);
@@ -134,6 +142,9 @@ public class Assets {
         background.reload();
         mainMenuButtons.reload();
         soundToggle.reload();
+        gameGridBackground.reload();
+        backArrow.reload();
+        pauseToggle.reload();
         boundOverlay.reload();
         items.reload();
         if(Settings.soundEnabled)
