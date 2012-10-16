@@ -20,36 +20,43 @@ import com.dbz.verge.WorldRenderer;
 import com.dbz.verge.World.WorldListener;
 
 public class BroFistMicroGame extends MicroGame {
-//	  static final int GAME_READY = 0;    
-//    static final int GAME_RUNNING = 1;
-//    static final int GAME_PAUSED = 2;
-//    static final int GAME_LEVEL_END = 3;
-//    static final int GAME_OVER = 4;
-    
+
+	// *** Fields ***
+	
+	// Used to track state of the microgame.
     MicroGameState microGameState;
-    // int state;
+
+    // OpenGL Related Objects
     Camera2D guiCam;
-    Vector2 touchPoint;
-    SpriteBatcher batcher;    
+    SpriteBatcher batcher;
+    FPSCounter fpsCounter;
+    
+    // World Objects
     World world;
     WorldListener worldListener;
-    WorldRenderer renderer;    
-    //Rectangle pauseBounds;
-    //Rectangle resumeBounds;
+    WorldRenderer renderer;   
+    
+    // TouchPoint Vector and Bounding Boxes
+    Vector2 touchPoint;
     Rectangle readyBounds;
     Rectangle pauseToggleBounds;
-    Rectangle quitBounds;
-    int lastScore;
-    String scoreString;    
-    FPSCounter fpsCounter;
+    Rectangle backArrowBounds;
+    Rectangle brofistBounds; 
+    
+    // Used to track running time for the game's timer.
+    float totalRunningTime;
+    
+    // *** Constructor ***
     
     public BroFistMicroGame(Game game) {
         super(game);
         microGameState = MicroGameState.Ready;
-        // state = GAME_READY;
+
         guiCam = new Camera2D(glGraphics, 1280, 800);
         touchPoint = new Vector2();
         batcher = new SpriteBatcher(glGraphics, 1000);
+        fpsCounter = new FPSCounter();
+        
         worldListener = new WorldListener() {
             @Override
             public void jump() {            
@@ -73,14 +80,13 @@ public class BroFistMicroGame extends MicroGame {
         };
         world = new World(worldListener);
         renderer = new WorldRenderer(glGraphics, batcher, world);
-        // pauseBounds = new Rectangle(1130, 650, 150, 150); // Formerly: (1280- 64, 800- 64, 64, 64);
-        // resumeBounds = new Rectangle(1130, 0, 150, 150);  // Formerly: (160 - 96, 240, 192, 36);
+
         readyBounds = new Rectangle(160, 160, 960, 480);
-        pauseToggleBounds = new Rectangle(1130, 640, 160, 160);  // Attempting to combine resume and pause.
-        quitBounds = new Rectangle(0, 0, 150, 150); // Now used for backarrow, Formerly: (160 - 96, 240 - 36, 192, 36); 
-        lastScore = 0;
-        scoreString = "score: 0";
-        fpsCounter = new FPSCounter();
+        pauseToggleBounds = new Rectangle(1130, 640, 160, 160);
+        backArrowBounds = new Rectangle(0, 0, 150, 150);
+        brofistBounds = new Rectangle(480, 280, 320, 240);
+ 
+        totalRunningTime = 0;
     }
 
     // *** Update Methods ***
@@ -110,11 +116,7 @@ public class BroFistMicroGame extends MicroGame {
 	}
 	
 	@Override
-	public void updateReady() {
-//	    if(game.getInput().getTouchEvents().size() > 0)
-//	        // state = GAME_RUNNING;
-//	    	microGameState = MicroGameState.Running;
-	    
+	public void updateReady() {	    
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
@@ -133,7 +135,7 @@ public class BroFistMicroGame extends MicroGame {
 	            return;     
 	        }
 	        
-	        if(OverlapTester.pointInRectangle(quitBounds, touchPoint)) {
+	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
 	            game.setScreen(new GameGridScreen(game));
 	            return;     
@@ -144,6 +146,14 @@ public class BroFistMicroGame extends MicroGame {
 	
 	@Override
 	public void updateRunning(float deltaTime) {
+		totalRunningTime += deltaTime;
+		
+		if (totalRunningTime > 5.0f) {
+			Assets.playSound(Assets.hitSound); // Play losing sound here.
+			microGameState = MicroGameState.Lost;
+			return;
+		}
+		
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
@@ -154,12 +164,16 @@ public class BroFistMicroGame extends MicroGame {
 	        touchPoint.set(event.x, event.y);		// ***???***
 	        guiCam.touchToWorld(touchPoint);		// ***???***
 	        
+	        if(OverlapTester.pointInRectangle(brofistBounds, touchPoint)) {
+	            Assets.playSound(Assets.coinSound); // Play winning sound here.
+	            microGameState = MicroGameState.Won;
+	            return;
+	        }
 	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            // state = GAME_PAUSED;
 	            microGameState = MicroGameState.Paused;
 	            return;
-	        }            
+	        }
 	    }
 
 //  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** **
@@ -193,12 +207,11 @@ public class BroFistMicroGame extends MicroGame {
 	        
 	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            // state = GAME_RUNNING;
 	            microGameState = MicroGameState.Running;
 	            return;
 	        }
 	        
-	        if(OverlapTester.pointInRectangle(quitBounds, touchPoint)) {
+	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
 	            game.setScreen(new GameGridScreen(game));
 	            return;     
@@ -220,7 +233,7 @@ public class BroFistMicroGame extends MicroGame {
 
 	        // Need RetryBounds, Change DifficultyLevelBounds
 	        
-	        if(OverlapTester.pointInRectangle(quitBounds, touchPoint)) {
+	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
 	            game.setScreen(new GameGridScreen(game));
 	            return;     
@@ -240,10 +253,9 @@ public class BroFistMicroGame extends MicroGame {
 	        touchPoint.set(event.x, event.y);		// ***???***
 	        guiCam.touchToWorld(touchPoint);		// ***???***
 	        
-
 	        // Need RetryBounds, Change DifficultyLevelBounds
 	        
-	        if(OverlapTester.pointInRectangle(quitBounds, touchPoint)) {
+	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
 	            game.setScreen(new GameGridScreen(game));
 	            return;     
@@ -293,14 +305,13 @@ public class BroFistMicroGame extends MicroGame {
 //	    batcher.drawSprite(160, 240, 192, 32, Assets.ready);
 //	    batcher.endBatch();
 	    
+	    // Need change difficulty region (not entirely sure)
+	    // batcher.drawSprite(0, 0, 0, 0, Assets.readyRegion);
+		
 	    // Back arrow drawn.
         batcher.beginBatch(Assets.backArrow);
         batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
         batcher.endBatch();
-	    
-	    // Need change difficulty region (not entirely sure)
-	    // batcher.drawSprite(0, 0, 0, 0, Assets.readyRegion);
-	    // batcher.drawSprite(0, 0, 0, 0, Assets.quitRegion); // Could also name it backRegion
 	    
 	    // Bounding Boxes
 	    batcher.beginBatch(Assets.boundOverlay);
@@ -311,29 +322,49 @@ public class BroFistMicroGame extends MicroGame {
 	
 	@Override
 	public void presentRunning() {
-//	    batcher.drawSprite(1280 - 32, 800 - 32, 64, 64, Assets.pause);
-//	    Assets.font.drawText(batcher, scoreString, 16, 800-20);
+		
+		// Could make instruction temporary this way...
+//		if (totalRunningTime < 3) {
+//			batcher.beginBatch(Assets.items);
+//			Assets.font.drawText(batcher, "BROFIST!", 600, 700);
+//			batcher.endBatch();
+//		}
+		// ...or could just dedicate screen space for it for the entire microgame.
+		batcher.beginBatch(Assets.items);
+		Assets.font.drawText(batcher, "BROFIST!", 600, 700);
+		batcher.endBatch();
+		
+		// Draw Brofist.
+		batcher.beginBatch(Assets.brofist);
+		batcher.drawSprite(480, 280, 320, 240, Assets.brofistRegion);
+		batcher.endBatch();
+		
+		// Draw timer.
+		batcher.beginBatch(Assets.items);
+	    Assets.font.drawText(batcher, String.format("%.2f", totalRunningTime), 600, 100);
+		batcher.endBatch();
 	    
 		// Draw pause symbol.
 		batcher.beginBatch(Assets.pauseToggle);
 		batcher.drawSprite(1130, 640, 160, 160, Assets.pauseRegion);
 		batcher.endBatch();
-		
-	    // batcher.drawSprite(480, 280, 320, 240, Assets.brofistRegion);
-	    // batcher.drawSprite(1120, 640, 160, 160, Assets.pauseToggleRegion);
-	    // Assets.font.drawText(batcher, timerString, ?, ?);
 	    
 	    // Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
 	    batcher.drawSprite(1130, 640, 160, 160, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
+	    batcher.drawSprite(480, 280, 320, 240, Assets.boundOverlayRegion); // Brofist Bounding Box
 	    batcher.endBatch();
 	}
 	
 	@Override
-	public void presentPaused() {        
-//	    batcher.drawSprite(160, 240, 192, 96, Assets.pauseMenu);
-//	    Assets.font.drawText(batcher, scoreString, 16, 800-20);
-	    
+	public void presentPaused() {
+	    // Need change difficulty region, and retry.
+		
+		// Temporary pause message, need rest of menu.
+		batcher.beginBatch(Assets.items);
+		Assets.font.drawText(batcher, "- PAUSED -", 600, 500);
+		batcher.endBatch();
+		
 		// Draw unpause symbol.
 		batcher.beginBatch(Assets.pauseToggle);
 		batcher.drawSprite(1130, 640, 160, 160, Assets.unpauseRegion);
@@ -344,11 +375,6 @@ public class BroFistMicroGame extends MicroGame {
         batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
         batcher.endBatch();
 	    
-	    // Need change difficulty region, and retry.
-	    // batcher.drawSprite(0, 0, 0, 0, Assets.pauseMenuRegion);
-	    // batcher.drawSprite(1120, 640, 160, 160, Assets.resumeToggleRegion);
-	    // batcher.drawSprite(0, 0, 0, 0, Assets.quitRegion); // Could also name it backRegion
-	    
 	    // Bounding Boxes
         batcher.beginBatch(Assets.boundOverlay);
 	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
@@ -357,15 +383,18 @@ public class BroFistMicroGame extends MicroGame {
 	}
 	
 	@Override
-	public void presentWon() {
+	public void presentWon() {	
+		// Need change difficulty region, and retry.
+		
+		// Temporary win message.
+		batcher.beginBatch(Assets.items);
+	    Assets.font.drawText(batcher, "You Win!", 600, 500);
+		batcher.endBatch();
+		
 		// Back arrow drawn.
         batcher.beginBatch(Assets.backArrow);
         batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
         batcher.endBatch();
-		
-		// Need change difficulty region, and retry.
-		// batcher.drawSprite(0, 0, 0, 0, Assets.winMessageRegion);
-		// batcher.drawSprite(0, 0, 0, 0, Assets.quitRegion); // Could also name it backRegion
 		
 		// Bounding Boxes
         batcher.beginBatch(Assets.boundOverlay);
@@ -375,15 +404,18 @@ public class BroFistMicroGame extends MicroGame {
 	
 	@Override
 	public void presentLost() {
+		// Need change difficulty region, and retry.
+		
+		// Temporary lose message.
+		batcher.beginBatch(Assets.items);
+	    Assets.font.drawText(batcher, "You Lose!", 600, 500);
+		batcher.endBatch();
+		
 		// Back arrow drawn.
         batcher.beginBatch(Assets.backArrow);
         batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
         batcher.endBatch();
-        
-		// Need change difficulty region, and retry.
-		// batcher.drawSprite(0, 0, 0, 0, Assets.loseMessageRegion);
-		// batcher.drawSprite(0, 0, 0, 0, Assets.quitRegion); // Could also name it backRegion
-		
+
 		// Bounding Boxes
         batcher.beginBatch(Assets.boundOverlay);
 	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box

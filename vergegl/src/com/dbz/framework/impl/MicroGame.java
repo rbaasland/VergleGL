@@ -51,38 +51,6 @@ public abstract class MicroGame extends GLScreen {
 	
 	public abstract void presentLost();
 	
-	// Utility Draw Methods
-	
-	// Needs implementation. (Draws instruction for the microgame to the screen.)
-	public void drawInstruction() {}
-	
-	// ***NEED TO CHANGE IMPLEMENTATION TO SUPPORT OPENGL***
-	// Draws numbers to the screen in pixmap format.
-//	public void drawNumbers(Graphics g, String line, int x, int y) {
-//		int len = line.length();
-//		for (int i = 0; i < len; i++) {
-//			char character = line.charAt(i);
-//
-//			if (character == ' ') {
-//				x += 20;
-//				continue;
-//			}
-//
-//			int srcX = 0;
-//			int srcWidth = 0;
-//			if (character == '.') {
-//				srcX = 200;
-//				srcWidth = 10;
-//			} else {
-//				srcX = (character - '0') * 20;
-//				srcWidth = 20;
-//			}
-//
-//			g.drawPixmap(Assets.numbers, x, y, srcX, 0, srcWidth, 32);
-//			x += srcWidth;
-//		}
-//	}
-	
 	// Android State Management
 	
 	@Override

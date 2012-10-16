@@ -29,6 +29,9 @@ public class Assets {
     public static TextureRegion pauseRegion;
     public static TextureRegion unpauseRegion;
     
+    public static Texture brofist;
+    public static TextureRegion brofistRegion;
+    
     public static Texture boundOverlay;
     public static TextureRegion boundOverlayRegion;
     
@@ -81,6 +84,9 @@ public class Assets {
         pauseToggle = new Texture(game, "pausetoggle.png");
         pauseRegion = new TextureRegion(pauseToggle, 0, 0, 160, 160);
         unpauseRegion = new TextureRegion(pauseToggle, 160, 0, 160, 160);
+        
+        brofist = new Texture(game, "brofist.png");
+        brofistRegion = new TextureRegion(brofist, 0, 0, 320, 240);
         
         boundOverlay = new Texture(game, "boundoverlay.png");
         boundOverlayRegion = new TextureRegion(boundOverlay, 0, 0, 1280, 800);
@@ -145,6 +151,7 @@ public class Assets {
         gameGridBackground.reload();
         backArrow.reload();
         pauseToggle.reload();
+        brofist.reload();
         boundOverlay.reload();
         items.reload();
         if(Settings.soundEnabled)
