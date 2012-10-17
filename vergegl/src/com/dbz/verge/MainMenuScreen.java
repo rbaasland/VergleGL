@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import com.dbz.bc.HelpScreen;
+import com.dbz.bc.HighScoresScreen;
 import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Camera2D;

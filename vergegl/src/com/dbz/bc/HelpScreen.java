@@ -1,4 +1,4 @@
-package com.dbz.verge;
+package com.dbz.bc;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ import com.dbz.framework.impl.GLScreen;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
+import com.dbz.verge.Assets;
 
 public class HelpScreen extends GLScreen {
     Camera2D guiCam;

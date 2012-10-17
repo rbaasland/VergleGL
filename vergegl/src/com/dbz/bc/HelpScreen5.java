@@ -1,4 +1,4 @@
-package com.dbz.verge;
+package com.dbz.bc;
 
 import java.util.List;
 
@@ -14,8 +14,10 @@ import com.dbz.framework.impl.GLScreen;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
+import com.dbz.verge.Assets;
+import com.dbz.verge.MainMenuScreen;
 
-public class HelpScreen2 extends GLScreen {
+public class HelpScreen5 extends GLScreen {
     Camera2D guiCam;
     SpriteBatcher batcher;
     Rectangle nextBounds;
@@ -23,7 +25,7 @@ public class HelpScreen2 extends GLScreen {
     Texture helpImage;
     TextureRegion helpRegion;    
     
-    public HelpScreen2(Game game) {
+    public HelpScreen5(Game game) {
         super(game);
         
         guiCam = new Camera2D(glGraphics, 1280, 800);
@@ -34,7 +36,7 @@ public class HelpScreen2 extends GLScreen {
     
     @Override
     public void resume() {
-        helpImage = new Texture(glGame, "help2.png" );
+        helpImage = new Texture(glGame, "help5.png" );
         helpRegion = new TextureRegion(helpImage, 0, 0, 1280, 800);
     }
     
@@ -56,7 +58,7 @@ public class HelpScreen2 extends GLScreen {
             if(event.type == TouchEvent.TOUCH_UP) {
                 if(OverlapTester.pointInRectangle(nextBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    game.setScreen(new HelpScreen3(game));
+                    game.setScreen(new MainMenuScreen(game));
                     return;
                 }
             }

@@ -1,6 +1,7 @@
-package com.dbz.framework.impl;
+package com.dbz.verge;
 
 import com.dbz.framework.Game;
+import com.dbz.framework.impl.GLScreen;
 
 // Will use this class to implement the extra features of MicroGame
 // That aren't shared with the Screen subclass.

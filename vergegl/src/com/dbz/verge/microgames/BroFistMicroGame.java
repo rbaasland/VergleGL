@@ -9,15 +9,15 @@ import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.FPSCounter;
 import com.dbz.framework.gl.SpriteBatcher;
-import com.dbz.framework.impl.MicroGame;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.Assets;
 import com.dbz.verge.GameGridScreen;
+import com.dbz.verge.MicroGame;
 import com.dbz.verge.World;
 import com.dbz.verge.WorldRenderer;
-import com.dbz.verge.World.WorldListener;
+//import com.dbz.verge.World.WorldListener;
 
 public class BroFistMicroGame extends MicroGame {
 
@@ -33,7 +33,7 @@ public class BroFistMicroGame extends MicroGame {
     
     // World Objects
     World world;
-    WorldListener worldListener;
+//    WorldListener worldListener;
     WorldRenderer renderer;   
     
     // TouchPoint Vector and Bounding Boxes
@@ -57,28 +57,7 @@ public class BroFistMicroGame extends MicroGame {
         batcher = new SpriteBatcher(glGraphics, 1000);
         fpsCounter = new FPSCounter();
         
-        worldListener = new WorldListener() {
-            @Override
-            public void jump() {            
-                Assets.playSound(Assets.jumpSound);
-            }
-
-            @Override
-            public void highJump() {
-                Assets.playSound(Assets.highJumpSound);
-            }
-
-            @Override
-            public void hit() {
-                Assets.playSound(Assets.hitSound);
-            }
-
-            @Override
-            public void coin() {
-                Assets.playSound(Assets.coinSound);
-            }                      
-        };
-        world = new World(worldListener);
+        world = new World();
         renderer = new WorldRenderer(glGraphics, batcher, world);
 
         readyBounds = new Rectangle(160, 160, 960, 480);

@@ -1,4 +1,4 @@
-package com.dbz.verge;
+package com.dbz.bc;
 
 import java.util.List;
 
@@ -8,40 +8,36 @@ import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.SpriteBatcher;
-import com.dbz.framework.gl.Texture;
-import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.impl.GLScreen;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
+import com.dbz.verge.Assets;
+import com.dbz.verge.MainMenuScreen;
+import com.dbz.verge.Settings;
 
-public class HelpScreen4 extends GLScreen {
+public class HighScoresScreen extends GLScreen {
     Camera2D guiCam;
     SpriteBatcher batcher;
-    Rectangle nextBounds;
+    Rectangle backBounds;
     Vector2 touchPoint;
-    Texture helpImage;
-    TextureRegion helpRegion;    
+    String[] highScores;  
+    float xOffset = 0;
     
-    public HelpScreen4(Game game) {
+    public HighScoresScreen(Game game) {
         super(game);
         
         guiCam = new Camera2D(glGraphics, 1280, 800);
-        nextBounds = new Rectangle(1280 - 64, 0, 64, 64);
+        backBounds = new Rectangle(0, 0, 64, 64);
         touchPoint = new Vector2();
-        batcher = new SpriteBatcher(glGraphics, 1);
-    }
-    
-    @Override
-    public void resume() {
-        helpImage = new Texture(glGame, "help4.png" );
-        helpRegion = new TextureRegion(helpImage, 0, 0, 1280, 800);
-    }
-    
-    @Override
-    public void pause() {
-        helpImage.dispose();
-    }
+        batcher = new SpriteBatcher(glGraphics, 100);
+        highScores = new String[5];        
+        for(int i = 0; i < 5; i++) {
+            highScores[i] = (i + 1) + ". " + Settings.highscores[i];
+            xOffset = Math.max(highScores[i].length() * Assets.font.glyphWidth, xOffset);
+        }        
+        xOffset = 160 - xOffset / 2 + Assets.font.glyphWidth / 2;
+    }    
 
     @Override
     public void update(float deltaTime) {
@@ -54,9 +50,9 @@ public class HelpScreen4 extends GLScreen {
             guiCam.touchToWorld(touchPoint);
             
             if(event.type == TouchEvent.TOUCH_UP) {
-                if(OverlapTester.pointInRectangle(nextBounds, touchPoint)) {
+                if(OverlapTester.pointInRectangle(backBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    game.setScreen(new HelpScreen5(game));
+                    game.setScreen(new MainMenuScreen(game));
                     return;
                 }
             }
@@ -71,18 +67,34 @@ public class HelpScreen4 extends GLScreen {
         
         gl.glEnable(GL10.GL_TEXTURE_2D);
         
-        batcher.beginBatch(helpImage);
-        batcher.drawSprite(160, 240, 1280, 800, helpRegion);
+        batcher.beginBatch(Assets.background);
+        batcher.drawSprite(160, 240, 1280, 800, Assets.backgroundRegion);
         batcher.endBatch();
         
         gl.glEnable(GL10.GL_BLEND);
         gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
         
-        batcher.beginBatch(Assets.items);          
-        batcher.drawSprite(1280 - 32, 32, -64, 64, Assets.arrow);
+        batcher.beginBatch(Assets.items);
+        batcher.drawSprite(160, 360, 300, 33, Assets.highScoresRegion);
+        
+        float y = 240;
+        for(int i = 4; i >= 0; i--) {
+            Assets.font.drawText(batcher, highScores[i], xOffset, y);
+            y += Assets.font.glyphHeight;
+        }
+        
+        batcher.drawSprite(32, 32, 64, 64, Assets.arrow);
         batcher.endBatch();
         
         gl.glDisable(GL10.GL_BLEND);
+    }
+    
+    @Override
+    public void resume() {        
+    }
+    
+    @Override
+    public void pause() {        
     }
 
     @Override
