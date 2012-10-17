@@ -34,7 +34,7 @@ public class BroFistMicroGame extends MicroGame {
     // World Objects
     World world;
 //    WorldListener worldListener;
-    WorldRenderer renderer;   
+    WorldRenderer worldRenderer;   
     
     // TouchPoint Vector and Bounding Boxes
     Vector2 touchPoint;
@@ -58,7 +58,7 @@ public class BroFistMicroGame extends MicroGame {
         fpsCounter = new FPSCounter();
         
         world = new World();
-        renderer = new WorldRenderer(glGraphics, batcher, world);
+        worldRenderer = new WorldRenderer(glGraphics, batcher, world);
 
         readyBounds = new Rectangle(160, 160, 960, 480);
         pauseToggleBounds = new Rectangle(1130, 640, 160, 160);
@@ -302,21 +302,24 @@ public class BroFistMicroGame extends MicroGame {
 	@Override
 	public void presentRunning() {
 		
-		// Could make instruction temporary this way...
-//		if (totalRunningTime < 3) {
-//			batcher.beginBatch(Assets.items);
-//			Assets.font.drawText(batcher, "BROFIST!", 600, 700);
-//			batcher.endBatch();
-//		}
-		// ...or could just dedicate screen space for it for the entire microgame.
-		batcher.beginBatch(Assets.items);
-		Assets.font.drawText(batcher, "BROFIST!", 600, 700);
-		batcher.endBatch();
+//		// Could make instruction temporary this way...
+////		if (totalRunningTime < 3) {
+////			batcher.beginBatch(Assets.items);
+////			Assets.font.drawText(batcher, "BROFIST!", 600, 700);
+////			batcher.endBatch();
+////		}
+//		// ...or could just dedicate screen space for it for the entire microgame.
+//		batcher.beginBatch(Assets.items);
+//		Assets.font.drawText(batcher, "BROFIST!", 600, 700);
+//		batcher.endBatch();
+//		
+//		// Draw Brofist.
+//		batcher.beginBatch(Assets.brofist);
+//		batcher.drawSprite(480, 280, 320, 240, Assets.brofistRegion);
+//		batcher.endBatch();
+//		
 		
-		// Draw Brofist.
-		batcher.beginBatch(Assets.brofist);
-		batcher.drawSprite(480, 280, 320, 240, Assets.brofistRegion);
-		batcher.endBatch();
+		worldRenderer.render();
 		
 		// Draw timer.
 		batcher.beginBatch(Assets.items);

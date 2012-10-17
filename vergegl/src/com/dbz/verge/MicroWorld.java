@@ -1,17 +1,17 @@
 package com.dbz.verge;
 
 public class MicroWorld extends World {
-	private enum MicroWorldState {
+	public enum MicroWorldState {
 		Running,
 		Paused,
 		Won,
 		Lost
 	}
 	
-	MicroWorldState microWorldState;
+	public MicroWorldState microWorldState;
 	
 	public MicroWorld() {
-		this.microWorldState = MicroWorldState.Running;
+		microWorldState = MicroWorldState.Running;
 	}
 	
 	@Override

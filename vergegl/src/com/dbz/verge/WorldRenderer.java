@@ -5,12 +5,16 @@ import javax.microedition.khronos.opengles.GL10;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.SpriteBatcher;
 import com.dbz.framework.impl.GLGraphics;
+import com.dbz.verge.MicroWorld.MicroWorldState;
+import com.dbz.verge.World.WorldState;
 
 public class WorldRenderer {
     static final float FRUSTUM_WIDTH = 1280;
     static final float FRUSTUM_HEIGHT = 800;    
     GLGraphics glGraphics;
     World world;
+    MicroWorld microWorld;
+    MicroWorldRenderer microWorldRenderer;
     Camera2D cam;
     SpriteBatcher batcher;    
     
@@ -23,8 +27,15 @@ public class WorldRenderer {
     
     public void render() {
         cam.setViewportAndMatrices();
-        renderBackground();
-        renderObjects();
+        
+        if (world.worldState == WorldState.Transition) {
+        	renderBackground();
+        	renderObjects();
+        }
+        else if (microWorld.microWorldState == MicroWorldState.Running) {
+        	microWorldRenderer.renderBackground();
+        	microWorldRenderer.renderObjects();
+        }
     }
     
     public void renderBackground() {

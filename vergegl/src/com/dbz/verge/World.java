@@ -2,7 +2,7 @@ package com.dbz.verge;
 
 public class World {
 
-	private enum WorldState {
+	public enum WorldState {
 		Ready,
 		Running,
 		Paused,
@@ -19,7 +19,7 @@ public class World {
 		generateLevel();
 
 		this.score = 0;
-		this.worldState = WorldState.Running;
+		worldState = WorldState.Running;
 	}
 
 	// Refactor this to prepareLevel?
