@@ -1,25 +1,31 @@
 package com.dbz.verge;
 
+//*** Work in Progress! Not currently being used, only the subclass, MicroWorld. ***
 public class World {
 
 	public enum WorldState {
-		Ready,
+		//Ready, // *Will use screen instance to handle?
 		Running,
-		Paused,
-		Transition,
+		//Paused, // *Will use screen instance to handle?
 		GameOverWon,
-		GameOverLost
+		GameOverLost,
+		Transition // *Will use screen instance to handle?
 	}
 
-	public WorldState worldState;
+	public static WorldState worldState;
+	
+//	public static MicroWorld currentMicroWorld;
 	
 	public int score;
 
 	public World() {
 		generateLevel();
 
-		this.score = 0;
 		worldState = WorldState.Running;
+		
+//		currentMicroWorld = new MicroWorld(); // *Need to make a getRandomMicroWorld()*
+		
+		this.score = 0;
 	}
 
 	// Refactor this to prepareLevel?
@@ -34,11 +40,20 @@ public class World {
 			checkGameOverLost();
 	}
 
+	// updateRunning
+	// updateTransition
+	// 
+	
+	// *** Note on Below Methods: We might be able to get rid of checkGameOverWon/Lost()
+	// and just use the checkWon/Lost in this class to assume that the game mode has been won.
+	// In other words, The checks will see if the game set has been won or lost, instead of 
+	// figuring out if the microgame has been won or lost. ***
+	
 	// Checks if MicroGame has been won. (Calls specific MicroWorld's checkWon())
 	public boolean checkWon() {
 		// currentMicroWorld.checkWon();
 		// if (currentMicroWorld.microWorldState = MicroWorldState.Won)
-		return true;
+		return true; //(currentMicroWorld.checkWon(touchPoint));
 	}
 	
 	// Checks if MicroGame has been lost. (Calls specific MicroWorld's checkLost())

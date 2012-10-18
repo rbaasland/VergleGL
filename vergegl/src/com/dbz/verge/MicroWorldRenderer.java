@@ -29,10 +29,10 @@ public class MicroWorldRenderer extends WorldRenderer {
 		batcher.beginBatch(Assets.brofist);
 		batcher.drawSprite(480, 280, 320, 240, Assets.brofistRegion);
 		batcher.endBatch();
-		
-//		// Draw timer.
-//		batcher.beginBatch(Assets.items);
-//	    Assets.font.drawText(batcher, String.format("%.2f", totalRunningTime), 600, 100);
-//		batcher.endBatch();
+
+		// Bounding Boxes
+//		batcher.beginBatch(Assets.boundOverlay);
+//	    batcher.drawSprite(480, 280, 320, 240, Assets.boundOverlayRegion); // Brofist Bounding Box
+//	    batcher.endBatch();
 	}
 }

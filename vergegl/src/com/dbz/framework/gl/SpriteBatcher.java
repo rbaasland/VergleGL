@@ -48,6 +48,7 @@ public class SpriteBatcher {
     
     // Modified from Ch. 9's SpriteBatcher to take the bottom left coordinates, instead of the center.
     // This was done to avoid having to calculate two different x, y values (one for drawing and one for logic).
+    // *** We should probably look into making another overload of this method that will take a Rectangle class instead of x, y, width, height. ***
     public void drawSprite(float x, float y, float width, float height, TextureRegion region) {
         float x1 = x;
         float y1 = y;

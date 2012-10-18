@@ -5,25 +5,27 @@ import com.dbz.framework.impl.GLScreen;
 
 // Will use this class to implement the extra features of MicroGame
 // That aren't shared with the Screen subclass.
-public abstract class MicroGame extends GLScreen {
+// *Might make this inherit off of a GameScreen instance?*
+public abstract class MicroGameScreen extends GLScreen {
 	
 	public enum MicroGameState {
 		Ready,
 		Running,
 		Paused,
 		Won,
-		Lost
+		Lost,
+		// Transition // ***???***
 	}
 	
 	public MicroGameState microGameState;
 	
 	// Constructor
-	public MicroGame(Game game) {
+	public MicroGameScreen(Game game) {
 		super(game);
 		microGameState = MicroGameState.Ready;
 	}
 
-	// Update Methods
+	// *** Update Methods ***
 	
 	@Override
 	public abstract void update(float deltaTime);
@@ -38,7 +40,7 @@ public abstract class MicroGame extends GLScreen {
 	
 	public abstract void updateLost();
 
-	// Draw Methods
+	// *** Draw Methods ***
 	@Override
 	public abstract void present(float deltaTime);
 	
@@ -52,7 +54,7 @@ public abstract class MicroGame extends GLScreen {
 	
 	public abstract void presentLost();
 	
-	// Android State Management
+	// *** Android State Management ***
 	
 	@Override
 	public abstract void pause();
