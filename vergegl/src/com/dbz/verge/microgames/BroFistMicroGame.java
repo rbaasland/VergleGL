@@ -8,24 +8,37 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
-// *** Might not need individual instances of MicroGameScreen for each MicroGame ***
+// *** Need to create a standard for handling multiple difficulty levels. ***
 public class BroFistMicroGame extends MicroGame {
     
-	private int brofistCount;
+	
+	// --------------
+	// --- Fields ---
+	// --------------
+	
+	// *** Need to create a standard for handling multiple difficulty levels. ***
+	private int level = 1;
+	private int requiredBroFistCount[] = { 5, 10, 15 };
+	private int broFistCount;
+	
 	private Rectangle brofistBounds;
 	
-    // *** Constructor ***   
+	// -------------------
+	// --- Constructor ---
+	// -------------------   
     public BroFistMicroGame(Game game) {
         super(game);
         
-        brofistCount = 0;
+        broFistCount = 0;
         
         // Initialize bounds for touch detection.
         brofistBounds = new Rectangle(480, 280, 320, 240);
     }
 
-    // *** Update Method ***
-	
+	// ---------------------
+	// --- Update Method ---
+	// ---------------------
+    
 	@Override
 	public void updateRunning(float deltaTime) {
 		totalRunningTime += deltaTime;
@@ -43,9 +56,9 @@ public class BroFistMicroGame extends MicroGame {
 	        
 	        // Tests if target (brofist) is touched.
         	if (targetTouched(event, touchPoint, brofistBounds)) {
-        		brofistCount++;
+        		broFistCount++;
         		Assets.playSound(Assets.coinSound);
-        		if (brofistCount >= 5)
+        		if (broFistCount >= requiredBroFistCount[level-1])
         			microGameState = MicroGameState.Won;
         		return;
         	}
@@ -56,7 +69,9 @@ public class BroFistMicroGame extends MicroGame {
 	    }   
 	}
 
-	// *** Draw Method ***
+	// -------------------
+	// --- Draw Method ---
+	// -------------------
 	
 	@Override
 	public void presentRunning() {
@@ -66,13 +81,21 @@ public class BroFistMicroGame extends MicroGame {
 		batcher.beginBatch(Assets.brofist);
 		batcher.drawSprite(480, 280, 320, 240, Assets.brofistRegion);
 		batcher.endBatch();
-
-		// Bounding Boxes
-//		batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(480, 280, 320, 240, Assets.boundOverlayRegion); // Brofist Bounding Box
-//	    batcher.endBatch();
 		
+		// drawRunningBounds();
 		super.presentRunning();
 	}
-
+	
+	// ---------------------------
+	// --- Utility Draw Method ---
+	// ---------------------------
+	
+	@Override
+	public void drawRunningBounds() {
+		// Bounding Boxes
+		batcher.beginBatch(Assets.boundOverlay);
+	    batcher.drawSprite(480, 280, 320, 240, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.endBatch();
+	}
+	
 }

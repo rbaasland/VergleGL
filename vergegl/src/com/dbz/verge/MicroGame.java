@@ -376,6 +376,8 @@ public abstract class MicroGame extends GLScreen {
 		batcher.endBatch();
 	}
 	
+	public abstract void drawRunningBounds();
+	
 	// --------------------------------
 	// --- Android State Management ---
 	// --------------------------------
