@@ -1,4 +1,4 @@
-package com.dbz.verge.microgames;
+package com.dbz.verge;
 
 import java.util.List;
 
@@ -9,62 +9,70 @@ import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.FPSCounter;
 import com.dbz.framework.gl.SpriteBatcher;
+import com.dbz.framework.impl.GLScreen;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
-import com.dbz.verge.Assets;
-import com.dbz.verge.GameGridScreen;
-import com.dbz.verge.MicroGameScreen;
-import com.dbz.verge.MicroWorld;
-import com.dbz.verge.MicroWorldRenderer;
 
-// *** Might not need individual instances of MicroGameScreen for each MicroGame ***
-public class BroFistMicroGameScreen extends MicroGameScreen {
-
-	// *** Fields *** Can probably move a lot of these to the abstract MicroGameScreen class.
-
+// Will use this class to implement the extra features of MicroGame
+// That aren't shared with the Screen subclass.
+// *Might make this inherit off of a GameScreen instance?*
+public abstract class MicroGame extends GLScreen {
+	
+	// --------------
+	// --- Fields ---
+	// --------------
+	
+	public enum MicroGameState {
+		Ready,
+		Paused,
+		Running,
+		Won,
+		Lost,
+		// Transition // ***???***
+	}
+	
+	public MicroGameState microGameState;
+	
     // OpenGL Related Objects
-    Camera2D guiCam;
-    SpriteBatcher batcher;
-    FPSCounter fpsCounter;
-    
-    // MicroWorld Objects
-    // Note: When implementing handler for modes later, 
-    // we will need to implement World and WorldRenderer.
-    MicroWorld microWorld;
-    MicroWorldRenderer microWorldRenderer;
+    public Camera2D guiCam;
+    public SpriteBatcher batcher;
+    public FPSCounter fpsCounter;
     
     // TouchPoint Vector and Bounding Boxes
-    Vector2 touchPoint;
-    Rectangle readyBounds;
-    Rectangle pauseToggleBounds;
-    Rectangle backArrowBounds;
+    public Vector2 touchPoint;
+    public Rectangle readyBounds;
+    public Rectangle pauseToggleBounds;
+    public Rectangle backArrowBounds;
     
     // Used to track running time for the game's timer.
-    float totalRunningTime;
+    public float totalRunningTime;
+    public float totalAllowedTime;
     
-    // *** Constructor ***   
-    public BroFistMicroGameScreen(Game game) {
-        super(game);
+    // -------------------
+	// --- Constructor ---
+    // -------------------
+	public MicroGame(Game game) {
+		super(game);
         microGameState = MicroGameState.Ready;
-
+        
         guiCam = new Camera2D(glGraphics, 1280, 800);
         touchPoint = new Vector2();
         batcher = new SpriteBatcher(glGraphics, 1000);
         fpsCounter = new FPSCounter();
         
-        microWorld = new MicroWorld();
-        microWorldRenderer = new MicroWorldRenderer(glGraphics, batcher, microWorld);
-
         readyBounds = new Rectangle(160, 160, 960, 480);
         pauseToggleBounds = new Rectangle(1130, 640, 160, 160);
         backArrowBounds = new Rectangle(0, 0, 150, 150);
  
         totalRunningTime = 0;
-    }
+        totalAllowedTime = 5.0f;
+	}
 
-    // *** Update Methods ***
-    
+	// ----------------------
+	// --- Update Methods ---
+	// ----------------------
+	
 	@Override
 	public void update(float deltaTime) {
 	    if(deltaTime > 0.1f)
@@ -89,7 +97,6 @@ public class BroFistMicroGameScreen extends MicroGameScreen {
 	    }
 	}
 	
-	@Override
 	public void updateReady() {
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
@@ -113,55 +120,8 @@ public class BroFistMicroGameScreen extends MicroGameScreen {
 	            return;     
 	        }
 	    }
-	    
 	}
-	
-	@Override
-	public void updateRunning(float deltaTime) {
-		totalRunningTime += deltaTime;
-        
-		// Checks for time-based loss.
-		if (microWorld.checkLost(totalRunningTime)) {
-			microGameState = MicroGameState.Lost;
-			return;
-		}
 		
-	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
-	    int len = touchEvents.size();
-	    for(int i = 0; i < len; i++) {
-	        TouchEvent event = touchEvents.get(i);
-	        if(event.type != TouchEvent.TOUCH_UP)
-	            continue;
-	        
-	        touchPoint.set(event.x, event.y);
-	        guiCam.touchToWorld(touchPoint);
-	        
-	        // Test for single-touch winning condition.
-	        if (microWorld.checkWon(touchPoint)) {
-	        	microGameState = MicroGameState.Won;
-	        	return;
-	        }
-
-	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
-	            microGameState = MicroGameState.Paused;
-	            return;
-	        }
-	    }
-
-// ***???*** We may need to do something similar to this ***???***
-//	    world.update(deltaTime, game.getInput().getAccelX());
-//	    if(world.score != lastScore) {
-//	        lastScore = world.score;
-//	        scoreString = "" + lastScore;
-//	    }	        
-//	    if(world.state == World.WORLD_STATE_NEXT_LEVEL) {
-//	        state = GAME_LEVEL_END;        
-//	    }
-
-	}
-	
-	@Override
 	public void updatePaused() {
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
@@ -187,7 +147,22 @@ public class BroFistMicroGameScreen extends MicroGameScreen {
 	    }
 	}
 	
-	@Override
+	public abstract void updateRunning(float deltaTime);
+	
+	// * Currently only used to test if the game was paused during the run state. *
+	// * Later, it may be used to test other non-unique touch events during the run state. *
+	public void updateRunning(float deltaTime, Vector2 touchPoint) {
+		// Tests to see if the pause toggle was pressed.
+		if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
+	            Assets.playSound(Assets.clickSound);
+	            microGameState = MicroGameState.Paused;
+	            return;
+	    }
+	}
+	
+	// * Note: For now we are going to have non-unique won and lost states for each microgame.
+	// However, it would be pretty awesome to have ones that are unique later. *
+	
 	public void updateWon() {
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
@@ -207,7 +182,6 @@ public class BroFistMicroGameScreen extends MicroGameScreen {
 	    }
 	}
 	
-	@Override
 	public void updateLost() {
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
@@ -226,9 +200,35 @@ public class BroFistMicroGameScreen extends MicroGameScreen {
 	        }
 	    }
 	}
-	
-	// *** Draw Methods ***
 
+	// ------------------------------
+	// --- Utility Update Methods ---
+	// ------------------------------
+	
+	// Checks for time-based loss.
+	public boolean lostTimeBased() {
+		if (totalRunningTime > totalAllowedTime) {
+			Assets.playSound(Assets.hitSound);
+			microGameState = MicroGameState.Lost;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public boolean targetTouched(TouchEvent event, Vector2 touchPoint, Rectangle targetBounds) {
+		// Test for single-touch inside target bounds.
+		if (event.type == TouchEvent.TOUCH_DOWN)
+	    	if(OverlapTester.pointInRectangle(targetBounds, touchPoint))
+		        return true; 
+	
+		return false;
+	}
+	
+	// --------------------
+	// --- Draw Methods ---
+	// --------------------
+	
 	@Override
 	public void present(float deltaTime) {
 	    GL10 gl = glGraphics.getGL();
@@ -264,7 +264,6 @@ public class BroFistMicroGameScreen extends MicroGameScreen {
 	    fpsCounter.logFrame();
 	}
 	
-	@Override
 	public void presentReady() {
 		// Temporary ready message.
 		batcher.beginBatch(Assets.items);
@@ -283,27 +282,6 @@ public class BroFistMicroGameScreen extends MicroGameScreen {
 //	    batcher.endBatch();
 	}
 	
-	@Override
-	public void presentRunning() {
-		microWorldRenderer.renderObjects();
-		
-		// Draw timer.
-		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, String.format("%.2f", totalRunningTime), 600, 100);
-		batcher.endBatch();
-	    
-		// Draw pause symbol.
-		batcher.beginBatch(Assets.pauseToggle);
-		batcher.drawSprite(1130, 640, 160, 160, Assets.pauseRegion);
-		batcher.endBatch();
-	    
-	    // Bounding Boxes
-//		batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(1130, 640, 160, 160, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
-//	    batcher.endBatch();
-	}
-	
-	@Override
 	public void presentPaused() {
 		// Temporary pause message, need rest of menu.
 		batcher.beginBatch(Assets.items);
@@ -327,8 +305,27 @@ public class BroFistMicroGameScreen extends MicroGameScreen {
 //	    batcher.endBatch();
 	}
 	
-	@Override
-	public void presentWon() {	
+	public void presentRunning() {
+		// Draw timer.
+		batcher.beginBatch(Assets.items);
+	    Assets.font.drawText(batcher, String.format("%.2f", totalRunningTime), 600, 100);
+		batcher.endBatch();
+	    
+		// Draw pause symbol.
+		batcher.beginBatch(Assets.pauseToggle);
+		batcher.drawSprite(1130, 640, 160, 160, Assets.pauseRegion);
+		batcher.endBatch();
+	    
+	    // Bounding Boxes
+//		batcher.beginBatch(Assets.boundOverlay);
+//	    batcher.drawSprite(1130, 640, 160, 160, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
+//	    batcher.endBatch();
+	}
+	
+	// * Note: For now we are going to have non-unique won and lost states for each microgame.
+	// However, it would be pretty awesome to have ones that are unique later. *
+	
+	public void presentWon() {
 		// Temporary win message.
 		batcher.beginBatch(Assets.items);
 	    Assets.font.drawText(batcher, "You Win!", 600, 500);
@@ -345,7 +342,6 @@ public class BroFistMicroGameScreen extends MicroGameScreen {
 //	    batcher.endBatch();
 	}
 	
-	@Override
 	public void presentLost() {
 		// Temporary lose message.
 		batcher.beginBatch(Assets.items);
@@ -362,18 +358,37 @@ public class BroFistMicroGameScreen extends MicroGameScreen {
 //	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
 //	    batcher.endBatch();
 	}
-
-	// *** Android State Management ***
 	
-    @Override
-    public void pause() {
-        if(microGameState == MicroGameState.Running)
+	// ----------------------------
+	// --- Utility Draw Methods ---
+	// ----------------------------
+	
+	public void drawInstruction(String string) {
+		// Could make instruction temporary this way...
+//		if (totalRunningTime < 3) {
+//			batcher.beginBatch(Assets.items);
+//			Assets.font.drawText(batcher, "BROFIST!", 600, 700);
+//			batcher.endBatch();
+//		}
+		// ...or could just dedicate screen space for it for the entire microgame.
+		batcher.beginBatch(Assets.items);
+		Assets.font.drawText(batcher, string, 600, 700);
+		batcher.endBatch();
+	}
+	
+	// --------------------------------
+	// --- Android State Management ---
+	// --------------------------------
+	
+	@Override
+	public void pause() {
+		if(microGameState == MicroGameState.Running)
         	microGameState = MicroGameState.Paused;
-    }
+	}
 
-    @Override
-    public void resume() {}
+	@Override
+	public void resume() {}
 
-    @Override
-    public void dispose() {}
+	@Override
+	public void dispose() {}
 }
