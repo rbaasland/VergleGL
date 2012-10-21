@@ -17,7 +17,7 @@ public class BroFistMicroGame extends MicroGame {
 	// --------------
 	
 	// *** Need to create a standard for handling multiple difficulty levels. ***
-	private int level = 1;
+	private int level = 3;
 	private int requiredBroFistCount[] = { 5, 10, 15 };
 	private int broFistCount;
 	

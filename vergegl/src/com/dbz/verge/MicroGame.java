@@ -45,6 +45,12 @@ public abstract class MicroGame extends GLScreen {
     public Rectangle pauseToggleBounds;
     public Rectangle backArrowBounds;
     
+    // *Possible Difficulty Level Implementation.*
+    // *Could also try to use a class, struct or enum.*
+//    public final static int levelOne = 0;
+//    public final static int levelTwo = 1;
+//    public final static int levelThree = 2;
+    
     // Used to track running time for the game's timer.
     public float totalRunningTime;
     public float totalAllowedTime;
