@@ -13,6 +13,10 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.microgames.BroFistMicroGame;
+import com.dbz.verge.microgames.CircuitMicroGame;
+import com.dbz.verge.microgames.FireMicroGame;
+import com.dbz.verge.microgames.FlyMicroGame;
+import com.dbz.verge.microgames.TrafficMicroGame;
 
 public class GameGridScreen extends GLScreen {
     Camera2D guiCam;
@@ -92,21 +96,25 @@ public class GameGridScreen extends GLScreen {
                 }
                 if (OverlapTester.pointInRectangle(secondMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
+                	game.setScreen(new FlyMicroGame(game));
                 	// set screen to microgamescreen.
                 	return;
                 }
                 if (OverlapTester.pointInRectangle(thirdMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
+                	game.setScreen(new FireMicroGame(game));
                 	// set screen to microgamescreen.
                 	return;
                 }
                 if (OverlapTester.pointInRectangle(fourthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
+                	game.setScreen(new TrafficMicroGame(game));
                 	// set screen to microgamescreen.
                 	return;
                 }
                 if (OverlapTester.pointInRectangle(fifthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
+                	game.setScreen(new CircuitMicroGame(game));
                 	// set screen to microgamescreen.
                 	return;
                 }

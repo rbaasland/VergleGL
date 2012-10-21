@@ -9,4 +9,16 @@ public class Rectangle {
         this.width = width;
         this.height = height;
     }
+    
+    public void setLowerLeft(float x, float y) {
+    	this.lowerLeft.set(x, y);
+    }
+    
+    public void setWidth(float width) {
+    	this.width = width;
+    }
+    
+    public void setHeight(float height) {
+    	this.height = height;
+    }
 }

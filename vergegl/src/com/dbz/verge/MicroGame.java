@@ -224,7 +224,7 @@ public abstract class MicroGame extends GLScreen {
 	
 	public boolean targetTouched(TouchEvent event, Vector2 touchPoint, Rectangle targetBounds) {
 		// Test for single-touch inside target bounds.
-		if (event.type == TouchEvent.TOUCH_DOWN)
+		if (event.type == TouchEvent.TOUCH_DOWN || event.type == TouchEvent.TOUCH_DRAGGED)
 	    	if(OverlapTester.pointInRectangle(targetBounds, touchPoint))
 		        return true; 
 	
@@ -378,7 +378,7 @@ public abstract class MicroGame extends GLScreen {
 //		}
 		// ...or could just dedicate screen space for it for the entire microgame.
 		batcher.beginBatch(Assets.items);
-		Assets.font.drawText(batcher, string, 600, 700);
+		Assets.font.drawText(batcher, string, 0, 700);
 		batcher.endBatch();
 	}
 	
