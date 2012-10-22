@@ -4,42 +4,28 @@ import java.util.List;
 
 import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
-import com.dbz.framework.impl.AccelerometerHandler;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
-// *** Need to create a standard for handling multiple difficulty levels. ***
 public class TrafficMicroGame extends MicroGame {
     
-	
 	// --------------
 	// --- Fields ---
 	// --------------
+
+	// Variable needed for obstacle movement.
+	private int obstacleAccelY = 5;
 	
-	// *** Need to create a standard for handling multiple difficulty levels. ***
-	private int level = 3;
-	private int requiredBroFistCount[] = { 5, 10, 15 };
-	
-	private int carX = 480;
-	private int carY = 0;
-	private int carWidth = 320;
-	private int carHeight = 240;
-	
-	private int obstacleX = 560;
-	private int obstacleY = 800;
-	private int obstacleWidth = 160;
-	private int obstacleHeight = 160;
-	
+	// Bounds for touch detection.
+	private Rectangle obstacleBounds = new Rectangle(560, 800, 160, 160);
+	private Rectangle carBounds = new Rectangle(480, 0, 320, 240);
 	
 	// -------------------
 	// --- Constructor ---
 	// -------------------   
     public TrafficMicroGame(Game game) {
         super(game);
-        totalAllowedTime = 10.0f;
-        
-       
     }
 
 	// ---------------------
@@ -49,17 +35,23 @@ public class TrafficMicroGame extends MicroGame {
 	@Override
 	public void updateRunning(float deltaTime) {
 		totalRunningTime += deltaTime;
+
+		// Moves obstacles at the rate of obstacleAccelY.
+		moveObstacles();
 		
-		obstacleY -= 5;
+		// Moves car at the rate of the Acceleromter's Y axis.
+		moveCar();
 		
-		if (obstacleY <= carHeight && obstacleY + obstacleHeight >= carY) {
-			if (obstacleX <= carX + carWidth && obstacleX + obstacleWidth >= carX)
+		// Tests for collision-based loss.
+		if (collision(carBounds, obstacleBounds)) {
+				Assets.playSound(Assets.hitSound);
 				microGameState = MicroGameState.Lost;
+				return;
 		}
 		
-		// Checks for time-based loss.
-		if (lostTimeBased()) {
-			microGameState = MicroGameState.Won;
+		// Checks for time-based win.
+		if (wonTimeBased()) {
+			Assets.playSound(Assets.highJumpSound);
 			return;
 		}
 		
@@ -75,6 +67,37 @@ public class TrafficMicroGame extends MicroGame {
 	        	super.updateRunning(deltaTime, touchPoint);
 	    }   
 	}
+	
+	// -----------------------------
+	// --- Utility Update Method ---
+	// -----------------------------
+	
+	public void moveObstacles() {
+		float obstacleX = obstacleBounds.lowerLeft.x;
+		float obstacleY = obstacleBounds.lowerLeft.y;
+		
+		obstacleY -= obstacleAccelY;
+		obstacleBounds.lowerLeft.set(obstacleX, obstacleY);
+	}
+	
+	public void moveCar() {
+		carBounds.lowerLeft.x += (int) game.getInput().getAccelY();
+	}
+	
+	public boolean collision(Rectangle car, Rectangle obstacle) {
+		float obstacleX = obstacleBounds.lowerLeft.x;
+		float obstacleY = obstacleBounds.lowerLeft.y;
+		float carX = carBounds.lowerLeft.x;
+		float carY = carBounds.lowerLeft.y;
+		
+		if (obstacleY <= car.height)
+			if (obstacleY + obstacle.height >= carY)
+				if (obstacleX <= carX + car.width)
+					if (obstacleX + obstacle.width >= carX)
+						return true;
+		
+		return false;
+	}
 
 	// -------------------
 	// --- Draw Method ---
@@ -83,16 +106,15 @@ public class TrafficMicroGame extends MicroGame {
 	@Override
 	public void presentRunning() {
 		drawInstruction("BROFIST!" + " x: " + String.valueOf(game.getInput().getAccelX()) + " y: " + String.valueOf(game.getInput().getAccelY()) + " z: " + String.valueOf(game.getInput().getAccelZ()));
-		
-		carX += (int) game.getInput().getAccelY();
-		
-		// Draw Brofist.
-		batcher.beginBatch(Assets.brofist);
-		batcher.drawSprite(carX, carY, carWidth, carHeight, Assets.brofistRegion);
+
+		// Draw car.
+		batcher.beginBatch(Assets.broFist);
+		batcher.drawSprite(carBounds, Assets.broFistRegion);
 		batcher.endBatch();
 		
+		// Draw obstacle.
 		batcher.beginBatch(Assets.backArrow);
-		batcher.drawSprite(obstacleX, obstacleY, obstacleWidth, obstacleHeight, Assets.backArrowRegion);
+		batcher.drawSprite(obstacleBounds, Assets.backArrowRegion);
 		batcher.endBatch();
 		
 		drawRunningBounds();
@@ -107,8 +129,8 @@ public class TrafficMicroGame extends MicroGame {
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(carX, carY, carWidth, carHeight, Assets.boundOverlayRegion); // Brofist Bounding Box
-	    batcher.drawSprite(obstacleX, obstacleY, obstacleWidth, obstacleHeight, Assets.boundOverlayRegion);
+	    batcher.drawSprite(carBounds, Assets.boundOverlayRegion); // Car Bounding Box
+	    batcher.drawSprite(obstacleBounds, Assets.boundOverlayRegion); // Obstacle Bounding Box
 	    batcher.endBatch();
 	}
 	

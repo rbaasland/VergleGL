@@ -8,31 +8,24 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
-// *** Need to create a standard for handling multiple difficulty levels. ***
 public class BroFistMicroGame extends MicroGame {
     
-	
 	// --------------
 	// --- Fields ---
 	// --------------
 	
-	// *** Need to create a standard for handling multiple difficulty levels. ***
-	private int level = 3;
+	// Array used to store the different required counts of the 3 difficulty levels.
 	private int requiredBroFistCount[] = { 5, 10, 15 };
-	private int broFistCount;
+	private int broFistCount = 0;
 	
-	private Rectangle brofistBounds;
+	// Bounds for touch detection.
+	private Rectangle broFistBounds = new Rectangle(480, 280, 320, 240);
 	
 	// -------------------
 	// --- Constructor ---
 	// -------------------   
     public BroFistMicroGame(Game game) {
         super(game);
-        
-        broFistCount = 0;
-        
-        // Initialize bounds for touch detection.
-        brofistBounds = new Rectangle(480, 280, 320, 240);
     }
 
 	// ---------------------
@@ -44,8 +37,10 @@ public class BroFistMicroGame extends MicroGame {
 		totalRunningTime += deltaTime;
 		
 		// Checks for time-based loss.
-		if (lostTimeBased())
+		if (lostTimeBased()) {
+			Assets.playSound(Assets.hitSound);
 			return;
+		}
 		
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
@@ -54,12 +49,15 @@ public class BroFistMicroGame extends MicroGame {
         	touchPoint.set(event.x, event.y);
 	        guiCam.touchToWorld(touchPoint);
 	        
-	        // Tests if target (brofist) is touched.
-        	if (targetTouched(event, touchPoint, brofistBounds)) {
+	        // Tests if target (BroFist) is touched.
+        	if (targetTouched(event, touchPoint, broFistBounds)) {
         		broFistCount++;
-        		Assets.playSound(Assets.coinSound);
-        		if (broFistCount >= requiredBroFistCount[level-1])
+        		if (broFistCount == requiredBroFistCount[level-1]) {
+        			Assets.playSound(Assets.highJumpSound);
         			microGameState = MicroGameState.Won;
+        		}
+        		else if (broFistCount < requiredBroFistCount[level-1])
+        			Assets.playSound(Assets.coinSound);
         		return;
         	}
 	        
@@ -78,8 +76,8 @@ public class BroFistMicroGame extends MicroGame {
 		drawInstruction("BROFIST!");
 		
 		// Draw Brofist.
-		batcher.beginBatch(Assets.brofist);
-		batcher.drawSprite(480, 280, 320, 240, Assets.brofistRegion);
+		batcher.beginBatch(Assets.broFist);
+		batcher.drawSprite(broFistBounds, Assets.broFistRegion);
 		batcher.endBatch();
 		
 		// drawRunningBounds();
@@ -94,7 +92,7 @@ public class BroFistMicroGame extends MicroGame {
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(480, 280, 320, 240, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(broFistBounds, Assets.boundOverlayRegion); // BroFist Bounding Box
 	    batcher.endBatch();
 	}
 	

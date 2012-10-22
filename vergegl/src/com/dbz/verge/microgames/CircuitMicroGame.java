@@ -8,20 +8,19 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
-// *** Need to create a standard for handling multiple difficulty levels. ***
 public class CircuitMicroGame extends MicroGame {
     
-	
 	// --------------
 	// --- Fields ---
 	// --------------
-	
-	public boolean touchingFistOne = false, touchingFistTwo = false;
-	// *** Need to create a standard for handling multiple difficulty levels. ***
-	private int level = 1;
 
-	private Rectangle brofistOneBounds;
-	private Rectangle brofistTwoBounds;
+	// Boolean to track target touching.
+	private boolean touchingFistOne = false; 
+	private boolean touchingFistTwo = false;
+
+	// Bounds for touch detection.
+	private Rectangle broFistOneBounds = new Rectangle(150, 280, 320, 240);
+	private Rectangle broFistTwoBounds = new Rectangle(480, 280, 320, 240);
 	
 	// -------------------
 	// --- Constructor ---
@@ -29,11 +28,8 @@ public class CircuitMicroGame extends MicroGame {
     public CircuitMicroGame(Game game) {
         super(game);
         
-        totalAllowedTime = 300.0f;
-        
-        // Initialize bounds for touch detection.
-        brofistOneBounds = new Rectangle(150, 280, 320, 240);
-        brofistTwoBounds = new Rectangle(480, 280, 320, 240);
+        // Extend allowed time for testing.
+        totalMicroGameTime = 300.0f;
     }
 
 	// ---------------------
@@ -45,10 +41,14 @@ public class CircuitMicroGame extends MicroGame {
 		totalRunningTime += deltaTime;
 		
 		// Checks for time-based loss.
-		if (lostTimeBased())
+		if (lostTimeBased()) {
+			Assets.playSound(Assets.hitSound);
 			return;
+		}
 		
+		// Checks for multi-touch win.
 		if (touchingFistOne && touchingFistTwo) {
+			Assets.playSound(Assets.highJumpSound);
 			microGameState = MicroGameState.Won;
     		return;	
 		}
@@ -60,13 +60,14 @@ public class CircuitMicroGame extends MicroGame {
         	touchPoint.set(event.x, event.y);
 	        guiCam.touchToWorld(touchPoint);
 	        
-		    // Tests if target (brofist) is touched.
-	        if (targetTouched(event, touchPoint, brofistOneBounds))
+		    // Tests if target #1 is being touched.
+	        if (targetTouched(event, touchPoint, broFistOneBounds))
 	        	touchingFistOne = true;
 	        else
 	        	touchingFistOne = false;
-	        	
-	        if (targetTouched(event, touchPoint, brofistTwoBounds))
+	        
+	        // Tests if target #2 is being touched.
+	        if (targetTouched(event, touchPoint, broFistTwoBounds))
 	        	touchingFistTwo = true;
 	        else
 	        	touchingFistTwo = false;
@@ -85,15 +86,16 @@ public class CircuitMicroGame extends MicroGame {
 	public void presentRunning() {
 		drawInstruction("BROFIST!" + String.valueOf(touchingFistOne) + String.valueOf(touchingFistTwo));
 		
-		// Draw Brofist.
+		// Draw target #1.
 		if (!touchingFistOne) {
-			batcher.beginBatch(Assets.brofist);
-			batcher.drawSprite(150, 280, 320, 240, Assets.brofistRegion);
+			batcher.beginBatch(Assets.broFist);
+			batcher.drawSprite(broFistOneBounds, Assets.broFistRegion);
 			batcher.endBatch();
 		}
+		// Draw target #2.
 		if (!touchingFistTwo) {
-			batcher.beginBatch(Assets.brofist);
-			batcher.drawSprite(480, 280, 320, 240, Assets.brofistRegion);
+			batcher.beginBatch(Assets.broFist);
+			batcher.drawSprite(broFistTwoBounds, Assets.broFistRegion);
 			batcher.endBatch();
 		}
 		
@@ -109,7 +111,8 @@ public class CircuitMicroGame extends MicroGame {
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(480, 280, 320, 240, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(broFistOneBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(broFistTwoBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
 	    batcher.endBatch();
 	}
 	

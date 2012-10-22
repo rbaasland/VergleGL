@@ -1,6 +1,5 @@
 package com.dbz.verge;
 
-import com.dbz.framework.Music;
 import com.dbz.framework.Sound;
 import com.dbz.framework.gl.Animation;
 import com.dbz.framework.gl.Font;
@@ -29,8 +28,8 @@ public class Assets {
     public static TextureRegion pauseRegion;
     public static TextureRegion unpauseRegion;
     
-    public static Texture brofist;
-    public static TextureRegion brofistRegion;
+    public static Texture broFist;
+    public static TextureRegion broFistRegion;
     
     public static Texture boundOverlay;
     public static TextureRegion boundOverlayRegion;
@@ -57,7 +56,7 @@ public class Assets {
     public static Animation brakingPlatform;    
     public static Font font;
     
-    public static Music music;
+//    public static Music music;
     public static Sound jumpSound;
     public static Sound highJumpSound;
     public static Sound hitSound;
@@ -85,8 +84,8 @@ public class Assets {
         pauseRegion = new TextureRegion(pauseToggle, 0, 0, 160, 160);
         unpauseRegion = new TextureRegion(pauseToggle, 160, 0, 160, 160);
         
-        brofist = new Texture(game, "brofist.png");
-        brofistRegion = new TextureRegion(brofist, 0, 0, 320, 240);
+        broFist = new Texture(game, "brofist.png");
+        broFistRegion = new TextureRegion(broFist, 0, 0, 320, 240);
         
         boundOverlay = new Texture(game, "boundoverlay.png");
         boundOverlayRegion = new TextureRegion(boundOverlay, 0, 0, 1280, 800);
@@ -132,11 +131,11 @@ public class Assets {
         
         font = new Font(items, 224, 0, 16, 16, 20);
         
-        music = game.getAudio().newMusic("music.mp3");
-        music.setLooping(true);
-        music.setVolume(0.5f);
-        if(Settings.soundEnabled)
-            music.play();
+//        music = game.getAudio().newMusic("music.mp3");
+//        music.setLooping(true);
+//        music.setVolume(0.5f);
+//        if(Settings.soundEnabled)
+//            music.play();
         jumpSound = game.getAudio().newSound("jump.ogg");
         highJumpSound = game.getAudio().newSound("highjump.ogg");
         hitSound = game.getAudio().newSound("hit.ogg");
@@ -151,11 +150,11 @@ public class Assets {
         gameGridBackground.reload();
         backArrow.reload();
         pauseToggle.reload();
-        brofist.reload();
+        broFist.reload();
         boundOverlay.reload();
         items.reload();
-        if(Settings.soundEnabled)
-            music.play();
+//        if(Settings.soundEnabled)
+//            music.play();
     }
     
     public static void playSound(Sound sound) {

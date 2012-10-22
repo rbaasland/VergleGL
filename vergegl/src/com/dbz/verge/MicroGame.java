@@ -14,9 +14,6 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 
-// Will use this class to implement the extra features of MicroGame
-// That aren't shared with the Screen subclass.
-// *Might make this inherit off of a GameScreen instance?*
 public abstract class MicroGame extends GLScreen {
 	
 	// --------------
@@ -28,8 +25,7 @@ public abstract class MicroGame extends GLScreen {
 		Paused,
 		Running,
 		Won,
-		Lost,
-		// Transition // ***???***
+		Lost
 	}
 	
 	public MicroGameState microGameState;
@@ -47,13 +43,11 @@ public abstract class MicroGame extends GLScreen {
     
     // *Possible Difficulty Level Implementation.*
     // *Could also try to use a class, struct or enum.*
-//    public final static int levelOne = 0;
-//    public final static int levelTwo = 1;
-//    public final static int levelThree = 2;
+    public int level = 1;
     
     // Used to track running time for the game's timer.
     public float totalRunningTime;
-    public float totalAllowedTime;
+    public float totalMicroGameTime;
     
     // -------------------
 	// --- Constructor ---
@@ -72,7 +66,7 @@ public abstract class MicroGame extends GLScreen {
         backArrowBounds = new Rectangle(0, 0, 150, 150);
  
         totalRunningTime = 0;
-        totalAllowedTime = 5.0f;
+        totalMicroGameTime = 5.0f;
 	}
 
 	// ----------------------
@@ -213,9 +207,18 @@ public abstract class MicroGame extends GLScreen {
 	
 	// Checks for time-based loss.
 	public boolean lostTimeBased() {
-		if (totalRunningTime > totalAllowedTime) {
-			Assets.playSound(Assets.hitSound);
+		if (totalRunningTime > totalMicroGameTime) {
 			microGameState = MicroGameState.Lost;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	// Checks for time-based win.
+	public boolean wonTimeBased() {
+		if (totalRunningTime > totalMicroGameTime) {
+			microGameState = MicroGameState.Won;
 			return true;
 		}
 		else
@@ -224,7 +227,7 @@ public abstract class MicroGame extends GLScreen {
 	
 	public boolean targetTouched(TouchEvent event, Vector2 touchPoint, Rectangle targetBounds) {
 		// Test for single-touch inside target bounds.
-		if (event.type == TouchEvent.TOUCH_DOWN || event.type == TouchEvent.TOUCH_DRAGGED)
+		if (event.type == TouchEvent.TOUCH_DOWN)
 	    	if(OverlapTester.pointInRectangle(targetBounds, touchPoint))
 		        return true; 
 	

@@ -8,37 +8,26 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
-// *** Need to create a standard for handling multiple difficulty levels. ***
 public class FlyMicroGame extends MicroGame {
     
-	
 	// --------------
 	// --- Fields ---
 	// --------------
-	
-	// *** Need to create a standard for handling multiple difficulty levels. ***
-	private int level = 3;
+
 	private int requiredBroFistCount[] = { 5, 10, 15 };
-	private int broFistCount;
+	private int broFistCount = 0;
+
+	private int accelX = 10; 
+	private int accelY = 0;
 	
-	public int x = 480;
-	public int y = 60;
-	public int posX = 10;
-	public int posY = 0;
-	
-	private Rectangle brofistBounds;
+	// Bounds for touch detection.
+	private Rectangle broFistBounds= new Rectangle(480, 60, 320, 240);
 	
 	// -------------------
 	// --- Constructor ---
 	// -------------------   
     public FlyMicroGame(Game game) {
         super(game);
-        
-        broFistCount = 0;
-        totalAllowedTime = 30.0f;
-        
-        // Initialize bounds for touch detection.
-        brofistBounds = new Rectangle(x, y, 320, 240);
     }
 
 	// ---------------------
@@ -48,28 +37,15 @@ public class FlyMicroGame extends MicroGame {
 	@Override
 	public void updateRunning(float deltaTime) {
 		totalRunningTime += deltaTime;
-		
-		if (x == 900) {
-			posX = -10;
-			posY = 5;
-		} else if (x == 60) {
-			posX = 10;
-			posY = -5;
-		} else if (x == 480) {
-			if (posY > 0)
-				posY = -5;
-			else 
-				posY = 5;
-		}
-		x += posX;
-		y += posY;
-		
-		brofistBounds.setLowerLeft(x, y);
-		
+
+		// Moves fly in a pre-defined way.
+		moveFly();
 		
 		// Checks for time-based loss.
-		if (lostTimeBased())
+		if (lostTimeBased()) {
+			Assets.playSound(Assets.hitSound);
 			return;
+		}
 		
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
@@ -79,11 +55,14 @@ public class FlyMicroGame extends MicroGame {
 	        guiCam.touchToWorld(touchPoint);
 	        
 	        // Tests if target (brofist) is touched.
-        	if (targetTouched(event, touchPoint, brofistBounds)) {
+        	if (targetTouched(event, touchPoint, broFistBounds)) {
         		broFistCount++;
-        		Assets.playSound(Assets.coinSound);
-        		if (broFistCount >= requiredBroFistCount[level-1])
+        		if (broFistCount == requiredBroFistCount[level-1]) {
+        			Assets.playSound(Assets.highJumpSound);
         			microGameState = MicroGameState.Won;
+        		}
+        		else if (broFistCount < requiredBroFistCount[level-1])
+        			Assets.playSound(Assets.coinSound);
         		return;
         	}
 	        
@@ -91,6 +70,32 @@ public class FlyMicroGame extends MicroGame {
 	        if (event.type == TouchEvent.TOUCH_UP)
 	        	super.updateRunning(deltaTime, touchPoint);
 	    }   
+	}
+	
+	// ---------------------------
+	// --- Utility Draw Method ---
+	// ---------------------------
+	
+	public void moveFly() {
+		float x = broFistBounds.lowerLeft.x;
+		float y = broFistBounds.lowerLeft.y;
+		
+		if (x == 900) {
+			accelX = -10;
+			accelY = 5;
+		} else if (x == 60) {
+			accelX = 10;
+			accelY = -5;
+		} else if (x == 480) {
+			if (accelY > 0)
+				accelY = -5;
+			else 
+				accelY = 5;
+		}
+		x += accelX;
+		y += accelY;
+		
+		broFistBounds.lowerLeft.set(x, y);
 	}
 
 	// -------------------
@@ -102,8 +107,8 @@ public class FlyMicroGame extends MicroGame {
 		drawInstruction("BROFIST!");
 		
 		// Draw Brofist.
-		batcher.beginBatch(Assets.brofist);
-		batcher.drawSprite(x, y, 320, 240, Assets.brofistRegion);
+		batcher.beginBatch(Assets.broFist);
+		batcher.drawSprite(broFistBounds, Assets.broFistRegion);
 		batcher.endBatch();
 		
 		// drawRunningBounds();
@@ -118,7 +123,7 @@ public class FlyMicroGame extends MicroGame {
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(x, y, 320, 240, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(broFistBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
 	    batcher.endBatch();
 	}
 	

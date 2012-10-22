@@ -5,6 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.util.FloatMath;
 
 import com.dbz.framework.impl.GLGraphics;
+import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 
 public class SpriteBatcher {        
@@ -54,6 +55,36 @@ public class SpriteBatcher {
         float y1 = y;
         float x2 = x + width;
         float y2 = y + height;
+        
+        verticesBuffer[bufferIndex++] = x1;
+        verticesBuffer[bufferIndex++] = y1;
+        verticesBuffer[bufferIndex++] = region.u1;
+        verticesBuffer[bufferIndex++] = region.v2;
+        
+        verticesBuffer[bufferIndex++] = x2;
+        verticesBuffer[bufferIndex++] = y1;
+        verticesBuffer[bufferIndex++] = region.u2;
+        verticesBuffer[bufferIndex++] = region.v2;
+        
+        verticesBuffer[bufferIndex++] = x2;
+        verticesBuffer[bufferIndex++] = y2;
+        verticesBuffer[bufferIndex++] = region.u2;
+        verticesBuffer[bufferIndex++] = region.v1;
+        
+        verticesBuffer[bufferIndex++] = x1;
+        verticesBuffer[bufferIndex++] = y2;
+        verticesBuffer[bufferIndex++] = region.u1;
+        verticesBuffer[bufferIndex++] = region.v1;
+        
+        numSprites++;
+    }
+    
+    // Modified drawSprite method that takes a Rectangle object instead of the normal x, y, width, height
+    public void drawSprite(Rectangle rectangle, TextureRegion region) {
+    	float x1 = rectangle.lowerLeft.x;
+        float y1 = rectangle.lowerLeft.y;
+        float x2 = rectangle.lowerLeft.x + rectangle.width;
+        float y2 = rectangle.lowerLeft.y + rectangle.height;
         
         verticesBuffer[bufferIndex++] = x1;
         verticesBuffer[bufferIndex++] = y1;

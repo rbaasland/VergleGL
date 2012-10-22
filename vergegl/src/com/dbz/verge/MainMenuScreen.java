@@ -54,10 +54,10 @@ public class MainMenuScreen extends GLScreen {
                 if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
                     Settings.soundEnabled = !Settings.soundEnabled;
-                    if(Settings.soundEnabled) 
-                        Assets.music.play();
-                    else
-                        Assets.music.pause();
+//                    if(Settings.soundEnabled) 
+//                        Assets.music.play();
+//                    else
+//                        Assets.music.pause();
                 }
                 if(OverlapTester.pointInRectangle(playBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
@@ -77,7 +77,7 @@ public class MainMenuScreen extends GLScreen {
             }
         }
     }
-   
+ 
 
     @Override
     public void present(float deltaTime) {

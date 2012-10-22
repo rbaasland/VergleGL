@@ -8,40 +8,33 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
-// *** Need to create a standard for handling multiple difficulty levels. ***
 public class FireMicroGame extends MicroGame {
     
-	
 	// --------------
 	// --- Fields ---
 	// --------------
 	
-	public boolean tappedFistOne = false,tappedFistTwo = false,tappedFistThree = false;
-	// *** Need to create a standard for handling multiple difficulty levels. ***
-	private int level = 1;
+	// Array used to store the different required counts of the 3 difficulty levels.
 	private int requiredBroFistCount[] = { 1, 2, 3 };
-	private int broFistOneCount;
-	private int broFistTwoCount;
-	private int broFistThreeCount;
+	private int broFistOneCount = 0; 
+	private int broFistTwoCount = 0;
+	private int broFistThreeCount = 0;
 	
-	private Rectangle brofistOneBounds;
-	private Rectangle brofistTwoBounds;
-	private Rectangle brofistThreeBounds;
+	// Boolean used to track which targets have been touched.
+	private boolean tappedFistOne = false;
+	private boolean tappedFistTwo = false;
+	private boolean tappedFistThree = false;
+	
+	// Bounds for touch detection.
+	private Rectangle broFistOneBounds = new Rectangle(150, 280, 320, 240);
+	private Rectangle broFistTwoBounds = new Rectangle(480, 280, 320, 240);
+	private Rectangle broFistThreeBounds = new Rectangle(810, 280, 320, 240);
 	
 	// -------------------
 	// --- Constructor ---
 	// -------------------   
     public FireMicroGame(Game game) {
         super(game);
-        
-        broFistOneCount = 0;
-        broFistTwoCount = 0;
-        broFistThreeCount = 0;
-        
-        // Initialize bounds for touch detection.
-        brofistOneBounds = new Rectangle(150, 280, 320, 240);
-        brofistTwoBounds = new Rectangle(480, 280, 320, 240);
-        brofistThreeBounds = new Rectangle(810, 280, 320, 240);
     }
 
 	// ---------------------
@@ -53,10 +46,14 @@ public class FireMicroGame extends MicroGame {
 		totalRunningTime += deltaTime;
 		
 		// Checks for time-based loss.
-		if (lostTimeBased())
+		if (lostTimeBased()) {
+			Assets.playSound(Assets.hitSound);
 			return;
+		}
 		
+		// Tests for multi-area win.
 		if (tappedFistOne && tappedFistTwo && tappedFistThree) {
+			Assets.playSound(Assets.highJumpSound);
 			microGameState = MicroGameState.Won;
     		return;	
 		}
@@ -68,8 +65,11 @@ public class FireMicroGame extends MicroGame {
         	touchPoint.set(event.x, event.y);
 	        guiCam.touchToWorld(touchPoint);
 	        
-	        // Tests if target (brofist) is touched.
-	        if (targetTouched(event, touchPoint, brofistOneBounds)) {
+	        // *** Might be able to generalize the below three major condition blocks into an array
+	        // whichs gets cycled through via a for loop. ***
+	        
+	        // Tests if target #1 is touched.
+	        if (targetTouched(event, touchPoint, broFistOneBounds)) {
         		broFistOneCount++;
         		if (broFistOneCount == requiredBroFistCount[level-1])
         			tappedFistOne = true;
@@ -78,7 +78,8 @@ public class FireMicroGame extends MicroGame {
         		return;
         	}
         	
-        	if (targetTouched(event, touchPoint, brofistTwoBounds)) {
+	        // Tests if target #2 is touched.
+        	if (targetTouched(event, touchPoint, broFistTwoBounds)) {
         		broFistTwoCount++;
         		if (broFistTwoCount == requiredBroFistCount[level-1])
         			tappedFistTwo = true;
@@ -87,7 +88,8 @@ public class FireMicroGame extends MicroGame {
         		return;
         	}
         	
-        	if (targetTouched(event, touchPoint, brofistThreeBounds)) {
+        	// Tests if target #3 is touched.
+        	if (targetTouched(event, touchPoint, broFistThreeBounds)) {
         		broFistThreeCount++;
         		if (broFistThreeCount == requiredBroFistCount[level-1])
         			tappedFistThree = true;
@@ -110,23 +112,24 @@ public class FireMicroGame extends MicroGame {
 	public void presentRunning() {
 		drawInstruction("BROFIST!");
 		
-		// Draw Brofist.
+		// Draw target #1.
 		if (broFistOneCount < requiredBroFistCount[level-1]) {
-			batcher.beginBatch(Assets.brofist);
-			batcher.drawSprite(150, 280, 320, 240, Assets.brofistRegion);
+			batcher.beginBatch(Assets.broFist);
+			batcher.drawSprite(broFistOneBounds, Assets.broFistRegion);
 			batcher.endBatch();
 		}
+		// Draw target #2.
 		if (broFistTwoCount < requiredBroFistCount[level-1]) {
-			batcher.beginBatch(Assets.brofist);
-			batcher.drawSprite(480, 280, 320, 240, Assets.brofistRegion);
+			batcher.beginBatch(Assets.broFist);
+			batcher.drawSprite(broFistTwoBounds, Assets.broFistRegion);
 			batcher.endBatch();
 		}
+		// Draw target #3.
 		if (broFistThreeCount < requiredBroFistCount[level-1]) {
-			batcher.beginBatch(Assets.brofist);
-			batcher.drawSprite(810, 280, 320, 240, Assets.brofistRegion);
+			batcher.beginBatch(Assets.broFist);
+			batcher.drawSprite(broFistThreeBounds, Assets.broFistRegion);
 			batcher.endBatch();
 		}
-		
 		
 		// drawRunningBounds();
 		super.presentRunning();
@@ -140,7 +143,9 @@ public class FireMicroGame extends MicroGame {
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(480, 280, 320, 240, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(broFistOneBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(broFistTwoBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(broFistThreeBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
 	    batcher.endBatch();
 	}
 	
