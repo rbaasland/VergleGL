@@ -84,8 +84,6 @@ public class CircuitMicroGame extends MicroGame {
 	
 	@Override
 	public void presentRunning() {
-		drawInstruction("BROFIST!" + String.valueOf(touchingFistOne) + String.valueOf(touchingFistTwo));
-		
 		// Draw target #1.
 		if (!touchingFistOne) {
 			batcher.beginBatch(Assets.broFist);
@@ -100,6 +98,7 @@ public class CircuitMicroGame extends MicroGame {
 		}
 		
 		// drawRunningBounds();
+		drawInstruction("Connect the Circuit!" + String.valueOf(touchingFistOne) + String.valueOf(touchingFistTwo));
 		super.presentRunning();
 	}
 	

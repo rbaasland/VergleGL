@@ -29,7 +29,7 @@ public class VergeGame extends GLGame {
     @Override
     public void onPause() {
         super.onPause();
-//        if(Settings.soundEnabled)
-//            Assets.music.pause();
+        if(Settings.soundEnabled)
+            Assets.music.pause();
     }
 }

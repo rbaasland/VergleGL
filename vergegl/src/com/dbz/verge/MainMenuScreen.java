@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.dbz.bc.HelpScreen;
-import com.dbz.bc.HighScoresScreen;
 import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Camera2D;
@@ -54,10 +52,10 @@ public class MainMenuScreen extends GLScreen {
                 if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
                     Settings.soundEnabled = !Settings.soundEnabled;
-//                    if(Settings.soundEnabled) 
-//                        Assets.music.play();
-//                    else
-//                        Assets.music.pause();
+                    if(Settings.soundEnabled) 
+                        Assets.music.play();
+                    else
+                        Assets.music.pause();
                 }
                 if(OverlapTester.pointInRectangle(playBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
@@ -119,7 +117,7 @@ public class MainMenuScreen extends GLScreen {
     // Android State Management
     
     @Override
-    public void pause() {        
+    public void pause() {
         Settings.save(game.getFileIO());
     }
 

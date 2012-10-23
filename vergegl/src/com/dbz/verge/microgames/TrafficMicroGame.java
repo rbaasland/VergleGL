@@ -8,6 +8,7 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
+// *** Need to flip obstacle cars so we are driving on the opposite side of the road. ***
 public class TrafficMicroGame extends MicroGame {
     
 	// --------------
@@ -15,10 +16,14 @@ public class TrafficMicroGame extends MicroGame {
 	// --------------
 
 	// Variable needed for obstacle movement.
-	private int obstacleAccelY = 5;
+	private int obstacleOneAccelY = 12;
+	private int obstacleTwoAccelY = 8;
+	private int obstacleThreeAccelY = 15;
 	
 	// Bounds for touch detection.
-	private Rectangle obstacleBounds = new Rectangle(560, 800, 80, 170);
+	private Rectangle obstacleOneBounds = new Rectangle(250, 800, 80, 170);
+	private Rectangle obstacleTwoBounds = new Rectangle(450, 800, 80, 170);
+	private Rectangle obstacleThreeBounds = new Rectangle(750, 800, 80, 170);
 	private Rectangle carBounds = new Rectangle(480, 0, 80, 170);
 	
 	// -------------------
@@ -43,10 +48,20 @@ public class TrafficMicroGame extends MicroGame {
 		moveCar();
 		
 		// Tests for collision-based loss.
-		if (collision(carBounds, obstacleBounds)) {
+		if (collision(carBounds, obstacleOneBounds)) {
 				Assets.playSound(Assets.hitSound);
 				microGameState = MicroGameState.Lost;
 				return;
+		}
+		if (collision(carBounds, obstacleTwoBounds)) {
+			Assets.playSound(Assets.hitSound);
+			microGameState = MicroGameState.Lost;
+			return;
+		}
+		if (collision(carBounds, obstacleThreeBounds)) {
+			Assets.playSound(Assets.hitSound);
+			microGameState = MicroGameState.Lost;
+			return;
 		}
 		
 		// Checks for time-based win.
@@ -73,11 +88,35 @@ public class TrafficMicroGame extends MicroGame {
 	// -----------------------------
 	
 	public void moveObstacles() {
-		float obstacleX = obstacleBounds.lowerLeft.x;
-		float obstacleY = obstacleBounds.lowerLeft.y;
+		// Move Obstacle #1.
+		float obstacleX = obstacleOneBounds.lowerLeft.x;
+		float obstacleY = obstacleOneBounds.lowerLeft.y;
 		
-		obstacleY -= obstacleAccelY;
-		obstacleBounds.lowerLeft.set(obstacleX, obstacleY);
+		if (obstacleY < -170)
+			obstacleY = 800;
+ 
+		obstacleY -= obstacleOneAccelY;
+		obstacleOneBounds.lowerLeft.set(obstacleX, obstacleY);
+		
+		// Move Obstacle #2.
+		obstacleX = obstacleTwoBounds.lowerLeft.x;
+		obstacleY = obstacleTwoBounds.lowerLeft.y;
+		
+		if (obstacleY < -170)
+			obstacleY = 800;
+		 
+		obstacleY -= obstacleTwoAccelY;
+		obstacleTwoBounds.lowerLeft.set(obstacleX, obstacleY);
+		
+		// Move Obstacle #3.
+		obstacleX = obstacleThreeBounds.lowerLeft.x;
+		obstacleY = obstacleThreeBounds.lowerLeft.y;
+		
+		if (obstacleY < -170)
+			obstacleY = 800;
+		
+		obstacleY -= obstacleThreeAccelY;
+		obstacleThreeBounds.lowerLeft.set(obstacleX, obstacleY);
 	}
 	
 	public void moveCar() {
@@ -85,10 +124,10 @@ public class TrafficMicroGame extends MicroGame {
 	}
 	
 	public boolean collision(Rectangle car, Rectangle obstacle) {
-		float obstacleX = obstacleBounds.lowerLeft.x;
-		float obstacleY = obstacleBounds.lowerLeft.y;
-		float carX = carBounds.lowerLeft.x;
-		float carY = carBounds.lowerLeft.y;
+		float obstacleX = obstacle.lowerLeft.x;
+		float obstacleY = obstacle.lowerLeft.y;
+		float carX = car.lowerLeft.x;
+		float carY = car.lowerLeft.y;
 		
 		if (obstacleY <= car.height)
 			if (obstacleY + obstacle.height >= carY)
@@ -105,14 +144,12 @@ public class TrafficMicroGame extends MicroGame {
 	
 	@Override
 	public void presentRunning() {
-		drawInstruction("Dodge!");
-
 		batcher.beginBatch(Assets.traffic);
 		drawBackground();
 		drawObjects();
 		batcher.endBatch();
-		
-//		drawRunningBounds();
+		// drawRunningBounds();
+		drawInstruction("Dodge!");
 		super.presentRunning();
 	}
 	
@@ -127,7 +164,9 @@ public class TrafficMicroGame extends MicroGame {
 	
 	@Override
 	public void drawObjects() {
-		batcher.drawSprite(obstacleBounds, Assets.trafficRedCarRegion); // Draws obstacle car.
+		batcher.drawSprite(obstacleOneBounds, Assets.trafficRedCarRegion); // Draws obstacle car.
+		batcher.drawSprite(obstacleTwoBounds, Assets.trafficBlackCarRegion); // Draws obstacle car.
+		batcher.drawSprite(obstacleThreeBounds, Assets.trafficBlueCarRegion); // Draws obstacle car.
 		batcher.drawSprite(carBounds, Assets.trafficBlueCarRegion); // Draws player car.
 	}
 	
@@ -135,7 +174,9 @@ public class TrafficMicroGame extends MicroGame {
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-		batcher.drawSprite(obstacleBounds, Assets.boundOverlayRegion); // Obstacle Car Bounding Box
+		batcher.drawSprite(obstacleOneBounds, Assets.boundOverlayRegion); // Obstacle Car Bounding Box
+		batcher.drawSprite(obstacleTwoBounds, Assets.boundOverlayRegion); // Obstacle Car Bounding Box
+		batcher.drawSprite(obstacleThreeBounds, Assets.boundOverlayRegion); // Obstacle Car Bounding Box
 	    batcher.drawSprite(carBounds, Assets.boundOverlayRegion); // Car Bounding Box    
 	    batcher.endBatch();
 	}

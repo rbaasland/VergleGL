@@ -1,5 +1,6 @@
 package com.dbz.verge;
 
+import com.dbz.framework.Music;
 import com.dbz.framework.Sound;
 import com.dbz.framework.gl.Animation;
 import com.dbz.framework.gl.Font;
@@ -73,7 +74,7 @@ public class Assets {
     public static Animation brakingPlatform;    
     public static Font font;
     
-//    public static Music music;
+    public static Music music;
     public static Sound jumpSound;
     public static Sound highJumpSound;
     public static Sound hitSound;
@@ -165,11 +166,11 @@ public class Assets {
         
         font = new Font(items, 224, 0, 16, 16, 20);
         
-//        music = game.getAudio().newMusic("music.mp3");
-//        music.setLooping(true);
-//        music.setVolume(0.5f);
-//        if(Settings.soundEnabled)
-//            music.play();
+        music = game.getAudio().newMusic("music.mp3");
+        music.setLooping(true);
+        music.setVolume(0.5f);
+        if(Settings.soundEnabled)
+            music.play();
         jumpSound = game.getAudio().newSound("jump.ogg");
         highJumpSound = game.getAudio().newSound("highjump.ogg");
         hitSound = game.getAudio().newSound("hit.ogg");
@@ -201,8 +202,9 @@ public class Assets {
         boundOverlay.reload();
         
         items.reload();
-//        if(Settings.soundEnabled)
-//            music.play();
+        
+        if(Settings.soundEnabled)
+            music.play();
     }
     
     public static void playSound(Sound sound) {

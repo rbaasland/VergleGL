@@ -326,7 +326,7 @@ public abstract class MicroGame extends GLScreen {
 	public void presentRunning() {
 		// Draw timer.
 		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, String.format("%.2f", totalRunningTime), 600, 100);
+	    Assets.font.drawText(batcher, String.format("%.2f", totalMicroGameTime-totalRunningTime), 600, 100);
 		batcher.endBatch();
 	    
 		// Draw pause symbol.

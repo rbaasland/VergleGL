@@ -13,7 +13,6 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.microgames.BroFistMicroGame;
-import com.dbz.verge.microgames.CircuitMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
 import com.dbz.verge.microgames.TrafficMicroGame;
@@ -69,10 +68,10 @@ public class GameGridScreen extends GLScreen {
                 if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
                     Settings.soundEnabled = !Settings.soundEnabled;
-//                    if(Settings.soundEnabled) 
-//                        Assets.music.play();
-//                    else
-//                        Assets.music.pause();
+                    if(Settings.soundEnabled) 
+                        Assets.music.play();
+                    else
+                        Assets.music.pause();
                 }
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
@@ -114,7 +113,7 @@ public class GameGridScreen extends GLScreen {
                 }
                 if (OverlapTester.pointInRectangle(fifthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	game.setScreen(new CircuitMicroGame(game));
+                	// game.setScreen(new CircuitMicroGame(game));
                 	// set screen to microgamescreen.
                 	return;
                 }
@@ -181,7 +180,7 @@ public class GameGridScreen extends GLScreen {
     // Android State Management
     
     @Override
-    public void pause() {        
+    public void pause() {
         Settings.save(game.getFileIO());
     }
 

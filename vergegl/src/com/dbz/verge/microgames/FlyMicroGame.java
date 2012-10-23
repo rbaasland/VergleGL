@@ -107,7 +107,7 @@ public class FlyMicroGame extends MicroGame {
 	public void presentRunning() {
 		drawBackground();
 		drawObjects();
-		drawRunningBounds();
+		// drawRunningBounds();
 		drawInstruction("Swat the Fly!");
 		super.presentRunning();
 	}

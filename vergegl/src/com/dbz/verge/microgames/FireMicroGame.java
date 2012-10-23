@@ -111,15 +111,13 @@ public class FireMicroGame extends MicroGame {
 	// -------------------
 	
 	@Override
-	public void presentRunning() {
-		drawInstruction("Put out the Fire!");
-		
+	public void presentRunning() {	
 		batcher.beginBatch(Assets.fire);
 		drawBackground();
 		drawObjects();
-		batcher.endBatch();
-		
+		batcher.endBatch();		
 		// drawRunningBounds();
+		drawInstruction("Put out the Fire!");
 		super.presentRunning();
 	}
 	
@@ -157,9 +155,9 @@ public class FireMicroGame extends MicroGame {
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(fireOneBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
-	    batcher.drawSprite(fireTwoBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
-	    batcher.drawSprite(fireThreeBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(fireOneBounds, Assets.boundOverlayRegion); // fireOne Bounding Box
+	    batcher.drawSprite(fireTwoBounds, Assets.boundOverlayRegion); // fireTwo Bounding Box
+	    batcher.drawSprite(fireThreeBounds, Assets.boundOverlayRegion); // fireThree Bounding Box
 	    batcher.endBatch();
 	}
 	
