@@ -18,8 +18,8 @@ public class TrafficMicroGame extends MicroGame {
 	private int obstacleAccelY = 5;
 	
 	// Bounds for touch detection.
-	private Rectangle obstacleBounds = new Rectangle(560, 800, 160, 160);
-	private Rectangle carBounds = new Rectangle(480, 0, 320, 240);
+	private Rectangle obstacleBounds = new Rectangle(560, 800, 80, 170);
+	private Rectangle carBounds = new Rectangle(480, 0, 80, 170);
 	
 	// -------------------
 	// --- Constructor ---
@@ -105,19 +105,14 @@ public class TrafficMicroGame extends MicroGame {
 	
 	@Override
 	public void presentRunning() {
-		drawInstruction("BROFIST!" + " x: " + String.valueOf(game.getInput().getAccelX()) + " y: " + String.valueOf(game.getInput().getAccelY()) + " z: " + String.valueOf(game.getInput().getAccelZ()));
+		drawInstruction("Dodge!");
 
-		// Draw car.
-		batcher.beginBatch(Assets.broFist);
-		batcher.drawSprite(carBounds, Assets.broFistRegion);
+		batcher.beginBatch(Assets.traffic);
+		drawBackground();
+		drawObjects();
 		batcher.endBatch();
 		
-		// Draw obstacle.
-		batcher.beginBatch(Assets.backArrow);
-		batcher.drawSprite(obstacleBounds, Assets.backArrowRegion);
-		batcher.endBatch();
-		
-		drawRunningBounds();
+//		drawRunningBounds();
 		super.presentRunning();
 	}
 	
@@ -126,11 +121,22 @@ public class TrafficMicroGame extends MicroGame {
 	// ---------------------------
 	
 	@Override
+	public void drawBackground() {
+		batcher.drawSprite(0, 0, 1280, 800, Assets.trafficBackgroundRegion);
+	}
+	
+	@Override
+	public void drawObjects() {
+		batcher.drawSprite(obstacleBounds, Assets.trafficRedCarRegion); // Draws obstacle car.
+		batcher.drawSprite(carBounds, Assets.trafficBlueCarRegion); // Draws player car.
+	}
+	
+	@Override
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(carBounds, Assets.boundOverlayRegion); // Car Bounding Box
-	    batcher.drawSprite(obstacleBounds, Assets.boundOverlayRegion); // Obstacle Bounding Box
+		batcher.drawSprite(obstacleBounds, Assets.boundOverlayRegion); // Obstacle Car Bounding Box
+	    batcher.drawSprite(carBounds, Assets.boundOverlayRegion); // Car Bounding Box    
 	    batcher.endBatch();
 	}
 	

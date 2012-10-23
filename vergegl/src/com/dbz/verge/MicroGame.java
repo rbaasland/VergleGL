@@ -234,6 +234,15 @@ public abstract class MicroGame extends GLScreen {
 		return false;
 	}
 	
+	public boolean targetDragged(TouchEvent event, Vector2 touchPoint, Rectangle targetBounds) {
+		// Test for single-touch inside target bounds.
+		if (event.type == TouchEvent.TOUCH_DOWN || event.type == TouchEvent.TOUCH_DRAGGED);
+	    	if(OverlapTester.pointInRectangle(targetBounds, touchPoint))
+		        return true; 
+	
+		return false;
+	}
+	
 	// --------------------
 	// --- Draw Methods ---
 	// --------------------
@@ -372,6 +381,10 @@ public abstract class MicroGame extends GLScreen {
 	// --- Utility Draw Methods ---
 	// ----------------------------
 	
+	public abstract void drawBackground();
+	
+	public abstract void drawObjects();
+	
 	public void drawInstruction(String string) {
 		// Could make instruction temporary this way...
 //		if (totalRunningTime < 3) {
@@ -381,7 +394,7 @@ public abstract class MicroGame extends GLScreen {
 //		}
 		// ...or could just dedicate screen space for it for the entire microgame.
 		batcher.beginBatch(Assets.items);
-		Assets.font.drawText(batcher, string, 0, 700);
+		Assets.font.drawText(batcher, string, 600, 700);
 		batcher.endBatch();
 	}
 	

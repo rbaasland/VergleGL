@@ -15,20 +15,20 @@ public class FireMicroGame extends MicroGame {
 	// --------------
 	
 	// Array used to store the different required counts of the 3 difficulty levels.
-	private int requiredBroFistCount[] = { 1, 2, 3 };
-	private int broFistOneCount = 0; 
-	private int broFistTwoCount = 0;
-	private int broFistThreeCount = 0;
+	private int requiredBroFistCount[] = { 10, 20, 30 };
+	private int fireOneCount = 0; 
+	private int fireTwoCount = 0;
+	private int fireThreeCount = 0;
 	
 	// Boolean used to track which targets have been touched.
-	private boolean tappedFistOne = false;
-	private boolean tappedFistTwo = false;
-	private boolean tappedFistThree = false;
+	private boolean clearedFireOne = false;
+	private boolean clearedFireTwo = false;
+	private boolean clearedFireThree = false;
 	
 	// Bounds for touch detection.
-	private Rectangle broFistOneBounds = new Rectangle(150, 280, 320, 240);
-	private Rectangle broFistTwoBounds = new Rectangle(480, 280, 320, 240);
-	private Rectangle broFistThreeBounds = new Rectangle(810, 280, 320, 240);
+	private Rectangle fireOneBounds = new Rectangle(220, 280, 180, 260);
+	private Rectangle fireTwoBounds = new Rectangle(550, 280, 180, 260);
+	private Rectangle fireThreeBounds = new Rectangle(880, 280, 180, 260);
 	
 	// -------------------
 	// --- Constructor ---
@@ -52,7 +52,7 @@ public class FireMicroGame extends MicroGame {
 		}
 		
 		// Tests for multi-area win.
-		if (tappedFistOne && tappedFistTwo && tappedFistThree) {
+		if (clearedFireOne && clearedFireTwo && clearedFireThree) {
 			Assets.playSound(Assets.highJumpSound);
 			microGameState = MicroGameState.Won;
     		return;	
@@ -66,34 +66,36 @@ public class FireMicroGame extends MicroGame {
 	        guiCam.touchToWorld(touchPoint);
 	        
 	        // *** Might be able to generalize the below three major condition blocks into an array
-	        // whichs gets cycled through via a for loop. ***
+	        // which gets cycled through via a for loop. ***
+	        
+	        // *** NOTE: WE CAN TEST FOR TOUCH_DRAGGED EVENTS TO BE ABLE "RUB OUT" THE FIRE ***
 	        
 	        // Tests if target #1 is touched.
-	        if (targetTouched(event, touchPoint, broFistOneBounds)) {
-        		broFistOneCount++;
-        		if (broFistOneCount == requiredBroFistCount[level-1])
-        			tappedFistOne = true;
-        		if (broFistOneCount <= requiredBroFistCount[level-1])
+	        if (targetDragged(event, touchPoint, fireOneBounds)) {
+        		fireOneCount++;
+        		if (fireOneCount == requiredBroFistCount[level-1])
+        			clearedFireOne = true;
+        		if (fireOneCount <= requiredBroFistCount[level-1])
         			Assets.playSound(Assets.coinSound);
         		return;
         	}
         	
 	        // Tests if target #2 is touched.
-        	if (targetTouched(event, touchPoint, broFistTwoBounds)) {
-        		broFistTwoCount++;
-        		if (broFistTwoCount == requiredBroFistCount[level-1])
-        			tappedFistTwo = true;
-        		if (broFistTwoCount <= requiredBroFistCount[level-1])
+        	if (targetDragged(event, touchPoint, fireTwoBounds)) {
+        		fireTwoCount++;
+        		if (fireTwoCount == requiredBroFistCount[level-1])
+        			clearedFireTwo = true;
+        		if (fireTwoCount <= requiredBroFistCount[level-1])
         			Assets.playSound(Assets.coinSound);
         		return;
         	}
         	
         	// Tests if target #3 is touched.
-        	if (targetTouched(event, touchPoint, broFistThreeBounds)) {
-        		broFistThreeCount++;
-        		if (broFistThreeCount == requiredBroFistCount[level-1])
-        			tappedFistThree = true;
-        		if (broFistThreeCount <= requiredBroFistCount[level-1])
+        	if (targetDragged(event, touchPoint, fireThreeBounds)) {
+        		fireThreeCount++;
+        		if (fireThreeCount == requiredBroFistCount[level-1])
+        			clearedFireThree = true;
+        		if (fireThreeCount <= requiredBroFistCount[level-1])
         			Assets.playSound(Assets.coinSound);
         		return;
         	}
@@ -110,26 +112,12 @@ public class FireMicroGame extends MicroGame {
 	
 	@Override
 	public void presentRunning() {
-		drawInstruction("BROFIST!");
+		drawInstruction("Put out the Fire!");
 		
-		// Draw target #1.
-		if (broFistOneCount < requiredBroFistCount[level-1]) {
-			batcher.beginBatch(Assets.broFist);
-			batcher.drawSprite(broFistOneBounds, Assets.broFistRegion);
-			batcher.endBatch();
-		}
-		// Draw target #2.
-		if (broFistTwoCount < requiredBroFistCount[level-1]) {
-			batcher.beginBatch(Assets.broFist);
-			batcher.drawSprite(broFistTwoBounds, Assets.broFistRegion);
-			batcher.endBatch();
-		}
-		// Draw target #3.
-		if (broFistThreeCount < requiredBroFistCount[level-1]) {
-			batcher.beginBatch(Assets.broFist);
-			batcher.drawSprite(broFistThreeBounds, Assets.broFistRegion);
-			batcher.endBatch();
-		}
+		batcher.beginBatch(Assets.fire);
+		drawBackground();
+		drawObjects();
+		batcher.endBatch();
 		
 		// drawRunningBounds();
 		super.presentRunning();
@@ -140,12 +128,38 @@ public class FireMicroGame extends MicroGame {
 	// ---------------------------
 	
 	@Override
+	public void drawBackground() {
+		batcher.drawSprite(0, 0, 1280, 800, Assets.fireBackgroundRegion);
+	}
+	
+	@Override
+	public void drawObjects() {
+		// Draw target #1.
+		if (fireOneCount < requiredBroFistCount[level-1]) 
+			batcher.drawSprite(fireOneBounds, Assets.fireWindowRegion);
+		else
+			batcher.drawSprite(fireOneBounds,  Assets.clearWindowRegion);
+		
+		// Draw target #2.
+		if (fireTwoCount < requiredBroFistCount[level-1])
+			batcher.drawSprite(fireTwoBounds, Assets.fireWindowRegion);
+		else
+			batcher.drawSprite(fireTwoBounds,  Assets.clearWindowRegion);
+		
+		// Draw target #3.
+		if (fireThreeCount < requiredBroFistCount[level-1]) 
+			batcher.drawSprite(fireThreeBounds, Assets.fireWindowRegion);
+		else
+			batcher.drawSprite(fireThreeBounds, Assets.clearWindowRegion);
+	}
+	
+	@Override
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(broFistOneBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
-	    batcher.drawSprite(broFistTwoBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
-	    batcher.drawSprite(broFistThreeBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(fireOneBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(fireTwoBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(fireThreeBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
 	    batcher.endBatch();
 	}
 	

@@ -10,26 +10,43 @@ import com.dbz.framework.impl.GLGame;
 public class Assets {
     public static Texture background;
     public static TextureRegion backgroundRegion;
-    
     public static Texture mainMenuButtons;
     public static TextureRegion mainMenuButtonsRegion;
     
     public static Texture soundToggle;
     public static TextureRegion soundOnRegion;
     public static TextureRegion soundOffRegion;
-    
-    public static Texture gameGridBackground;
-    public static TextureRegion gameGridBackgroundRegion;
-    
     public static Texture backArrow;
-    public static TextureRegion backArrowRegion;
-    
+    public static TextureRegion backArrowRegion; 
     public static Texture pauseToggle;
     public static TextureRegion pauseRegion;
     public static TextureRegion unpauseRegion;
     
+    public static Texture gameGridBackground;
+    public static TextureRegion gameGridBackgroundRegion;
+    public static Texture gameGridIcons;
+    public static TextureRegion gameGridIconsRegion;
+    
+    public static Texture broFistBackground;
+    public static TextureRegion broFistBackgroundRegion;
     public static Texture broFist;
     public static TextureRegion broFistRegion;
+    
+    public static Texture flyBackground;
+    public static TextureRegion flyBackgroundRegion;
+    public static Texture fly;
+    public static TextureRegion flyRegion;
+    
+    public static Texture fire;
+    public static TextureRegion fireBackgroundRegion;
+    public static TextureRegion fireWindowRegion;
+    public static TextureRegion clearWindowRegion;
+    
+    public static Texture traffic;
+    public static TextureRegion trafficBackgroundRegion;
+    public static TextureRegion trafficBlueCarRegion;
+    public static TextureRegion trafficRedCarRegion;
+    public static TextureRegion trafficBlackCarRegion;
     
     public static Texture boundOverlay;
     public static TextureRegion boundOverlayRegion;
@@ -66,26 +83,43 @@ public class Assets {
     public static void load(GLGame game) {
         background = new Texture(game, "background.png");
         backgroundRegion = new TextureRegion(background, 0, 0, 1280, 800);
-        
         mainMenuButtons = new Texture(game, "mainmenubuttons.png");
         mainMenuButtonsRegion = new TextureRegion(mainMenuButtons, 0, 0, 1280, 800);
         
         soundToggle = new Texture(game, "volumetoggle.png");
         soundOnRegion = new TextureRegion(soundToggle, 0, 0, 160, 160);
         soundOffRegion = new TextureRegion(soundToggle, 160, 0, 160, 160);
-        
-        gameGridBackground = new Texture(game, "gamegridbackground.png");
-        gameGridBackgroundRegion = new TextureRegion(gameGridBackground, 0, 0, 1280, 800);
-        
         backArrow = new Texture(game, "backarrow.png");
-        backArrowRegion = new TextureRegion(backArrow, 0, 0, 160, 160);
-        
+        backArrowRegion = new TextureRegion(backArrow, 0, 0, 160, 160); 
         pauseToggle = new Texture(game, "pausetoggle.png");
         pauseRegion = new TextureRegion(pauseToggle, 0, 0, 160, 160);
         unpauseRegion = new TextureRegion(pauseToggle, 160, 0, 160, 160);
         
+        gameGridBackground = new Texture(game, "gamegridbackground.png");
+        gameGridBackgroundRegion = new TextureRegion(gameGridBackground, 0, 0, 1280, 800);
+        gameGridIcons = new Texture(game, "gamegridicons.png");
+        gameGridIconsRegion = new TextureRegion(gameGridIcons, 0, 0, 1024, 800);
+        
+        broFistBackground = new Texture(game, "brofistbackground.png");
+        broFistBackgroundRegion = new TextureRegion(broFistBackground, 0, 0, 1280, 800);
         broFist = new Texture(game, "brofist.png");
         broFistRegion = new TextureRegion(broFist, 0, 0, 320, 240);
+        
+        flyBackground = new Texture(game, "flybackground.png");
+        flyBackgroundRegion = new TextureRegion(flyBackground, 0, 0, 1280, 800);
+        fly = new Texture(game, "fly.png");
+        flyRegion = new TextureRegion(fly, 0, 0, 80, 60);
+        
+        fire = new Texture(game, "firehouse.png");
+        fireBackgroundRegion = new TextureRegion(fire, 0, 0, 1280, 800);
+        fireWindowRegion = new TextureRegion(fire, 1300, 20, 180, 260);
+        clearWindowRegion = new TextureRegion(fire, 1500, 20, 180, 260);
+        
+        traffic = new Texture(game, "traffic.png");
+        trafficBackgroundRegion = new TextureRegion(traffic, 0, 0, 1280, 800);
+        trafficBlueCarRegion = new TextureRegion(traffic, 0, 800, 80, 170);
+        trafficRedCarRegion = new TextureRegion(traffic, 80, 800, 80, 170);
+        trafficBlackCarRegion = new TextureRegion(traffic, 160, 800, 80, 170);
         
         boundOverlay = new Texture(game, "boundoverlay.png");
         boundOverlayRegion = new TextureRegion(boundOverlay, 0, 0, 1280, 800);
@@ -146,12 +180,26 @@ public class Assets {
     public static void reload() {
         background.reload();
         mainMenuButtons.reload();
+        
         soundToggle.reload();
-        gameGridBackground.reload();
         backArrow.reload();
         pauseToggle.reload();
+        
+        gameGridBackground.reload();
+        gameGridIcons.reload();
+
+        broFistBackground.reload();
         broFist.reload();
+        
+        flyBackground.reload();
+        fly.reload();
+
+        fire.reload();
+        
+        traffic.reload();
+        
         boundOverlay.reload();
+        
         items.reload();
 //        if(Settings.soundEnabled)
 //            music.play();

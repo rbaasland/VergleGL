@@ -142,7 +142,12 @@ public class GameGridScreen extends GLScreen {
         batcher.endBatch();
         
         gl.glEnable(GL10.GL_BLEND); //pdf page 341 //tells OpenGL ES that it should apply alpha blending to all triangles rendered until disabled
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);         
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        
+        // Draws icons.
+        batcher.beginBatch(Assets.gameGridIcons);
+        batcher.drawSprite(0, 0, 1024, 800, Assets.gameGridIconsRegion);
+        batcher.endBatch();
         
         // Volume Toggle drawn.
         batcher.beginBatch(Assets.soundToggle);
@@ -155,20 +160,20 @@ public class GameGridScreen extends GLScreen {
         batcher.endBatch(); 
         
         // Drawing Bounding Boxes.
-        batcher.beginBatch(Assets.boundOverlay);
-        
-        batcher.drawSprite(1120, 0, 160, 160, Assets.boundOverlayRegion); // SoundToggle Bounding Box
-        batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
-        batcher.drawSprite(345, 30, 75, 100, Assets.boundOverlayRegion); // Next Page Bounding Box
-        batcher.drawSprite(860, 30, 75, 100, Assets.boundOverlayRegion); // Previous Page Bounding Box
-        batcher.drawSprite(315, 435, 170, 170, Assets.boundOverlayRegion); // 1st MicroGame Bounding Box
-        batcher.drawSprite(555, 435, 170, 170, Assets.boundOverlayRegion); // 2nd MicroGame Bounding Box
-        batcher.drawSprite(795, 435, 170, 170, Assets.boundOverlayRegion); // 3rd MicroGame Bounding Box
-        batcher.drawSprite(315, 200, 170, 170, Assets.boundOverlayRegion); // 4th MicroGame Bounding Box
-        batcher.drawSprite(555, 200, 170, 170, Assets.boundOverlayRegion); // 5th MicroGame Bounding Box
-        batcher.drawSprite(795, 200, 170, 170, Assets.boundOverlayRegion); // 6th MicroGame Bounding Box
-        
-        batcher.endBatch();
+//        batcher.beginBatch(Assets.boundOverlay);
+//        
+//        batcher.drawSprite(1120, 0, 160, 160, Assets.boundOverlayRegion); // SoundToggle Bounding Box
+//        batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+//        batcher.drawSprite(345, 30, 75, 100, Assets.boundOverlayRegion); // Next Page Bounding Box
+//        batcher.drawSprite(860, 30, 75, 100, Assets.boundOverlayRegion); // Previous Page Bounding Box
+//        batcher.drawSprite(315, 435, 170, 170, Assets.boundOverlayRegion); // 1st MicroGame Bounding Box
+//        batcher.drawSprite(555, 435, 170, 170, Assets.boundOverlayRegion); // 2nd MicroGame Bounding Box
+//        batcher.drawSprite(795, 435, 170, 170, Assets.boundOverlayRegion); // 3rd MicroGame Bounding Box
+//        batcher.drawSprite(315, 200, 170, 170, Assets.boundOverlayRegion); // 4th MicroGame Bounding Box
+//        batcher.drawSprite(555, 200, 170, 170, Assets.boundOverlayRegion); // 5th MicroGame Bounding Box
+//        batcher.drawSprite(795, 200, 170, 170, Assets.boundOverlayRegion); // 6th MicroGame Bounding Box
+//        
+//        batcher.endBatch();
         
         gl.glDisable(GL10.GL_BLEND);
     }

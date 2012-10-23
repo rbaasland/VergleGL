@@ -14,14 +14,15 @@ public class FlyMicroGame extends MicroGame {
 	// --- Fields ---
 	// --------------
 
-	private int requiredBroFistCount[] = { 5, 10, 15 };
-	private int broFistCount = 0;
+	// Array used to store the different required counts of the 3 difficulty levels.
+	private int requiredFlySwatCount[] = { 1, 2, 3 };
+	private int flySwatCount = 0;
 
 	private int accelX = 10; 
 	private int accelY = 0;
 	
 	// Bounds for touch detection.
-	private Rectangle broFistBounds= new Rectangle(480, 60, 320, 240);
+	private Rectangle flyBounds = new Rectangle(600, 60, 80, 60);
 	
 	// -------------------
 	// --- Constructor ---
@@ -55,13 +56,13 @@ public class FlyMicroGame extends MicroGame {
 	        guiCam.touchToWorld(touchPoint);
 	        
 	        // Tests if target (brofist) is touched.
-        	if (targetTouched(event, touchPoint, broFistBounds)) {
-        		broFistCount++;
-        		if (broFistCount == requiredBroFistCount[level-1]) {
+        	if (targetTouched(event, touchPoint, flyBounds)) {
+        		flySwatCount++;
+        		if (flySwatCount == requiredFlySwatCount[level-1]) {
         			Assets.playSound(Assets.highJumpSound);
         			microGameState = MicroGameState.Won;
         		}
-        		else if (broFistCount < requiredBroFistCount[level-1])
+        		else if (flySwatCount < requiredFlySwatCount[level-1])
         			Assets.playSound(Assets.coinSound);
         		return;
         	}
@@ -77,16 +78,16 @@ public class FlyMicroGame extends MicroGame {
 	// ---------------------------
 	
 	public void moveFly() {
-		float x = broFistBounds.lowerLeft.x;
-		float y = broFistBounds.lowerLeft.y;
+		float x = flyBounds.lowerLeft.x;
+		float y = flyBounds.lowerLeft.y;
 		
-		if (x == 900) {
+		if (x == 1200) {
 			accelX = -10;
 			accelY = 5;
-		} else if (x == 60) {
+		} else if (x == 80) {
 			accelX = 10;
 			accelY = -5;
-		} else if (x == 480) {
+		} else if (x == 600) {
 			if (accelY > 0)
 				accelY = -5;
 			else 
@@ -95,7 +96,7 @@ public class FlyMicroGame extends MicroGame {
 		x += accelX;
 		y += accelY;
 		
-		broFistBounds.lowerLeft.set(x, y);
+		flyBounds.lowerLeft.set(x, y);
 	}
 
 	// -------------------
@@ -104,14 +105,10 @@ public class FlyMicroGame extends MicroGame {
 	
 	@Override
 	public void presentRunning() {
-		drawInstruction("BROFIST!");
-		
-		// Draw Brofist.
-		batcher.beginBatch(Assets.broFist);
-		batcher.drawSprite(broFistBounds, Assets.broFistRegion);
-		batcher.endBatch();
-		
-		// drawRunningBounds();
+		drawBackground();
+		drawObjects();
+		drawRunningBounds();
+		drawInstruction("Swat the Fly!");
 		super.presentRunning();
 	}
 	
@@ -120,10 +117,26 @@ public class FlyMicroGame extends MicroGame {
 	// ---------------------------
 	
 	@Override
+	public void drawBackground() {
+		// Draw the background.
+		batcher.beginBatch(Assets.flyBackground);
+		batcher.drawSprite(0, 0, 1280, 800, Assets.flyBackgroundRegion);
+		batcher.endBatch();
+	}
+	
+	@Override
+	public void drawObjects() {
+		// Draw the fly.
+		batcher.beginBatch(Assets.fly);
+		batcher.drawSprite(flyBounds, Assets.flyRegion);
+		batcher.endBatch();
+	}
+	
+	@Override
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(broFistBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(flyBounds, Assets.boundOverlayRegion); // Fly Bounding Box
 	    batcher.endBatch();
 	}
 	

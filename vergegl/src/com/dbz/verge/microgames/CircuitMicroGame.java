@@ -108,6 +108,12 @@ public class CircuitMicroGame extends MicroGame {
 	// ---------------------------
 	
 	@Override
+	public void drawBackground() {}
+	
+	@Override
+	public void drawObjects() {}
+	
+	@Override
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);

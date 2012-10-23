@@ -66,19 +66,18 @@ public class MainMenuScreen extends GLScreen {
                 }
                 if(OverlapTester.pointInRectangle(highscoresBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    game.setScreen(new HighScoresScreen(game));
+//                    game.setScreen(new HighScoresScreen(game));
                     return;
                 }
                 if(OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    game.setScreen(new HelpScreen(game));
+//                    game.setScreen(new HelpScreen(game));
                     return;
                 } 
             }
         }
     }
  
-
     @Override
     public void present(float deltaTime) {
         GL10 gl = glGraphics.getGL();        
@@ -106,13 +105,13 @@ public class MainMenuScreen extends GLScreen {
         batcher.drawSprite(1120, 0, 160, 160, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
         batcher.endBatch();
         
-        // Drawing Bounding Boxes.
-        batcher.beginBatch(Assets.boundOverlay);
-        batcher.drawSprite(1120, 0, 160, 160, Assets.boundOverlayRegion); // SoundToggle Bounding Box
-        batcher.drawSprite(350, 510, 580, 100, Assets.boundOverlayRegion); // 1st Button Bounding Box
-        batcher.drawSprite(350, 350, 580, 100, Assets.boundOverlayRegion); // 2nd Button Bounding Box
-        batcher.drawSprite(350, 190, 580, 100, Assets.boundOverlayRegion); // 3rd Button Bounding Box
-        batcher.endBatch();
+//        // Drawing Bounding Boxes.
+//        batcher.beginBatch(Assets.boundOverlay);
+//        batcher.drawSprite(1120, 0, 160, 160, Assets.boundOverlayRegion); // SoundToggle Bounding Box
+//        batcher.drawSprite(350, 510, 580, 100, Assets.boundOverlayRegion); // 1st Button Bounding Box
+//        batcher.drawSprite(350, 350, 580, 100, Assets.boundOverlayRegion); // 2nd Button Bounding Box
+//        batcher.drawSprite(350, 190, 580, 100, Assets.boundOverlayRegion); // 3rd Button Bounding Box
+//        batcher.endBatch();
         
         gl.glDisable(GL10.GL_BLEND);
     }

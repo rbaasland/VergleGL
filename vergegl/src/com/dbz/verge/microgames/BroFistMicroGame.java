@@ -73,20 +73,32 @@ public class BroFistMicroGame extends MicroGame {
 	
 	@Override
 	public void presentRunning() {
-		drawInstruction("BROFIST!");
-		
+		drawBackground();
+		drawObjects();
+		// drawRunningBounds();
+		drawInstruction("Brofist!");
+		super.presentRunning();
+	}
+	
+	// ----------------------------
+	// --- Utility Draw Methods ---
+	// ----------------------------
+	
+	@Override
+	public void drawBackground() {
+		// Draw background.
+		batcher.beginBatch(Assets.broFistBackground);
+		batcher.drawSprite(0, 0, 1280, 800, Assets.broFistBackgroundRegion);
+		batcher.endBatch();
+	}
+	
+	@Override
+	public void drawObjects() {
 		// Draw Brofist.
 		batcher.beginBatch(Assets.broFist);
 		batcher.drawSprite(broFistBounds, Assets.broFistRegion);
 		batcher.endBatch();
-		
-		// drawRunningBounds();
-		super.presentRunning();
 	}
-	
-	// ---------------------------
-	// --- Utility Draw Method ---
-	// ---------------------------
 	
 	@Override
 	public void drawRunningBounds() {
