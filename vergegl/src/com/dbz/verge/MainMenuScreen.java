@@ -14,41 +14,72 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 
 public class MainMenuScreen extends GLScreen {
-    Camera2D guiCam;
-    SpriteBatcher batcher;
-    Vector2 touchPoint;
+	
+	// --------------
+	// --- Fields ---
+	// --------------
+	
+	// OpenGL Related Objects.
+    private Camera2D guiCam = new Camera2D(glGraphics, 1280, 800);
+    private SpriteBatcher batcher = new SpriteBatcher(glGraphics, 100);
     
-    // Bounding boxes
-    Rectangle soundToggleBounds;
-    Rectangle playBounds;
-    Rectangle highscoresBounds;
-    Rectangle helpBounds;
+    // TouchPoint Vector and Bounding Boxes.
+    private Vector2 touchPoint = new Vector2();
+    private Rectangle playBounds = new Rectangle(350, 510, 580, 100);
+    private Rectangle highScoresBounds = new Rectangle(350, 350, 580, 100);
+    private Rectangle helpBounds = new Rectangle(350, 190, 580, 100);
+    private Rectangle soundToggleBounds = new Rectangle(1120, 0, 160, 160);
 
+    // -------------------
+ 	// --- Constructor ---
+    // -------------------
     public MainMenuScreen(Game game) {
-        super(game);
-        guiCam = new Camera2D(glGraphics, 1280, 800);
-        batcher = new SpriteBatcher(glGraphics, 100);
-        touchPoint = new Vector2();     
-        
-        // Define bounding boxes.
-        soundToggleBounds = new Rectangle(1120, 0, 160, 160);
-        playBounds = new Rectangle(350, 510, 580, 100);
-        highscoresBounds = new Rectangle(350, 350, 580, 100);
-        helpBounds = new Rectangle(350, 190, 580, 100);                        
+        super(game);                    
     }       
 
+    // ---------------------
+ 	// --- Update Method ---
+ 	// ---------------------
     @Override
     public void update(float deltaTime) {
+    	// Gets all TouchEvents and stores them in a list.
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
         game.getInput().getKeyEvents();
         
+        // Cycles through and tests all touch events.
         int len = touchEvents.size();
         for(int i = 0; i < len; i++) {
-            TouchEvent event = touchEvents.get(i);                        
+        	// Gets a single TouchEvent from the list.
+            TouchEvent event = touchEvents.get(i);    
+            
             if(event.type == TouchEvent.TOUCH_UP) {
+            	// Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
                 touchPoint.set(event.x, event.y);
+                // Sends the vector to the OpenGL Camera for handling.
                 guiCam.touchToWorld(touchPoint);
                 
+                // Play Button Bounds Check.
+                if(OverlapTester.pointInRectangle(playBounds, touchPoint)) {
+                    Assets.playSound(Assets.clickSound);
+                    game.setScreen(new PlayMenuScreen(game));
+                    return;
+                }
+                
+                // High Scores Button Bounds Check.
+                if(OverlapTester.pointInRectangle(highScoresBounds, touchPoint)) {
+                    Assets.playSound(Assets.clickSound);
+                    // game.setScreen(new HighScoresScreen(game));
+                    return;
+                }
+                
+                // Help Button Bounds Check.
+                if(OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
+                    Assets.playSound(Assets.clickSound);
+                    //  game.setScreen(new HelpScreen(game));
+                    return;
+                }
+                
+                // Sound Toggle Bounds Check.
                 if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
                     Settings.soundEnabled = !Settings.soundEnabled;
@@ -57,64 +88,73 @@ public class MainMenuScreen extends GLScreen {
                     else
                         Assets.music.pause();
                 }
-                if(OverlapTester.pointInRectangle(playBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
-                    game.setScreen(new GameGridScreen(game));
-                    return;
-                }
-                if(OverlapTester.pointInRectangle(highscoresBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
-//                    game.setScreen(new HighScoresScreen(game));
-                    return;
-                }
-                if(OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
-//                    game.setScreen(new HelpScreen(game));
-                    return;
-                } 
             }
         }
     }
  
+    // -------------------
+ 	// --- Draw Method ---
+ 	// -------------------
     @Override
     public void present(float deltaTime) {
         GL10 gl = glGraphics.getGL();        
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         guiCam.setViewportAndMatrices();
         
-        gl.glEnable(GL10.GL_TEXTURE_2D);//Prepare matrix for binding -- We need to bind the texture, and we need to tell OpenGL ES
-		//that it should actually apply the texture to all triangles we render.
+        // Prepares matrix for binding. 
+        // (Tells OpenGL to apply the texture to the triangles we render.)
+        gl.glEnable(GL10.GL_TEXTURE_2D);
         
-        //here background image is drawn
-        batcher.beginBatch(Assets.background);
-        batcher.drawSprite(0, 0, 1280, 800, Assets.backgroundRegion); // previously 640, 400, 1280, 800 
-        batcher.endBatch();
+        // Draws the background.
+        drawBackground();
         
-        gl.glEnable(GL10.GL_BLEND); //pdf page 341 //tells OpenGL ES that it should apply alpha blending to all triangles rendered until disabled
+        // Tells OpenGL to apply alpha blending to all triangles rendered until disabled. (pg 341)
+        gl.glEnable(GL10.GL_BLEND);
         gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);         
         
-        // Main Menu Buttons drawn.
-        batcher.beginBatch(Assets.mainMenuButtons);
-        batcher.drawSprite(0, 0, 1280, 800, Assets.mainMenuButtonsRegion);
-        batcher.endBatch();
+        // Draws the foreground objects.
+        drawObjects();
         
-        // Volume Toggle drawn.
-        batcher.beginBatch(Assets.soundToggle);
-        batcher.drawSprite(1120, 0, 160, 160, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
-        batcher.endBatch();
-        
-//        // Drawing Bounding Boxes.
-//        batcher.beginBatch(Assets.boundOverlay);
-//        batcher.drawSprite(1120, 0, 160, 160, Assets.boundOverlayRegion); // SoundToggle Bounding Box
-//        batcher.drawSprite(350, 510, 580, 100, Assets.boundOverlayRegion); // 1st Button Bounding Box
-//        batcher.drawSprite(350, 350, 580, 100, Assets.boundOverlayRegion); // 2nd Button Bounding Box
-//        batcher.drawSprite(350, 190, 580, 100, Assets.boundOverlayRegion); // 3rd Button Bounding Box
-//        batcher.endBatch();
+        // Draws bounding boxes. (Used for testing.)
+        // drawBounds();
         
         gl.glDisable(GL10.GL_BLEND);
     }
     
-    // Android State Management
+    // ----------------------------
+ 	// --- Utility Draw Methods ---
+ 	// ----------------------------
+    
+    public void drawBackground() {
+        batcher.beginBatch(Assets.background);
+        batcher.drawSprite(0, 0, 1280, 800, Assets.backgroundRegion);
+        batcher.endBatch();
+    }
+    
+    public void drawObjects() {
+        // Draws Main Menu Buttons.
+        batcher.beginBatch(Assets.mainMenuButtons);
+        batcher.drawSprite(0, 0, 1280, 800, Assets.mainMenuButtonsRegion);
+        batcher.endBatch();
+        
+        // Draws Sound Toggle.
+        batcher.beginBatch(Assets.soundToggle);
+        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
+        batcher.endBatch();
+    }
+
+    public void drawBounds() {
+      batcher.beginBatch(Assets.boundOverlay);     
+      batcher.drawSprite(playBounds, Assets.boundOverlayRegion); 		// Play Button Bounding Box
+      batcher.drawSprite(highScoresBounds, Assets.boundOverlayRegion);  // HighScores Button Bounding Box
+      batcher.drawSprite(helpBounds, Assets.boundOverlayRegion); 		// Help Button Bounding Box
+      batcher.drawSprite(soundToggleBounds, Assets.boundOverlayRegion); // SoundToggle Bounding Box
+      batcher.endBatch();
+    }
+    
+    // --------------------------------
+ 	// --- Android State Management ---
+ 	// --------------------------------
     
     @Override
     public void pause() {

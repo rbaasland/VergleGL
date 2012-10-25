@@ -116,7 +116,7 @@ public abstract class MicroGame extends GLScreen {
 	        
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            game.setScreen(new GameGridScreen(game));
+	            game.setScreen(new GameGridMenuScreen(game));
 	            return;     
 	        }
 	    }
@@ -141,7 +141,7 @@ public abstract class MicroGame extends GLScreen {
 	        
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            game.setScreen(new GameGridScreen(game));
+	            game.setScreen(new GameGridMenuScreen(game));
 	            return;     
 	        }
 	    }
@@ -176,7 +176,7 @@ public abstract class MicroGame extends GLScreen {
 	        
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            game.setScreen(new GameGridScreen(game));
+	            game.setScreen(new GameGridMenuScreen(game));
 	            return;     
 	        }
 	    }
@@ -195,7 +195,7 @@ public abstract class MicroGame extends GLScreen {
 	        
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            game.setScreen(new GameGridScreen(game));
+	            game.setScreen(new GameGridMenuScreen(game));
 	            return;     
 	        }
 	    }

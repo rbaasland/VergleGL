@@ -9,10 +9,23 @@ import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.impl.GLGame;
 
 public class Assets {
+	
+	// -------------------
+	// --- Menu Assets ---
+	// -------------------
+	
     public static Texture background;
     public static TextureRegion backgroundRegion;
     public static Texture mainMenuButtons;
     public static TextureRegion mainMenuButtonsRegion;
+    
+    public static Texture playMenuButtons;
+    public static TextureRegion playMenuButtonsRegion;
+    
+    public static Texture gameGridBackground;
+    public static TextureRegion gameGridBackgroundRegion;
+    public static Texture gameGridIcons;
+    public static TextureRegion gameGridIconsRegion;
     
     public static Texture soundToggle;
     public static TextureRegion soundOnRegion;
@@ -23,10 +36,9 @@ public class Assets {
     public static TextureRegion pauseRegion;
     public static TextureRegion unpauseRegion;
     
-    public static Texture gameGridBackground;
-    public static TextureRegion gameGridBackgroundRegion;
-    public static Texture gameGridIcons;
-    public static TextureRegion gameGridIconsRegion;
+    // ------------------------
+ 	// --- MicroGame Assets ---
+ 	// ------------------------
     
     public static Texture broFistBackground;
     public static TextureRegion broFistBackgroundRegion;
@@ -48,6 +60,10 @@ public class Assets {
     public static TextureRegion trafficBlueCarRegion;
     public static TextureRegion trafficRedCarRegion;
     public static TextureRegion trafficBlackCarRegion;
+    
+    // ------------------------
+  	// --- Testing Assets -----
+  	// ------------------------
     
     public static Texture boundOverlay;
     public static TextureRegion boundOverlayRegion;
@@ -82,10 +98,19 @@ public class Assets {
     public static Sound clickSound;
     
     public static void load(GLGame game) {
+    	// *** Initialize Menu Assets. ***
         background = new Texture(game, "background.png");
         backgroundRegion = new TextureRegion(background, 0, 0, 1280, 800);
         mainMenuButtons = new Texture(game, "mainmenubuttons.png");
         mainMenuButtonsRegion = new TextureRegion(mainMenuButtons, 0, 0, 1280, 800);
+        
+        playMenuButtons = new Texture(game, "playmenubuttons.png");
+        playMenuButtonsRegion = new TextureRegion(playMenuButtons, 0, 0, 1280, 800);
+        
+        gameGridBackground = new Texture(game, "gamegridbackground.png");
+        gameGridBackgroundRegion = new TextureRegion(gameGridBackground, 0, 0, 1280, 800);
+        gameGridIcons = new Texture(game, "gamegridicons.png");
+        gameGridIconsRegion = new TextureRegion(gameGridIcons, 0, 0, 1024, 800);
         
         soundToggle = new Texture(game, "volumetoggle.png");
         soundOnRegion = new TextureRegion(soundToggle, 0, 0, 160, 160);
@@ -96,11 +121,7 @@ public class Assets {
         pauseRegion = new TextureRegion(pauseToggle, 0, 0, 160, 160);
         unpauseRegion = new TextureRegion(pauseToggle, 160, 0, 160, 160);
         
-        gameGridBackground = new Texture(game, "gamegridbackground.png");
-        gameGridBackgroundRegion = new TextureRegion(gameGridBackground, 0, 0, 1280, 800);
-        gameGridIcons = new Texture(game, "gamegridicons.png");
-        gameGridIconsRegion = new TextureRegion(gameGridIcons, 0, 0, 1024, 800);
-        
+        // *** Initialize MicroGame Assets. ***
         broFistBackground = new Texture(game, "brofistbackground.png");
         broFistBackgroundRegion = new TextureRegion(broFistBackground, 0, 0, 1280, 800);
         broFist = new Texture(game, "brofist.png");
@@ -122,6 +143,8 @@ public class Assets {
         trafficRedCarRegion = new TextureRegion(traffic, 80, 800, 80, 170);
         trafficBlackCarRegion = new TextureRegion(traffic, 160, 800, 80, 170);
         
+        
+        // *** Initialize Testing Assets. ***
         boundOverlay = new Texture(game, "boundoverlay.png");
         boundOverlayRegion = new TextureRegion(boundOverlay, 0, 0, 1280, 800);
         
@@ -179,30 +202,27 @@ public class Assets {
     }       
     
     public static void reload() {
+    	// *** Reload Menu Assets. ***
         background.reload();
         mainMenuButtons.reload();
-        
+        playMenuButtons.reload();
+        gameGridBackground.reload();
+        gameGridIcons.reload();
         soundToggle.reload();
         backArrow.reload();
         pauseToggle.reload();
-        
-        gameGridBackground.reload();
-        gameGridIcons.reload();
 
+        // *** Reload MicroGame Assets. ***
         broFistBackground.reload();
         broFist.reload();
-        
         flyBackground.reload();
         fly.reload();
-
         fire.reload();
-        
         traffic.reload();
         
+        // *** Reload Testing Assets. ***
         boundOverlay.reload();
-        
         items.reload();
-        
         if(Settings.soundEnabled)
             music.play();
     }
