@@ -63,7 +63,7 @@ public class BroFistMicroGame extends MicroGame {
 	        
         	// Tests for non-unique touch events, which is currently pause only.
 	        if (event.type == TouchEvent.TOUCH_UP)
-	        	super.updateRunning(deltaTime, touchPoint);
+	        	super.updateRunning(touchPoint);
 	    }   
 	}
 

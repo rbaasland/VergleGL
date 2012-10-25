@@ -2,33 +2,21 @@ package com.dbz.verge;
 
 import java.util.List;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
-import com.dbz.framework.gl.Camera2D;
-import com.dbz.framework.gl.SpriteBatcher;
-import com.dbz.framework.impl.GLScreen;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.framework.math.Vector2;
 
-public class PlayMenuScreen extends GLScreen {
+public class PlayMenuScreen extends MenuScreen {
 	
 	// --------------
 	// --- Fields ---
 	// --------------
-	
-	// OpenGL Related Objects.
-    private Camera2D guiCam = new Camera2D(glGraphics, 1280, 800);
-    private SpriteBatcher batcher = new SpriteBatcher(glGraphics, 100);
     
-    // TouchPoint Vector and Bounding Boxes.
-    private Vector2 touchPoint = new Vector2();
+    // Bounding Boxes.
     private Rectangle gameGridBounds = new Rectangle(350, 510, 580, 100);
     private Rectangle survivalBounds = new Rectangle(350, 350, 580, 100);
     private Rectangle timeAttackBounds = new Rectangle(350, 190, 580, 100);
-    private Rectangle soundToggleBounds = new Rectangle(1120, 0, 160, 160);
     private Rectangle backArrowBounds = new Rectangle(0, 0, 160, 160);
 
     // -------------------
@@ -80,55 +68,20 @@ public class PlayMenuScreen extends GLScreen {
                     return;
                 }
                 
-                // Sound Toggle Bounds Check.
-                if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
-                    Settings.soundEnabled = !Settings.soundEnabled;
-                    if(Settings.soundEnabled) 
-                        Assets.music.play();
-                    else
-                        Assets.music.pause();
-                }
-                
                 // Back Arrow Bounds Check.
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
                     game.setScreen(new MainMenuScreen(game));
                     return;
                 }
+                
+             // Checks for general MenuScreen events.
+    	        if (event.type == TouchEvent.TOUCH_UP)
+    	        	super.update(touchPoint);
             }
         }
     }
  
-    // -------------------
- 	// --- Draw Method ---
- 	// -------------------
-    @Override
-    public void present(float deltaTime) {
-        GL10 gl = glGraphics.getGL();        
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-        guiCam.setViewportAndMatrices();
-        
-        // Prepares matrix for binding. 
-        // (Tells OpenGL to apply the texture to the triangles we render.)
-        gl.glEnable(GL10.GL_TEXTURE_2D);
-        
-        // Draws the background.
-        drawBackground();
-        
-        // Tells OpenGL to apply alpha blending to all triangles rendered until disabled. (pg 341)
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);         
-        
-        // Draws the foreground objects.
-        drawObjects();
-        
-        // Draws bounding boxes. (Used for testing.)
-        // drawBounds();
-        
-        gl.glDisable(GL10.GL_BLEND);
-    }
-    
     // ----------------------------
  	// --- Utility Draw Methods ---
  	// ----------------------------
@@ -145,15 +98,12 @@ public class PlayMenuScreen extends GLScreen {
         batcher.drawSprite(0, 0, 1280, 800, Assets.playMenuButtonsRegion);
         batcher.endBatch();
         
-        // Draws Sound Toggle.
-        batcher.beginBatch(Assets.soundToggle);
-        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
-        batcher.endBatch();
-        
         // Draws Back Arrow.
         batcher.beginBatch(Assets.backArrow);
         batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
         batcher.endBatch(); 
+        
+        super.drawObjects();
     }
     
     public void drawBounds() {
@@ -161,23 +111,9 @@ public class PlayMenuScreen extends GLScreen {
       batcher.drawSprite(gameGridBounds, Assets.boundOverlayRegion); 	// Game Grid Button Bounding Box
       batcher.drawSprite(survivalBounds, Assets.boundOverlayRegion);  	// Survival Button Bounding Box
       batcher.drawSprite(timeAttackBounds, Assets.boundOverlayRegion); 	// Time Attack Bounding Box
-      batcher.drawSprite(soundToggleBounds, Assets.boundOverlayRegion); // SoundToggle Bounding Box
       batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); 	// Back Arrow Bounding Box
+      super.drawBounds();
       batcher.endBatch();
     }
-    
-    // --------------------------------
- 	// --- Android State Management ---
- 	// --------------------------------
-    
-    @Override
-    public void pause() {
-        Settings.save(game.getFileIO());
-    }
 
-    @Override
-    public void resume() {}
-
-    @Override
-    public void dispose() {}
 }

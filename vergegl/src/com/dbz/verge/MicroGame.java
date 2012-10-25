@@ -151,7 +151,7 @@ public abstract class MicroGame extends GLScreen {
 	
 	// * Currently only used to test if the game was paused during the run state. *
 	// * Later, it may be used to test other non-unique touch events during the run state. *
-	public void updateRunning(float deltaTime, Vector2 touchPoint) {
+	public void updateRunning(Vector2 touchPoint) {
 		// Tests to see if the pause toggle was pressed.
 		if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
@@ -381,8 +381,10 @@ public abstract class MicroGame extends GLScreen {
 	// --- Utility Draw Methods ---
 	// ----------------------------
 	
+	// *** drawRunningBackground ***
 	public abstract void drawBackground();
 	
+	// *** drawRunningObjects ***
 	public abstract void drawObjects();
 	
 	public void drawInstruction(String string) {
