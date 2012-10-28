@@ -57,7 +57,7 @@ public class PlayMenuScreen extends MenuScreen {
                 // Survival Button Bounds Check.
                 if(OverlapTester.pointInRectangle(survivalBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    // game.setScreen(new HighScoresScreen(game));
+                    game.setScreen(new GameScreen(game));
                     return;
                 }
                 
