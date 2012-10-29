@@ -61,6 +61,22 @@ public class Assets {
     public static TextureRegion trafficRedCarRegion;
     public static TextureRegion trafficBlackCarRegion;
     
+    public static Texture lazerBackground;
+    public static TextureRegion lazerBackgroundRegion;
+    public static Texture lazer;
+    public static TextureRegion lazerState1Region;
+    public static TextureRegion lazerState2Region;
+    public static TextureRegion lazerState3Region;
+    public static TextureRegion lazerState4Region;
+    public static TextureRegion lazerState5Region;
+    public static TextureRegion lazerState6Region;
+    public static TextureRegion lazerFireButtonInitialRegion;
+    public static TextureRegion lazerFireButtonReadyRegion;
+    public static TextureRegion lazerTargetRegion;
+    public static Animation lazerChargingAnim;
+    public static Animation lazerFireButtonAnim;
+    
+    
     // ------------------------
   	// --- Testing Assets -----
   	// ------------------------
@@ -143,6 +159,23 @@ public class Assets {
         trafficRedCarRegion = new TextureRegion(traffic, 80, 800, 80, 170);
         trafficBlackCarRegion = new TextureRegion(traffic, 160, 800, 80, 170);
         
+        lazerBackground = new Texture(game, "lazerBackground.png");
+        lazerBackgroundRegion = new TextureRegion(lazerBackground, 0, 0, 1280, 800);
+        lazer = new Texture(game, "lazerItems.png");
+        lazerState1Region= new TextureRegion(lazer, 0, 0, 256, 256);
+        lazerState2Region = new TextureRegion(lazer, 256, 0, 256, 256);
+        lazerState3Region = new TextureRegion(lazer, 512, 0, 256, 256);
+        lazerState4Region = new TextureRegion(lazer, 768, 0, 256, 256);
+        lazerState5Region = new TextureRegion(lazer, 0, 256, 256, 256);
+        lazerState6Region = new TextureRegion(lazer, 256, 256, 256, 256);        
+        lazerFireButtonInitialRegion = new TextureRegion(lazer, 512, 256, 128, 256);
+        lazerFireButtonReadyRegion = new TextureRegion(lazer, 640, 256, 128, 256);
+        lazerTargetRegion = new TextureRegion(lazer, 896, 256, 128, 128);
+        lazerChargingAnim = new Animation(0, lazerState1Region, lazerState2Region, 
+        								lazerState3Region, lazerState4Region, lazerState5Region, lazerState6Region);
+        lazerFireButtonAnim = new Animation(0, lazerFireButtonInitialRegion, lazerFireButtonReadyRegion);
+        
+        
         
         // *** Initialize Testing Assets. ***
         boundOverlay = new Texture(game, "boundoverlay.png");
@@ -198,8 +231,9 @@ public class Assets {
         highJumpSound = game.getAudio().newSound("highjump.ogg");
         hitSound = game.getAudio().newSound("hit.ogg");
         coinSound = game.getAudio().newSound("coin.ogg");
-        clickSound = game.getAudio().newSound("click.ogg");       
-    }       
+        clickSound = game.getAudio().newSound("click.ogg");
+        
+    }      
     
     public static void reload() {
     	// *** Reload Menu Assets. ***
@@ -219,6 +253,8 @@ public class Assets {
         fly.reload();
         fire.reload();
         traffic.reload();
+        lazerBackground.reload();
+        lazer.reload();
         
         // *** Reload Testing Assets. ***
         boundOverlay.reload();

@@ -10,6 +10,7 @@ import com.dbz.verge.microgames.BroFistMicroGame;
 import com.dbz.verge.microgames.CircuitMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
+import com.dbz.verge.microgames.LazerBallMicroGame;
 import com.dbz.verge.microgames.TrafficMicroGame;
 
 public class GameGridMenuScreen extends MenuScreen {
@@ -95,7 +96,7 @@ public class GameGridMenuScreen extends MenuScreen {
                 // Sixth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(sixthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	// Set the screen to a new MicroGameScreen.
+                	game.setScreen(new LazerBallMicroGame(game));// Set the screen to a new MicroGameScreen.
                 	return;
                 }
                 

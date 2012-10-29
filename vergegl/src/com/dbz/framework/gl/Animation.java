@@ -24,4 +24,9 @@ public class Animation {
         }        
         return keyFrames[frameNumber];
     }
+    
+    //added to return one of the keyFrames directly
+    public TextureRegion getKeyFrame(int keyFrame) {
+        return keyFrames[Math.min(keyFrames.length-1, keyFrame)]; //Math.min ensures no array out to bounds
+    }
 }
