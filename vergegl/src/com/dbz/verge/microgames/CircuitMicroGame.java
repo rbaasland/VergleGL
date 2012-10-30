@@ -55,12 +55,13 @@ public class CircuitMicroGame extends MicroGame {
 		
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    int len = touchEvents.size();
+	    
 	    for(int i = 0; i < len; i++) {
 	        TouchEvent event = touchEvents.get(i);
         	touchPoint.set(event.x, event.y);
 	        guiCam.touchToWorld(touchPoint);
-	        
-		    // Tests if target #1 is being touched.
+	       
+	        // Tests if target #1 is being touched.
 	        if (targetTouched(event, touchPoint, broFistOneBounds))
 	        	touchingFistOne = true;
 	        else
@@ -72,6 +73,11 @@ public class CircuitMicroGame extends MicroGame {
 	        else
 	        	touchingFistTwo = false;
 	        
+	        //check if targets are multi-touched //note putting here has O(n^2) implications on touch events -- targetsMultiTouched also iters TouchEvents
+	        if (targetsMultiTouched(touchEvents, broFistOneBounds, broFistTwoBounds)){
+	        	touchingFistOne = true;  touchingFistTwo = true;
+	        }   
+
         	// Tests for non-unique touch events, which is currently pause only.
 	        if (event.type == TouchEvent.TOUCH_UP)
 	        	super.updateRunning(touchPoint);
@@ -97,7 +103,7 @@ public class CircuitMicroGame extends MicroGame {
 			batcher.endBatch();
 		}
 		
-		// drawRunningBounds();
+		 drawRunningBounds();
 		drawInstruction("Connect the Circuit!" + String.valueOf(touchingFistOne) + String.valueOf(touchingFistTwo));
 		super.presentRunning();
 	}
