@@ -18,6 +18,10 @@ public class GameGridMenuScreen extends MenuScreen {
 	// --------------
 	// --- Fields ---
 	// --------------
+	
+	// Page Variables.
+    private int currentPage = 1;
+    private int numOfPages = 2;
     
     // Bounding Boxes.
     private Rectangle firstMicroGameBounds = new Rectangle(315, 435, 170, 170);
@@ -61,42 +65,55 @@ public class GameGridMenuScreen extends MenuScreen {
                 // First MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(firstMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	game.setScreen(new BroFistMicroGame(game));
+                	if (currentPage == 1)
+                		game.setScreen(new BroFistMicroGame(game));
+                	else if (currentPage == 2)
+                		game.setScreen(new TrafficMicroGame(game)); // Replace with new microgame.
                 	return;
                 }
                 
                 // Second MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(secondMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	game.setScreen(new FlyMicroGame(game));
+                	if (currentPage == 1)
+                		game.setScreen(new FlyMicroGame(game));
+                	
                 	return;
                 }
                 
                 // Third MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(thirdMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	game.setScreen(new FireMicroGame(game));
+                	if (currentPage == 1)
+                		game.setScreen(new FireMicroGame(game));
+                	
                 	return;
                 }
                 
                 // Fourth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(fourthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	game.setScreen(new TrafficMicroGame(game));
+                	if (currentPage == 1)
+                		game.setScreen(new TrafficMicroGame(game));
+                	
                 	return;
                 }
                 
                 // Fifth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(fifthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	game.setScreen(new CircuitMicroGame(game));
+                	if (currentPage == 1)
+                		game.setScreen(new CircuitMicroGame(game));
+                	
                 	return;
                 }
                 
                 // Sixth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(sixthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	game.setScreen(new LazerBallMicroGame(game));// Set the screen to a new MicroGameScreen.
+                	if (currentPage == 1)
+                		game.setScreen(new LazerBallMicroGame(game));
+                	
                 	return;
                 }
                 
@@ -111,6 +128,10 @@ public class GameGridMenuScreen extends MenuScreen {
                 if (OverlapTester.pointInRectangle(nextPageBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
                 	// increment page.
+                	if (currentPage+1 > numOfPages)
+                		currentPage = 1;
+                	else
+                		currentPage++;
                 	return;
                 }
                 
@@ -118,6 +139,10 @@ public class GameGridMenuScreen extends MenuScreen {
                 if (OverlapTester.pointInRectangle(prevPageBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
                 	// decrement page.
+                	if (currentPage-1 < 1)
+                		currentPage = numOfPages;
+                	else
+                		currentPage--;
                 	return;
                 }
                 
@@ -140,14 +165,21 @@ public class GameGridMenuScreen extends MenuScreen {
     
     public void drawObjects() {
         // Draws Game Grid Icons.
-        batcher.beginBatch(Assets.gameGridIcons);
-        batcher.drawSprite(0, 0, 1024, 800, Assets.gameGridIconsRegion);
-        batcher.endBatch();
+    	if (currentPage == 1) {
+    		batcher.beginBatch(Assets.gameGridIcons);
+        	batcher.drawSprite(0, 0, 1024, 800, Assets.gameGridIconsRegion);
+        	batcher.endBatch();
+    	}
         
         // Draws Back Arrow.
         batcher.beginBatch(Assets.backArrow);
         batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
         batcher.endBatch(); 
+        
+        // Draws Page Number.
+		batcher.beginBatch(Assets.items);
+		Assets.font.drawText(batcher, String.valueOf(currentPage), 600, 50);
+		batcher.endBatch();
         
         super.drawObjects();
     }
