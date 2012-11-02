@@ -8,6 +8,9 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
+// TODO: Add water sprite generation on touch.
+// 		 Need water splashing and  fire-dousing sound effects.
+//		 Need to update building asset to display as "The Life Family" [Reference to Portal 2]
 public class FireMicroGame extends MicroGame {
     
 	// --------------
@@ -32,7 +35,8 @@ public class FireMicroGame extends MicroGame {
 	
 	// -------------------
 	// --- Constructor ---
-	// -------------------   
+	// -------------------
+	
     public FireMicroGame(Game game) {
         super(game);
     }
@@ -106,6 +110,21 @@ public class FireMicroGame extends MicroGame {
 	    }   
 	}
 
+	// ------------------------------
+	// --- Utility Update Method ----
+	// ------------------------------
+	
+	@Override
+	public void reset() {
+		super.reset();
+		fireOneCount = 0;
+		fireTwoCount = 0;
+		fireThreeCount = 0;
+		clearedFireOne = false;
+		clearedFireTwo = false;
+		clearedFireThree = false;
+	}
+	
 	// -------------------
 	// --- Draw Method ---
 	// -------------------

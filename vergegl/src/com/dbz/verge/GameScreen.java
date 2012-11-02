@@ -1,6 +1,7 @@
 package com.dbz.verge;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -14,9 +15,17 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.MicroGame.MicroGameState;
+import com.dbz.verge.microgames.BroFistMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
+import com.dbz.verge.microgames.FlyMicroGame;
+import com.dbz.verge.microgames.TrafficMicroGame;
+import com.dbz.verge.microgames.CircuitMicroGame;
+import com.dbz.verge.microgames.LazerBallMicroGame;
 
-// *** Will be abstract later, attempting to implement SurvivalGameScreen here for now. ***
+// TODO: Make class abstract, and extract necessary code to SurvivalGameScreen.
+//		 Don't allow games to repeat until all games have been played.
+// 		 Implement speed increase after every 5 games.
+//		 Implement difficulty increase every 10 games.
 public class GameScreen extends GLScreen {
 	
 	// --------------
@@ -27,7 +36,7 @@ public class GameScreen extends GLScreen {
 		Ready,
 		Paused,
 		Transition,
-		Running, // *** StandBy? Launches and waits for the MicroGame result. ***
+		Running,
 		Won,
 		Lost
 	}
@@ -40,7 +49,7 @@ public class GameScreen extends GLScreen {
     public FPSCounter fpsCounter = new FPSCounter();
     
     // TouchPoint Vector and Bounding Boxes
-    public Vector2 touchPoint = new Vector2();;
+    public Vector2 touchPoint = new Vector2();
     public Rectangle readyBounds = new Rectangle(160, 160, 960, 480);
     public Rectangle pauseToggleBounds = new Rectangle(1130, 640, 160, 160);
     public Rectangle backArrowBounds = new Rectangle(0, 0, 150, 150);
@@ -51,9 +60,9 @@ public class GameScreen extends GLScreen {
     
     // Tracks transition time.
     public float totalTransitionTime = 0;
-    public float transitionTimeLimit = 3.0f;
+    public float transitionTimeLimit = 2.0f;
     
-    // Allows time for individual microgame wins/loses to show.
+    // Allows time for individual MicroGame wins/loses to show.
     public float totalTimeOver = 0;
     public float timeOverLimit = 2.0f;
     
@@ -62,14 +71,31 @@ public class GameScreen extends GLScreen {
     public int requiredWins = 3;
     public int lives = 1;
     
-    // Stores the current MicroGame instance.
-    public MicroGame currentMicroGame;
+    // Array of all possible MicroGames.
+    // * Initialized in Constructor to avoid possible conflicts with Game variable. *
+    public MicroGame microGames[];
+    
+    // Index for the current MicroGame.
+    public int microGameIndex = 0;
+    
+    // Random number generator used for randomizing games.
+    public Random random = new Random();
     
     // -------------------
 	// --- Constructor ---
     // -------------------
 	public GameScreen(Game game) {
 		super(game);
+		
+		// Initialize MicroGame set.
+		microGames = new MicroGame[] { new BroFistMicroGame(game), new FlyMicroGame(game), new FireMicroGame(game),
+									   new TrafficMicroGame(game), new CircuitMicroGame(game), new LazerBallMicroGame(game) };
+		
+		// Disables BackArrow and Pause UI elements for all MicroGames in the set.
+		for (int i = 0; i < microGames.length; i++) {
+			microGames[i].backArrowEnabled = false;
+			microGames[i].pauseEnabled = false;
+		}
 	}
 
 	// ----------------------
@@ -153,7 +179,7 @@ public class GameScreen extends GLScreen {
 	    }
 	}
 	
-	// *** Later we might want to load assets here. ***
+	// Prepares the next MicroGame for launching.
 	public void updateTransition(float deltaTime) {
 		// Collects total time spent in Transition state.
 		totalTransitionTime += deltaTime;
@@ -162,14 +188,7 @@ public class GameScreen extends GLScreen {
 		if (totalTransitionTime >= transitionTimeLimit) {
 			totalTransitionTime = 0;
 			gameState = GameState.Running;
-			currentMicroGame = new FireMicroGame(game);
-			
-			// Disable MicroGame UI elements.
-			currentMicroGame.backArrowEnabled = false;
-			currentMicroGame.pauseEnabled = false;
-			
-			// Hard Code MicroGameState to Running to skip the Ready state.
-			currentMicroGame.microGameState = MicroGameState.Running;
+			setupNextMicroGame();
 			return;
 		}
 		
@@ -196,7 +215,9 @@ public class GameScreen extends GLScreen {
 	
 	// Launches the MicroGame and waits for it to finish.
 	public void updateRunning(float deltaTime) {
-		if (currentMicroGame.microGameState == MicroGameState.Won) {
+		microGames[microGameIndex].update(deltaTime);
+		
+		if (microGames[microGameIndex].microGameState == MicroGameState.Won) {
 			totalTimeOver += deltaTime;
 			if (totalTimeOver >= timeOverLimit) {
 				totalTimeOver = 0;
@@ -211,7 +232,7 @@ public class GameScreen extends GLScreen {
 				}
 			}
 		}
-		else if (currentMicroGame.microGameState == MicroGameState.Lost) {
+		else if (microGames[microGameIndex].microGameState == MicroGameState.Lost) {
 			totalTimeOver += deltaTime;
 			if (totalTimeOver >= timeOverLimit) {
 				totalTimeOver = 0;
@@ -227,8 +248,6 @@ public class GameScreen extends GLScreen {
 			}
 
 		}
-
-		currentMicroGame.update(deltaTime);
 	}
 	
 	public void updateWon() {
@@ -269,6 +288,19 @@ public class GameScreen extends GLScreen {
 	    }
 	}
 
+	// -----------------------------
+	// --- Utility Update Method ---
+	// -----------------------------
+	
+	public void setupNextMicroGame() {
+		// Randomizes the microGameIndex
+		microGameIndex = random.nextInt(microGames.length);
+		
+		// Resets the MicroGame, and sets it's state to Running to skip the Ready state.
+		microGames[microGameIndex].reset();
+		microGames[microGameIndex].microGameState = MicroGameState.Running;
+	}
+	
 	// --------------------
 	// --- Draw Methods ---
 	// --------------------
@@ -365,7 +397,7 @@ public class GameScreen extends GLScreen {
 	}
 	
 	public void presentRunning(float deltaTime) {
-		currentMicroGame.present(deltaTime);
+		microGames[microGameIndex].present(deltaTime);
 	}
 	
 	public void presentWon() {

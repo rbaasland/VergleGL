@@ -24,7 +24,8 @@ public class CircuitMicroGame extends MicroGame {
 	
 	// -------------------
 	// --- Constructor ---
-	// -------------------   
+	// -------------------
+	
     public CircuitMicroGame(Game game) {
         super(game);
         
@@ -84,6 +85,17 @@ public class CircuitMicroGame extends MicroGame {
 	    }   
 	}
 
+	// -----------------------------
+	// --- Utility Update Method ---
+	// -----------------------------
+	
+	@Override
+	public void reset() {
+		super.reset();
+		touchingFistOne = false;
+		touchingFistTwo = false;
+	}
+	
 	// -------------------
 	// --- Draw Method ---
 	// -------------------

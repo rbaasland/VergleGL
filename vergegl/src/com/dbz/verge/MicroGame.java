@@ -15,7 +15,6 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 
-// *** Need to look into efficient garbage collection with the rapid creation of our MicroGames. ***
 public abstract class MicroGame extends GLScreen {
 	
 	// --------------
@@ -211,6 +210,12 @@ public abstract class MicroGame extends GLScreen {
 	// --- Utility Update Methods ---
 	// ------------------------------
 	
+	// Resets MicroGame to avoid reallocating memory.
+	// * Each MicroGame subclass needs to have this implemented to handle their unique variables. *
+	public void reset() {
+		totalRunningTime = 0;
+	}
+	
 	// Checks for time-based loss.
 	public boolean lostTimeBased() {
 		if (totalRunningTime > totalMicroGameTime) {
@@ -230,7 +235,7 @@ public abstract class MicroGame extends GLScreen {
 		else
 			return false;
 	}
-	//Used for single touch
+	
 	public boolean targetTouched(TouchEvent event, Vector2 touchPoint, Rectangle targetBounds) {
 		// Test for single-touch inside target bounds.
 		if (event.type == TouchEvent.TOUCH_DOWN)
@@ -240,6 +245,14 @@ public abstract class MicroGame extends GLScreen {
 		return false;
 	}
 	
+	public boolean targetDragged(TouchEvent event, Vector2 touchPoint, Rectangle targetBounds) {
+		// Test for single-touch inside target bounds.
+		if (event.type == TouchEvent.TOUCH_DOWN || event.type == TouchEvent.TOUCH_DRAGGED);
+	    	if(OverlapTester.pointInRectangle(targetBounds, touchPoint))
+		        return true; 
+	
+		return false;
+	}
 
 	/**
 	 * Accepts list of TouchEvents and a variable number of rectangles to check for a touch in each rectangle.
@@ -250,7 +263,7 @@ public abstract class MicroGame extends GLScreen {
 			//pass size of list
 			//pass the number of rectangles
 			//pass boolean array to limit runtime allocation of size(# of rectangles)
-	public boolean  targetsMultiTouched(List<TouchEvent> touchEvents, Rectangle ... targetBounds){
+	public boolean targetsMultiTouched(List<TouchEvent> touchEvents, Rectangle ... targetBounds){
 		
 		int totalScreenTouches = touchEvents.size();
 		int numTargets = targetBounds.length;
@@ -285,15 +298,7 @@ public abstract class MicroGame extends GLScreen {
 		 
 		 return false;	
 	}
-	
-	public boolean targetDragged(TouchEvent event, Vector2 touchPoint, Rectangle targetBounds) {
-		// Test for single-touch inside target bounds.
-		if (event.type == TouchEvent.TOUCH_DOWN || event.type == TouchEvent.TOUCH_DRAGGED);
-	    	if(OverlapTester.pointInRectangle(targetBounds, touchPoint))
-		        return true; 
-	
-		return false;
-	}
+
 	
 	// --------------------
 	// --- Draw Methods ---

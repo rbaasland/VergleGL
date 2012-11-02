@@ -8,6 +8,8 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
+// TODO: Add Smoke, Fire, and Explosion visuals.
+//		 Add BroFist, Smoke, Fire, and Explosion sounds.
 public class BroFistMicroGame extends MicroGame {
     
 	// --------------
@@ -23,7 +25,8 @@ public class BroFistMicroGame extends MicroGame {
 	
 	// -------------------
 	// --- Constructor ---
-	// -------------------   
+	// ------------------- 
+	
     public BroFistMicroGame(Game game) {
         super(game);
     }
@@ -67,6 +70,16 @@ public class BroFistMicroGame extends MicroGame {
 	    }   
 	}
 
+	// -----------------------------
+	// --- Utility Update Method ---
+	// -----------------------------
+	
+	@Override
+	public void reset() {
+		super.reset();
+		broFistCount = 0;
+	}
+	
 	// -------------------
 	// --- Draw Method ---
 	// -------------------

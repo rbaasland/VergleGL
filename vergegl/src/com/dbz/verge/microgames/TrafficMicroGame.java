@@ -8,7 +8,10 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
-// *** Need to flip obstacle cars so we are driving on the opposite side of the road. ***
+// TODO: Make cars randomly generated.
+//		 Make left two lanes oncoming, make right two ongoing.
+//		 Make all lanes oncoming for hardest difficulty.
+//		 Remove the ability to go off screen.
 public class TrafficMicroGame extends MicroGame {
     
 	// --------------
@@ -16,9 +19,9 @@ public class TrafficMicroGame extends MicroGame {
 	// --------------
 
 	// Variable needed for obstacle movement.
-	private int obstacleOneAccelY = 12;
-	private int obstacleTwoAccelY = 8;
-	private int obstacleThreeAccelY = 15;
+	private int obstacleOneSpeedY = 12;
+	private int obstacleTwoSpeedY = 8;
+	private int obstacleThreeSpeedY = 15;
 	
 	// Bounds for touch detection.
 	private Rectangle obstacleOneBounds = new Rectangle(250, 800, 80, 170);
@@ -28,7 +31,8 @@ public class TrafficMicroGame extends MicroGame {
 	
 	// -------------------
 	// --- Constructor ---
-	// -------------------   
+	// -------------------
+	
     public TrafficMicroGame(Game game) {
         super(game);
     }
@@ -83,9 +87,18 @@ public class TrafficMicroGame extends MicroGame {
 	    }   
 	}
 	
-	// -----------------------------
-	// --- Utility Update Method ---
-	// -----------------------------
+	// ------------------------------
+	// --- Utility Update Methods ---
+	// ------------------------------
+	
+	@Override
+	public void reset() {
+		super.reset();
+		obstacleOneBounds.lowerLeft.set(250, 800);
+		obstacleTwoBounds.lowerLeft.set(450, 800);
+		obstacleThreeBounds.lowerLeft.set(750, 800);
+		carBounds.lowerLeft.set(480, 0);
+	}
 	
 	public void moveObstacles() {
 		// Move Obstacle #1.
@@ -95,7 +108,7 @@ public class TrafficMicroGame extends MicroGame {
 		if (obstacleY < -170)
 			obstacleY = 800;
  
-		obstacleY -= obstacleOneAccelY;
+		obstacleY -= obstacleOneSpeedY;
 		obstacleOneBounds.lowerLeft.set(obstacleX, obstacleY);
 		
 		// Move Obstacle #2.
@@ -105,7 +118,7 @@ public class TrafficMicroGame extends MicroGame {
 		if (obstacleY < -170)
 			obstacleY = 800;
 		 
-		obstacleY -= obstacleTwoAccelY;
+		obstacleY -= obstacleTwoSpeedY;
 		obstacleTwoBounds.lowerLeft.set(obstacleX, obstacleY);
 		
 		// Move Obstacle #3.
@@ -115,7 +128,7 @@ public class TrafficMicroGame extends MicroGame {
 		if (obstacleY < -170)
 			obstacleY = 800;
 		
-		obstacleY -= obstacleThreeAccelY;
+		obstacleY -= obstacleThreeSpeedY;
 		obstacleThreeBounds.lowerLeft.set(obstacleX, obstacleY);
 	}
 	

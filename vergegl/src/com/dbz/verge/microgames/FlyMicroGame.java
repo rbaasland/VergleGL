@@ -8,6 +8,8 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
+// TODO: Make fly's movement random.
+//		 Generate more flies for higher difficulties.
 public class FlyMicroGame extends MicroGame {
     
 	// --------------
@@ -26,7 +28,8 @@ public class FlyMicroGame extends MicroGame {
 	
 	// -------------------
 	// --- Constructor ---
-	// -------------------   
+	// -------------------
+	
     public FlyMicroGame(Game game) {
         super(game);
     }
@@ -73,9 +76,18 @@ public class FlyMicroGame extends MicroGame {
 	    }   
 	}
 	
-	// ---------------------------
-	// --- Utility Draw Method ---
-	// ---------------------------
+	// ------------------------------
+	// --- Utility Update Methods ---
+	// ------------------------------
+	
+	@Override
+	public void reset() {
+		super.reset();
+		flySwatCount = 0;
+		accelX = 10;
+		accelY = 0;
+		flyBounds.lowerLeft.set(600, 60);
+	}
 	
 	public void moveFly() {
 		float x = flyBounds.lowerLeft.x;
