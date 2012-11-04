@@ -23,7 +23,6 @@ import com.dbz.verge.microgames.CircuitMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
 
 // TODO: Make class abstract, and extract necessary code to SurvivalGameScreen.
-//		 Don't allow games to repeat until all games have been played.
 // 		 Implement speed increase after every 5 games.
 //		 Implement difficulty increase every 10 games.
 public class GameScreen extends GLScreen {
@@ -68,8 +67,8 @@ public class GameScreen extends GLScreen {
     
     // Tracks win and loss conditions for game mode.
     public int winCount = 0;
-    public int requiredWins = 3;
-    public int lives = 1;
+    public int requiredWins = 9;
+    public int lives = 3;
     
     // Array of all possible MicroGames.
     // * Initialized in Constructor to avoid possible conflicts with Game variable. *
@@ -81,6 +80,9 @@ public class GameScreen extends GLScreen {
     // Random number generator used for randomizing games.
     public Random random = new Random();
     
+    // Keeps track of randomized indexes.
+    public int indexHistory[];
+    
     // -------------------
 	// --- Constructor ---
     // -------------------
@@ -90,7 +92,8 @@ public class GameScreen extends GLScreen {
 		// Initialize MicroGame set.
 		microGames = new MicroGame[] { new BroFistMicroGame(game), new FlyMicroGame(game), new FireMicroGame(game),
 									   new TrafficMicroGame(game), new CircuitMicroGame(game), new LazerBallMicroGame(game) };
-		
+		indexHistory = new int[microGames.length];
+		clearIndexHistory();
 		// Disables BackArrow and Pause UI elements for all MicroGames in the set.
 		for (int i = 0; i < microGames.length; i++) {
 			microGames[i].backArrowEnabled = false;
@@ -287,20 +290,49 @@ public class GameScreen extends GLScreen {
 	        }
 	    }
 	}
-
+	
 	// -----------------------------
 	// --- Utility Update Method ---
 	// -----------------------------
-	
+
 	public void setupNextMicroGame() {
-		// Randomizes the microGameIndex
-		microGameIndex = random.nextInt(microGames.length);
+		// Checks the indexHistory for fullness
+		if (!checkIndex(-1))
+			clearIndexHistory();
+
+		// Randomizes the microGameIndex (Dependent)
+		do
+		{
+			microGameIndex = random.nextInt(microGames.length);
+		} while(checkIndex(microGameIndex));
 		
 		// Resets the MicroGame, and sets it's state to Running to skip the Ready state.
 		microGames[microGameIndex].reset();
 		microGames[microGameIndex].microGameState = MicroGameState.Running;
 	}
 	
+	
+	//Returns false if the index wasn't found in the array
+	public boolean checkIndex(int index)
+	{
+		for(int i = 0; i < indexHistory.length; i++)
+		{
+			if(indexHistory[i] == index)
+				return true;
+			else if (indexHistory[i] == -1) {
+				indexHistory[i] = microGameIndex;
+				break;
+			}
+		}
+		return false;
+	}
+	
+	// Clears indexHistory
+	public void clearIndexHistory()
+	{
+		for (int i = 0; i < indexHistory.length; i++)
+			indexHistory[i] = -1;
+	}
 	// --------------------
 	// --- Draw Methods ---
 	// --------------------
