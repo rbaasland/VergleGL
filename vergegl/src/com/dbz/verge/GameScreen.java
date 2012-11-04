@@ -422,6 +422,12 @@ public class GameScreen extends GLScreen {
 		batcher.drawSprite(0, 0, 1280, 800, Assets.broFistBackgroundRegion);
 		batcher.endBatch();
 		
+		batcher.beginBatch(Assets.items);
+	    Assets.font.drawText(batcher, "Level: " + String.valueOf(level), 600, 500);
+	    Assets.font.drawText(batcher, "Lives: " + String.valueOf(lives), 600, 450);
+	    Assets.font.drawText(batcher, "Win Count: " + String.valueOf(winCount), 600, 400);
+		batcher.endBatch();
+		
 		// Draws the pause symbol.
 		batcher.beginBatch(Assets.pauseToggle);
 		batcher.drawSprite(1130, 640, 160, 160, Assets.pauseRegion);
