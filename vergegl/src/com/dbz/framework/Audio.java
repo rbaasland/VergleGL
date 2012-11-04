@@ -1,7 +1,11 @@
 package com.dbz.framework;
 
-public interface Audio {
-    public Music newMusic(String filename);
+import com.dbz.framework.impl.Music;
+import com.dbz.framework.impl.Sound;
 
-    public Sound newSound(String filename);
+//audio files are played from res>>raw
+public interface Audio {
+    public Music newMusic(int resourceID);
+
+    public Sound newSound(int  resourceID);
 }
