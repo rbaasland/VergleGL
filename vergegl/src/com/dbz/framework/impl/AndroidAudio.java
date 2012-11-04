@@ -1,45 +1,42 @@
 package com.dbz.framework.impl;
 
-import java.io.IOException;
-
 import android.app.Activity;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
+import android.content.Context;
 import android.media.AudioManager;
-import android.media.SoundPool;
-
 import com.dbz.framework.Audio;
-import com.dbz.framework.Music;
-import com.dbz.framework.Sound;
 
 public class AndroidAudio implements Audio {
-    AssetManager assets;
-    SoundPool soundPool;
+		
+	    private Context appContext; // application context
 
-    public AndroidAudio(Activity activity) {
-        activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        this.assets = activity.getAssets();
-        this.soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
-    }
+	    public AndroidAudio(Activity activity) {
+	        activity.setVolumeControlStream(AudioManager.STREAM_MUSIC); //keep
+	        appContext = activity.getApplicationContext();
+	        
+	        SoundManager.getInstance();
+	        SoundManager.init(appContext, 8);
+	    }
+	    
+		/**
+		 * Returns a LongSound object backed by the native MediaPlayer class.
+		 * 
+		 * @param resourceID resource ID of the sound file. Pass values from R.raw
+		 */
+	    @Override
+	    public Music newMusic(int resourceID) {
+	    	return new Music(appContext, resourceID);
+	    	
+	    }
+	    
+		/**
+		 * Returns a ShortSound object backed by the native SoundPool class.
+		 * 
+		 * @param resourceID resource ID of the sound file. Pass values from R.raw
+		 */
+	    @Override
+	    public Sound newSound(int resourceID) {
+	    	 return new Sound(resourceID);
+	    	
+	    }
 
-    @Override
-    public Music newMusic(String filename) {
-        try {
-            AssetFileDescriptor assetDescriptor = assets.openFd(filename);
-            return new AndroidMusic(assetDescriptor);
-        } catch (IOException e) {
-            throw new RuntimeException("Couldn't load music '" + filename + "'");
-        }
-    }
-
-    @Override
-    public Sound newSound(String filename) {
-        try {
-            AssetFileDescriptor assetDescriptor = assets.openFd(filename);
-            int soundId = soundPool.load(assetDescriptor, 0);
-            return new AndroidSound(soundPool, soundId);
-        } catch (IOException e) {
-            throw new RuntimeException("Couldn't load sound '" + filename + "'");
-        }
-    }   
 }

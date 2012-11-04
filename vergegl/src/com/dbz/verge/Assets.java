@@ -1,12 +1,13 @@
 package com.dbz.verge;
 
-import com.dbz.framework.Music;
-import com.dbz.framework.Sound;
 import com.dbz.framework.gl.Animation;
 import com.dbz.framework.gl.Font;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.impl.GLGame;
+import com.dbz.framework.impl.Music;
+import com.dbz.framework.impl.Sound;
+import com.dbz.framework.impl.SoundManager;
 
 public class Assets {
 	
@@ -76,6 +77,11 @@ public class Assets {
     public static Animation lazerChargingAnim;
     public static Animation lazerFireButtonAnim;
     
+    
+    // ------------------------
+  	// --- Sound Assets -----
+  	// ------------------------
+    public static SoundManager soundManager; //needed to use Sound Objects
     
     // ------------------------
   	// --- Testing Assets -----
@@ -222,16 +228,19 @@ public class Assets {
         
         font = new Font(items, 224, 0, 16, 16, 20);
         
-        music = game.getAudio().newMusic("music.mp3");
-        music.setLooping(true);
-        music.setVolume(0.5f);
+        soundManager = SoundManager.getInstance(); //instance of soundManger-- needed for sound objects
+        
+        music = game.getAudio().newMusic(R.raw.music);
+        music.loop();
+        music.setVolume(50);
         if(Settings.soundEnabled)
             music.play();
-        jumpSound = game.getAudio().newSound("jump.ogg");
-        highJumpSound = game.getAudio().newSound("highjump.ogg");
-        hitSound = game.getAudio().newSound("hit.ogg");
-        coinSound = game.getAudio().newSound("coin.ogg");
-        clickSound = game.getAudio().newSound("click.ogg");
+        
+        jumpSound = game.getAudio().newSound(R.raw.jump);
+        highJumpSound = game.getAudio().newSound(R.raw.highjump);
+        hitSound = game.getAudio().newSound(R.raw.hit);
+        coinSound = game.getAudio().newSound(R.raw.coin);
+        clickSound = game.getAudio().newSound(R.raw.click);
         
     }      
     
@@ -265,6 +274,6 @@ public class Assets {
     
     public static void playSound(Sound sound) {
         if(Settings.soundEnabled)
-            sound.play(1);
+            sound.play(100);
     }
 }
