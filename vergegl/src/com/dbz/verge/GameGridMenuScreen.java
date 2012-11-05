@@ -31,13 +31,32 @@ public class GameGridMenuScreen extends MenuScreen {
     private Rectangle fifthMicroGameBounds = new Rectangle(555, 200, 170, 170);
     private Rectangle sixthMicroGameBounds = new Rectangle(795, 200, 170, 170);
     private Rectangle backArrowBounds = new Rectangle(0, 0, 160, 160);
-    private Rectangle nextPageBounds = new Rectangle(345, 30, 75, 100);
-    private Rectangle prevPageBounds = new Rectangle(860, 30, 75, 100);
-    // Overlay variable.
-    private boolean levelOverlay = false;
+    private Rectangle prevPageBounds = new Rectangle(340, 20, 80, 120);
+    private Rectangle nextPageBounds = new Rectangle(860, 20, 80, 120);
+    
+    // Fields for Difficulty Level Overlay.
+    private boolean overlayPresent = false;
     private MicroGame selectedMicroGame;
-    private Rectangle readyBounds = new Rectangle(0, 640, 160, 160);
-    private Rectangle overlayBounds = new Rectangle(160, 160, 960, 480);
+    
+    // Bounding Boxes for Speed/Level Overlay.
+    private Rectangle overlayBounds = new Rectangle(163, 163, 954, 474);
+    
+    private Rectangle levelSelectAreaBounds = new Rectangle(380, 420, 520, 200);
+    private Rectangle decrementLevelBounds = new Rectangle(395, 460, 80, 120);
+    private Rectangle levelTextBounds = new Rectangle(480, 440, 320, 160);
+    private Rectangle incrementLevelBounds = new Rectangle(805, 460, 80, 120);
+    
+    private Rectangle speedSelectAreaBounds = new Rectangle(380, 180, 520, 200);
+    private Rectangle decrementSpeedBounds = new Rectangle(395, 220, 80, 120);
+    private Rectangle speedTextBounds = new Rectangle(480, 200, 320, 160);
+    private Rectangle incrementSpeedBounds = new Rectangle(805, 220, 80, 120);
+    
+    private Rectangle selectedIconAreaBounds = new Rectangle(180, 300, 200, 200);
+    // private Rectangle selectedIconBounds = new Rectangle (0, 0, 0, 0);
+    
+    private Rectangle checkMarkAreaBounds = new Rectangle(900, 300, 200, 200);
+    private Rectangle checkMarkBounds = new Rectangle(920, 320, 160, 160);
+    
     
     // -------------------
  	// --- Constructor ---
@@ -51,9 +70,10 @@ public class GameGridMenuScreen extends MenuScreen {
  	// ---------------------
     @Override
     public void update(float deltaTime) {
-    	//Redirect to level overlay
-    	if (levelOverlay)
+    	// Redirect to level overlay.
+    	if (overlayPresent)
     		updateLevelOverlay(deltaTime);
+    	
     	// Gets all TouchEvents and stores them in a list.
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
         game.getInput().getKeyEvents();
@@ -76,8 +96,8 @@ public class GameGridMenuScreen extends MenuScreen {
                 	if (currentPage == 1)
                 		selectedMicroGame = new BroFistMicroGame(game);
                 	else if (currentPage == 2)
-                		selectedMicroGame = new TrafficMicroGame(game); // Replace with new microgame.
-                	levelOverlay = true;
+                		selectedMicroGame = new TrafficMicroGame(game); // Replace with new MicroGame.
+                	overlayPresent = true;
                 	return;
                 }
                 
@@ -86,7 +106,7 @@ public class GameGridMenuScreen extends MenuScreen {
                 	Assets.playSound(Assets.clickSound);
                 	if (currentPage == 1)
                 		selectedMicroGame = new FlyMicroGame(game);
-                	levelOverlay = true;
+                	overlayPresent = true;
                 	return;
                 }
                 
@@ -95,7 +115,7 @@ public class GameGridMenuScreen extends MenuScreen {
                 	Assets.playSound(Assets.clickSound);
                 	if (currentPage == 1)
                 		selectedMicroGame = new FireMicroGame(game);
-                	levelOverlay = true;
+                	overlayPresent = true;
                 	return;
                 }
                 
@@ -104,7 +124,7 @@ public class GameGridMenuScreen extends MenuScreen {
                 	Assets.playSound(Assets.clickSound);
                 	if (currentPage == 1)
                 		selectedMicroGame = new TrafficMicroGame(game);
-                	levelOverlay = true;
+                	overlayPresent = true;
                 	return;
                 }
                 
@@ -113,7 +133,7 @@ public class GameGridMenuScreen extends MenuScreen {
                 	Assets.playSound(Assets.clickSound);
                 	if (currentPage == 1)
                 		selectedMicroGame = new CircuitMicroGame(game);
-                	levelOverlay = true;
+                	overlayPresent = true;
                 	return;
                 }
                 
@@ -122,7 +142,7 @@ public class GameGridMenuScreen extends MenuScreen {
                 	Assets.playSound(Assets.clickSound);
                 	if (currentPage == 1)
                 		selectedMicroGame = new LazerBallMicroGame(game);
-                	levelOverlay = true;
+                	overlayPresent = true;
                 	return;
                 }
                 
@@ -131,17 +151,6 @@ public class GameGridMenuScreen extends MenuScreen {
                     Assets.playSound(Assets.clickSound);
                     game.setScreen(new PlayMenuScreen(game));
                     return;
-                }
-                
-                // Next Page Bounds Check.
-                if (OverlapTester.pointInRectangle(nextPageBounds, touchPoint)) {
-                	Assets.playSound(Assets.clickSound);
-                	// increment page.
-                	if (currentPage+1 > numOfPages)
-                		currentPage = 1;
-                	else
-                		currentPage++;
-                	return;
                 }
                 
                 // Previous Page Bounds Check.
@@ -155,6 +164,17 @@ public class GameGridMenuScreen extends MenuScreen {
                 	return;
                 }
                 
+                // Next Page Bounds Check.
+                if (OverlapTester.pointInRectangle(nextPageBounds, touchPoint)) {
+                	Assets.playSound(Assets.clickSound);
+                	// increment page.
+                	if (currentPage+1 > numOfPages)
+                		currentPage = 1;
+                	else
+                		currentPage++;
+                	return;
+                }
+                               
                 // Checks for general MenuScreen events.
     	        if (event.type == TouchEvent.TOUCH_UP)
     	        	super.update(touchPoint);
@@ -181,47 +201,42 @@ public class GameGridMenuScreen extends MenuScreen {
                 guiCam.touchToWorld(touchPoint);
                 
                 // Ready Bounds Check.
-                if(OverlapTester.pointInRectangle(readyBounds, touchPoint)) {
+                if(OverlapTester.pointInRectangle(checkMarkBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
                     game.setScreen(selectedMicroGame);
                     return;
                 }
                 
-                // Back Arrow Bounds Check.
-                if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
-                    game.setScreen(new PlayMenuScreen(game));
-                    return;
-                }
-                
-                // Next Page Bounds Check.
-                if (OverlapTester.pointInRectangle(nextPageBounds, touchPoint)) {
+                // Decrement Level Bounds Check.
+                if (OverlapTester.pointInRectangle(decrementLevelBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	// increment page.
+                	if (selectedMicroGame.level-1 < 1)
+                		selectedMicroGame.level = 3;
+                	else
+                		selectedMicroGame.level--;
+                	return;
+                }   
+                
+                // Increment Level Bounds Check.
+                if (OverlapTester.pointInRectangle(incrementLevelBounds, touchPoint)) {
+                	Assets.playSound(Assets.clickSound);
                 	if (selectedMicroGame.level+1 > 3)
                 		selectedMicroGame.level = 1;
                 	else
                 		selectedMicroGame.level++;
                 	return;
                 }
-                
-                // Previous Page Bounds Check.
-                if (OverlapTester.pointInRectangle(prevPageBounds, touchPoint)) {
-                	Assets.playSound(Assets.clickSound);
-                	// decrement page.
-                	if (selectedMicroGame.level-1 < 1)
-                		selectedMicroGame.level = 3;
-                	else
-                		selectedMicroGame.level--;
-                	return;
+        
+                // Back Arrow Bounds Check.
+                if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
+                    Assets.playSound(Assets.clickSound);
+                    overlayPresent = false;
+                    return;
                 }
                 
                 // Checks for general MenuScreen events.
     	        if (event.type == TouchEvent.TOUCH_UP)
     	        	super.update(touchPoint);
-    	        
-    	        // If TOUCH_UP wasn't in any bounds, remove overlay state.
-    	        levelOverlay = false;
             }
         }	
     }
@@ -231,47 +246,75 @@ public class GameGridMenuScreen extends MenuScreen {
  	// ----------------------------
     
     public void drawBackground() {
-    	batcher.beginBatch(Assets.gameGridBackground);
+    	batcher.beginBatch(Assets.gameGrid);
         batcher.drawSprite(0, 0, 1280, 800, Assets.gameGridBackgroundRegion);
         batcher.endBatch();
     }
     
     public void drawObjects() {
-        // Draws Game Grid Icons.
-    	if (currentPage == 1) {
-    		batcher.beginBatch(Assets.gameGridIcons);
-        	batcher.drawSprite(0, 0, 1024, 800, Assets.gameGridIconsRegion);
-        	batcher.endBatch();
-    	}
-        
+		if(overlayPresent) {
+			batcher.beginBatch(Assets.gameGrid);
+			
+			// Overlay Background.
+			batcher.drawSprite(overlayBounds, Assets.overlayRegion);
+			
+			// Level Selection Area.
+			batcher.drawSprite(levelSelectAreaBounds, Assets.selectionRegion);
+			batcher.drawSprite(decrementLevelBounds, Assets.leftArrowRegion);
+			
+			if (selectedMicroGame.level == 1)
+				batcher.drawSprite(levelTextBounds, Assets.levelOneRegion);
+			else if (selectedMicroGame.level == 2)
+				batcher.drawSprite(levelTextBounds, Assets.levelTwoRegion);
+			else
+				batcher.drawSprite(levelTextBounds, Assets.levelThreeRegion);
+			
+			batcher.drawSprite(incrementLevelBounds, Assets.rightArrowRegion);
+			
+			// Speed Selection Area.
+			batcher.drawSprite(speedSelectAreaBounds, Assets.selectionRegion);
+			batcher.drawSprite(decrementSpeedBounds, Assets.leftArrowRegion);
+			batcher.drawSprite(speedTextBounds, Assets.speedOneRegion);
+			batcher.drawSprite(incrementSpeedBounds, Assets.rightArrowRegion);
+			
+			// Selected Micro Game Icon Area.
+			batcher.drawSprite(selectedIconAreaBounds, Assets.overlayIconRegion);
+			
+			// Check Mark Area. 
+			batcher.drawSprite(checkMarkAreaBounds, Assets.overlayIconRegion);
+			batcher.drawSprite(checkMarkBounds, Assets.checkMarkRegion);
+			
+			batcher.endBatch();
+		}
+		else {
+	        // Draws MicroGame Icons.
+	    	if (currentPage == 1) {
+	    		batcher.beginBatch(Assets.gameGridIcons);
+	        	batcher.drawSprite(0, 0, 1024, 800, Assets.gameGridIconsRegion);
+	        	batcher.endBatch();
+	    	}
+	        
+	    	// Draw Page Arrows.
+	        batcher.beginBatch(Assets.gameGrid);
+	        batcher.drawSprite(prevPageBounds, Assets.leftArrowRegion);		// Previous Page Arrow
+	        batcher.drawSprite(nextPageBounds, Assets.rightArrowRegion);	// Next Page Arrow
+	        batcher.endBatch();
+	        
+	        // Draws Page Number.
+			batcher.beginBatch(Assets.items);
+			Assets.font.drawText(batcher, String.valueOf(currentPage), 600, 50);
+			batcher.endBatch();
+		}
+		
         // Draws Back Arrow.
         batcher.beginBatch(Assets.backArrow);
         batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
         batcher.endBatch(); 
-        
-        // Draws Page Number.
-		batcher.beginBatch(Assets.items);
-		Assets.font.drawText(batcher, String.valueOf(currentPage), 600, 50);
-		batcher.endBatch();
-        
-		batcher.beginBatch(Assets.items);
-		Assets.font.drawText(batcher, String.valueOf(levelOverlay), 600, 750);
-		batcher.endBatch();
-		
-		if(levelOverlay) {
-			batcher.beginBatch(Assets.items);
-			Assets.font.drawText(batcher, "Level: " + String.valueOf(selectedMicroGame.level), 600, 700);
-			batcher.endBatch();
-			
-			batcher.beginBatch(Assets.boundOverlay);
-			batcher.drawSprite(readyBounds, Assets.boundOverlayRegion);
-			batcher.drawSprite(overlayBounds, Assets.boundOverlayRegion);
-			batcher.endBatch();
-		}
 		
         super.drawObjects();
     }
     
+    // TODO: Update to draw all new assets from Overlay implementation.
     public void drawBounds() {
         batcher.beginBatch(Assets.boundOverlay);
         batcher.drawSprite(firstMicroGameBounds, Assets.boundOverlayRegion);	// 1st MicroGame Bounding Box

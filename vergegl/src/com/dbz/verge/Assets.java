@@ -23,8 +23,22 @@ public class Assets {
     public static Texture playMenuButtons;
     public static TextureRegion playMenuButtonsRegion;
     
-    public static Texture gameGridBackground;
+    public static Texture gameGrid;
     public static TextureRegion gameGridBackgroundRegion;
+    
+    public static TextureRegion leftArrowRegion;
+    public static TextureRegion rightArrowRegion;
+    public static TextureRegion overlayRegion;
+    public static TextureRegion selectionRegion;
+    public static TextureRegion checkMarkRegion;
+    public static TextureRegion overlayIconRegion;
+    public static TextureRegion speedOneRegion;
+    public static TextureRegion speedTwoRegion;
+    public static TextureRegion speedThreeRegion;
+    public static TextureRegion levelOneRegion;
+    public static TextureRegion levelTwoRegion;
+    public static TextureRegion levelThreeRegion;   
+    
     public static Texture gameGridIcons;
     public static TextureRegion gameGridIconsRegion;
     
@@ -129,8 +143,22 @@ public class Assets {
         playMenuButtons = new Texture(game, "playmenubuttons.png");
         playMenuButtonsRegion = new TextureRegion(playMenuButtons, 0, 0, 1280, 800);
         
-        gameGridBackground = new Texture(game, "gamegridbackground.png");
-        gameGridBackgroundRegion = new TextureRegion(gameGridBackground, 0, 0, 1280, 800);
+        gameGrid = new Texture(game, "gamegrid.png");
+        gameGridBackgroundRegion = new TextureRegion(gameGrid, 0, 0, 1280, 800);
+        
+        leftArrowRegion = new TextureRegion(gameGrid, 1280, 0, 80, 120);
+        rightArrowRegion = new TextureRegion(gameGrid, 1360, 0, 80, 120);
+        overlayRegion = new TextureRegion(gameGrid, 1300, 140, 720, 360);
+        selectionRegion = new TextureRegion(gameGrid, 1280, 520, 560, 240);
+        checkMarkRegion = new TextureRegion(gameGrid, 1860, 540, 160, 160);
+        overlayIconRegion = new TextureRegion(gameGrid, 1840, 700, 200, 200);
+        speedOneRegion = new TextureRegion(gameGrid, 0, 800, 300, 200);
+        speedTwoRegion = new TextureRegion(gameGrid, 300, 800, 300, 200);
+        speedThreeRegion = new TextureRegion(gameGrid, 600, 800, 300, 200);
+        levelOneRegion = new TextureRegion(gameGrid, 900, 800, 300, 200);
+        levelTwoRegion = new TextureRegion(gameGrid, 1200, 800, 300, 200);
+        levelThreeRegion = new TextureRegion(gameGrid, 1500, 800, 300, 200);      
+        
         gameGridIcons = new Texture(game, "gamegridicons.png");
         gameGridIconsRegion = new TextureRegion(gameGridIcons, 0, 0, 1024, 800);
         
@@ -249,7 +277,7 @@ public class Assets {
         background.reload();
         mainMenuButtons.reload();
         playMenuButtons.reload();
-        gameGridBackground.reload();
+        gameGrid.reload();
         gameGridIcons.reload();
         soundToggle.reload();
         backArrow.reload();
