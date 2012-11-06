@@ -12,6 +12,7 @@ import com.dbz.framework.math.Vector2;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
+//TODO: Comment code. Try to match the standard that is created with other MicroGame comments.
 public class CircuitMicroGame extends MicroGame {
     
 	//private inner class to manage each gap in the circuit
