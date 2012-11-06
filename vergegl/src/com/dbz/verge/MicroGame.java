@@ -263,6 +263,7 @@ public abstract class MicroGame extends GLScreen {
 			//pass size of list
 			//pass the number of rectangles
 			//pass boolean array to limit runtime allocation of size(# of rectangles)
+			//use for each loops! http://developer.android.com/guide/practices/performance.html#foreach
 	public boolean targetsMultiTouched(List<TouchEvent> touchEvents, Rectangle ... targetBounds){
 		
 		int totalScreenTouches = touchEvents.size();
