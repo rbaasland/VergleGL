@@ -2,13 +2,10 @@ package com.dbz.verge.microgames;
 
 import java.util.List;
 
-import android.util.Log;
-
 import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Animation;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.framework.math.Vector2;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
@@ -277,7 +274,7 @@ public class CircuitMicroGame extends MicroGame {
 
 		   CircuitGap[] circuitGaps = new CircuitGap[4];
 
-		   switch(level){
+		   switch(level){//TODO: does not work... this is called before the level is actually set.
 
 		   case 1: 
 			   circuitGaps[0] = new CircuitGap(false, Assets.circuitHorizontalGapAnim, gapOneBounds);
