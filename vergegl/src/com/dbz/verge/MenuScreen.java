@@ -35,7 +35,6 @@ public abstract class MenuScreen extends GLScreen {
  	// --- Update Method ---
  	// ---------------------
     
-    // Need to look into moving all of the complicated code we have to reuse into here.
     public abstract void update(float deltaTime);
     
     // Test if touchPoint is inside bounds that all MenuScreens share.

@@ -47,35 +47,35 @@ public class FireMicroGame extends MicroGame {
     
 	@Override
 	public void updateRunning(float deltaTime) {
-		totalRunningTime += deltaTime;
-		
 		// Checks for time-based loss.
-		if (lostTimeBased()) {
+		if (lostTimeBased(deltaTime)) {
 			Assets.playSound(Assets.hitSound);
 			return;
 		}
 		
-		// Tests for multi-area win.
+		// Tests for Multi-Area win.
 		if (clearedFireOne && clearedFireTwo && clearedFireThree) {
 			Assets.playSound(Assets.highJumpSound);
 			microGameState = MicroGameState.Won;
     		return;	
 		}
 		
+		// Gets all TouchEvents and stores them in a list.
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	    
+	    // Cycles through and tests all touch events.
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
+	    	// Gets a single TouchEvent from the list.
 	        TouchEvent event = touchEvents.get(i);
+	        
+	        // Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
         	touchPoint.set(event.x, event.y);
+        	// Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
-	        // *** Might be able to generalize the below three major condition blocks into an array
-	        // which gets cycled through via a for loop. ***
-	        
-	        // *** NOTE: WE CAN TEST FOR TOUCH_DRAGGED EVENTS TO BE ABLE "RUB OUT" THE FIRE ***
-	        
-	        // Tests if target #1 is touched.
-	        if (targetDragged(event, touchPoint, fireOneBounds)) {
+	        // Fire One Bounds (TOUCH_DOWN/TOUCH_DRAGGED) Check.
+	        if (targetTouchDragged(event, touchPoint, fireOneBounds)) {
         		fireOneCount++;
         		if (fireOneCount == requiredBroFistCount[level-1])
         			clearedFireOne = true;
@@ -84,8 +84,8 @@ public class FireMicroGame extends MicroGame {
         		return;
         	}
         	
-	        // Tests if target #2 is touched.
-        	if (targetDragged(event, touchPoint, fireTwoBounds)) {
+	        // Fire Two Bounds (TOUCH_DOWN/TOUCH_DRAGGED) Check.
+	        if (targetTouchDragged(event, touchPoint, fireTwoBounds)) {
         		fireTwoCount++;
         		if (fireTwoCount == requiredBroFistCount[level-1])
         			clearedFireTwo = true;
@@ -94,8 +94,8 @@ public class FireMicroGame extends MicroGame {
         		return;
         	}
         	
-        	// Tests if target #3 is touched.
-        	if (targetDragged(event, touchPoint, fireThreeBounds)) {
+        	// Fire Three Bounds (TOUCH_DOWN/TOUCH_DRAGGED) Check.
+        	if (targetTouchDragged(event, touchPoint, fireThreeBounds)) {
         		fireThreeCount++;
         		if (fireThreeCount == requiredBroFistCount[level-1])
         			clearedFireThree = true;
@@ -104,7 +104,7 @@ public class FireMicroGame extends MicroGame {
         		return;
         	}
 	        
-        	// Tests for non-unique touch events, which is currently pause only.
+        	// Non-Unique, Super Class Bounds (TOUCH_UP) Check.
 	        if (event.type == TouchEvent.TOUCH_UP)
 	        	super.updateRunning(touchPoint);
 	    }   
@@ -132,8 +132,8 @@ public class FireMicroGame extends MicroGame {
 	@Override
 	public void presentRunning() {	
 		batcher.beginBatch(Assets.fire);
-		drawBackground();
-		drawObjects();
+		drawRunningBackground();
+		drawRunningObjects();
 		batcher.endBatch();		
 		// drawRunningBounds();
 		drawInstruction("Put out the Fire!");
@@ -145,12 +145,12 @@ public class FireMicroGame extends MicroGame {
 	// ---------------------------
 	
 	@Override
-	public void drawBackground() {
+	public void drawRunningBackground() {
 		batcher.drawSprite(0, 0, 1280, 800, Assets.fireBackgroundRegion);
 	}
 	
 	@Override
-	public void drawObjects() {
+	public void drawRunningObjects() {
 		// Draw target #1.
 		if (fireOneCount < requiredBroFistCount[level-1]) 
 			batcher.drawSprite(fireOneBounds, Assets.fireWindowRegion);

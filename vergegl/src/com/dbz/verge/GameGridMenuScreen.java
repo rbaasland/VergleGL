@@ -13,6 +13,11 @@ import com.dbz.verge.microgames.FlyMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
 import com.dbz.verge.microgames.TrafficMicroGame;
 
+// TODO: Keep naming conventions standard between Bounds and Asset Regions.
+//		 Fix the issue where the LVL text will shift over by a few pixels when you switch through them.
+//		 *** I played through the games and I think I might have gotten the same game in the same set.
+//		 I think it happened on the 5th-6th game, so in other words one game earlier than it should have.
+//		 We should test this more throughly to make sure I didn't just imagine things. ***
 public class GameGridMenuScreen extends MenuScreen {
    
 	// --------------
@@ -34,12 +39,12 @@ public class GameGridMenuScreen extends MenuScreen {
     private Rectangle prevPageBounds = new Rectangle(340, 20, 80, 120);
     private Rectangle nextPageBounds = new Rectangle(860, 20, 80, 120);
     
-    // Fields for Difficulty Level Overlay.
+    // Fields for Level/Speed Overlay
     private boolean overlayPresent = false;
     private MicroGame selectedMicroGame;
     
-    // Bounding Boxes for Speed/Level Overlay.
-    private Rectangle overlayBounds = new Rectangle(163, 163, 954, 474);
+    // Bounding Boxes for Level/Speed Overlay.
+    private Rectangle overlayAreaBounds = new Rectangle(163, 163, 954, 474);
     
     private Rectangle levelSelectAreaBounds = new Rectangle(380, 420, 520, 200);
     private Rectangle decrementLevelBounds = new Rectangle(395, 460, 80, 120);
@@ -84,6 +89,7 @@ public class GameGridMenuScreen extends MenuScreen {
         	// Gets a single TouchEvent from the list.
             TouchEvent event = touchEvents.get(i);
             
+            // Only handle if TouchEvent is TOUCH_UP.
             if(event.type == TouchEvent.TOUCH_UP) {
             	// Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
                 touchPoint.set(event.x, event.y);
@@ -156,7 +162,7 @@ public class GameGridMenuScreen extends MenuScreen {
                 // Previous Page Bounds Check.
                 if (OverlapTester.pointInRectangle(prevPageBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	// decrement page.
+                	// Decrement Page.
                 	if (currentPage-1 < 1)
                 		currentPage = numOfPages;
                 	else
@@ -167,7 +173,7 @@ public class GameGridMenuScreen extends MenuScreen {
                 // Next Page Bounds Check.
                 if (OverlapTester.pointInRectangle(nextPageBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	// increment page.
+                	// Increment Page.
                 	if (currentPage+1 > numOfPages)
                 		currentPage = 1;
                 	else
@@ -175,9 +181,8 @@ public class GameGridMenuScreen extends MenuScreen {
                 	return;
                 }
                                
-                // Checks for general MenuScreen events.
-    	        if (event.type == TouchEvent.TOUCH_UP)
-    	        	super.update(touchPoint);
+                // Non-Unique, Super Class Bounds Check.
+    	        super.update(touchPoint);
             }
         }
     }
@@ -194,6 +199,7 @@ public class GameGridMenuScreen extends MenuScreen {
         	// Gets a single TouchEvent from the list.
             TouchEvent event = touchEvents.get(i);
             
+            // Only handle if TouchEvent is TOUCH_UP.
             if(event.type == TouchEvent.TOUCH_UP) {
             	// Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
                 touchPoint.set(event.x, event.y);
@@ -226,6 +232,26 @@ public class GameGridMenuScreen extends MenuScreen {
                 		selectedMicroGame.level++;
                 	return;
                 }
+                
+                // Decrement Speed Bounds Check.
+                if (OverlapTester.pointInRectangle(decrementSpeedBounds, touchPoint)) {
+                	Assets.playSound(Assets.clickSound);
+                	if (selectedMicroGame.speed-1 < 1)
+                		selectedMicroGame.speed = 3;
+                	else
+                		selectedMicroGame.speed--;
+                	return;
+                }   
+                
+                // Increment Speed Bounds Check.
+                if (OverlapTester.pointInRectangle(incrementSpeedBounds, touchPoint)) {
+                	Assets.playSound(Assets.clickSound);
+                	if (selectedMicroGame.speed+1 > 3)
+                		selectedMicroGame.speed = 1;
+                	else
+                		selectedMicroGame.speed++;
+                	return;
+                }
         
                 // Back Arrow Bounds Check.
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
@@ -234,9 +260,8 @@ public class GameGridMenuScreen extends MenuScreen {
                     return;
                 }
                 
-                // Checks for general MenuScreen events.
-    	        if (event.type == TouchEvent.TOUCH_UP)
-    	        	super.update(touchPoint);
+                // Non-Unique, Super Class Bounds Check.
+    	        super.update(touchPoint);
             }
         }	
     }
@@ -252,40 +277,8 @@ public class GameGridMenuScreen extends MenuScreen {
     }
     
     public void drawObjects() {
-		if(overlayPresent) {
-			batcher.beginBatch(Assets.gameGrid);
-			
-			// Overlay Background.
-			batcher.drawSprite(overlayBounds, Assets.overlayRegion);
-			
-			// Level Selection Area.
-			batcher.drawSprite(levelSelectAreaBounds, Assets.selectionRegion);
-			batcher.drawSprite(decrementLevelBounds, Assets.leftArrowRegion);
-			
-			if (selectedMicroGame.level == 1)
-				batcher.drawSprite(levelTextBounds, Assets.levelOneRegion);
-			else if (selectedMicroGame.level == 2)
-				batcher.drawSprite(levelTextBounds, Assets.levelTwoRegion);
-			else
-				batcher.drawSprite(levelTextBounds, Assets.levelThreeRegion);
-			
-			batcher.drawSprite(incrementLevelBounds, Assets.rightArrowRegion);
-			
-			// Speed Selection Area.
-			batcher.drawSprite(speedSelectAreaBounds, Assets.selectionRegion);
-			batcher.drawSprite(decrementSpeedBounds, Assets.leftArrowRegion);
-			batcher.drawSprite(speedTextBounds, Assets.speedOneRegion);
-			batcher.drawSprite(incrementSpeedBounds, Assets.rightArrowRegion);
-			
-			// Selected Micro Game Icon Area.
-			batcher.drawSprite(selectedIconAreaBounds, Assets.overlayIconRegion);
-			
-			// Check Mark Area. 
-			batcher.drawSprite(checkMarkAreaBounds, Assets.overlayIconRegion);
-			batcher.drawSprite(checkMarkBounds, Assets.checkMarkRegion);
-			
-			batcher.endBatch();
-		}
+		if(overlayPresent) 
+			drawOverlayObjects();
 		else {
 	        // Draws MicroGame Icons.
 	    	if (currentPage == 1) {
@@ -314,19 +307,71 @@ public class GameGridMenuScreen extends MenuScreen {
         super.drawObjects();
     }
     
-    // TODO: Update to draw all new assets from Overlay implementation.
+    public void drawOverlayObjects() {
+    	batcher.beginBatch(Assets.gameGrid);
+		
+		// Draws Overlay Background.
+		batcher.drawSprite(overlayAreaBounds, Assets.overlayRegion);
+		
+		// Level Selection Area.
+		batcher.drawSprite(levelSelectAreaBounds, Assets.selectionRegion);
+		batcher.drawSprite(decrementLevelBounds, Assets.leftArrowRegion);
+		
+		if (selectedMicroGame.level == 1)
+			batcher.drawSprite(levelTextBounds, Assets.levelOneRegion);
+		else if (selectedMicroGame.level == 2)
+			batcher.drawSprite(levelTextBounds, Assets.levelTwoRegion);
+		else
+			batcher.drawSprite(levelTextBounds, Assets.levelThreeRegion);
+		
+		batcher.drawSprite(incrementLevelBounds, Assets.rightArrowRegion);
+		
+		// Speed Selection Area.
+		batcher.drawSprite(speedSelectAreaBounds, Assets.selectionRegion);
+		batcher.drawSprite(decrementSpeedBounds, Assets.leftArrowRegion);
+		
+
+		if (selectedMicroGame.speed == 1)
+			batcher.drawSprite(speedTextBounds, Assets.speedOneRegion);
+		else if (selectedMicroGame.speed == 2)
+			batcher.drawSprite(speedTextBounds, Assets.speedTwoRegion);
+		else
+			batcher.drawSprite(speedTextBounds, Assets.speedThreeRegion);
+		
+		batcher.drawSprite(incrementSpeedBounds, Assets.rightArrowRegion);
+		
+		// Selected MicroGame Icon Area.
+		batcher.drawSprite(selectedIconAreaBounds, Assets.overlayIconRegion);
+		
+		// Check Mark Area. 
+		batcher.drawSprite(checkMarkAreaBounds, Assets.overlayIconRegion);
+		batcher.drawSprite(checkMarkBounds, Assets.checkMarkRegion);
+		
+		batcher.endBatch();
+    }
+    
     public void drawBounds() {
         batcher.beginBatch(Assets.boundOverlay);
-        batcher.drawSprite(firstMicroGameBounds, Assets.boundOverlayRegion);	// 1st MicroGame Bounding Box
-        batcher.drawSprite(secondMicroGameBounds, Assets.boundOverlayRegion); 	// 2nd MicroGame Bounding Box
-        batcher.drawSprite(thirdMicroGameBounds, Assets.boundOverlayRegion); 	// 3rd MicroGame Bounding Box
-        batcher.drawSprite(fourthMicroGameBounds, Assets.boundOverlayRegion); 	// 4th MicroGame Bounding Box
-        batcher.drawSprite(fifthMicroGameBounds, Assets.boundOverlayRegion); 	// 5th MicroGame Bounding Box
-        batcher.drawSprite(sixthMicroGameBounds, Assets.boundOverlayRegion); 	// 6th MicroGame Bounding Box
+        
+        if (overlayPresent)
+        	drawOverlayBounds();
+        else {
+	        batcher.drawSprite(firstMicroGameBounds, Assets.boundOverlayRegion);	// 1st MicroGame Bounding Box
+	        batcher.drawSprite(secondMicroGameBounds, Assets.boundOverlayRegion); 	// 2nd MicroGame Bounding Box
+	        batcher.drawSprite(thirdMicroGameBounds, Assets.boundOverlayRegion); 	// 3rd MicroGame Bounding Box
+	        batcher.drawSprite(fourthMicroGameBounds, Assets.boundOverlayRegion); 	// 4th MicroGame Bounding Box
+	        batcher.drawSprite(fifthMicroGameBounds, Assets.boundOverlayRegion); 	// 5th MicroGame Bounding Box
+	        batcher.drawSprite(sixthMicroGameBounds, Assets.boundOverlayRegion); 	// 6th MicroGame Bounding Box
+	        batcher.drawSprite(nextPageBounds, Assets.boundOverlayRegion); 		// Next Page Bounding Box
+	        batcher.drawSprite(prevPageBounds, Assets.boundOverlayRegion); 		// Previous Page Bounding Box
+        }
+        
         batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); 	// Back Arrow Bounding Box
-        batcher.drawSprite(nextPageBounds, Assets.boundOverlayRegion); 		// Next Page Bounding Box
-        batcher.drawSprite(prevPageBounds, Assets.boundOverlayRegion); 		// Previous Page Bounding Box
         super.drawBounds();
+        
         batcher.endBatch();
     }
+    
+    // TODO: Update to draw all new assets from Overlay implementation.
+    public void drawOverlayBounds() {}
 }
