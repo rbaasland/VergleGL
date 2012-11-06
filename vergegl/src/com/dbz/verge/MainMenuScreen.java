@@ -40,6 +40,7 @@ public class MainMenuScreen extends MenuScreen {
         	// Gets a single TouchEvent from the list.
             TouchEvent event = touchEvents.get(i);    
             
+            // Only handle if TouchEvent is TOUCH_UP.
             if(event.type == TouchEvent.TOUCH_UP) {
             	// Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
                 touchPoint.set(event.x, event.y);
@@ -67,9 +68,8 @@ public class MainMenuScreen extends MenuScreen {
                     return;
                 }
                 
-                // Checks for general MenuScreen events.
-    	        if (event.type == TouchEvent.TOUCH_UP)
-    	        	super.update(touchPoint);
+                // Non-Unique, Super Class Bounds Check.
+    	        super.update(touchPoint);
             }
         }
     }

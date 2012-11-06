@@ -25,6 +25,8 @@ import com.dbz.verge.microgames.LazerBallMicroGame;
 // TODO: Make class abstract, and extract necessary code to SurvivalGameScreen.
 // 		 Implement speed increase after every 5 games.
 //		 Implement difficulty increase every 10 games.
+//		 Extract Bounding Boxes draw calls (in each present()) to their own method.
+//		 ^^^ Note: Doing this in MicroGame as well, should be the same. ^^^ 
 public class GameScreen extends GLScreen {
 	
 	// --------------
@@ -291,9 +293,9 @@ public class GameScreen extends GLScreen {
 	    }
 	}
 	
-	// -----------------------------
-	// --- Utility Update Method ---
-	// -----------------------------
+	// ------------------------------
+	// --- Utility Update Methods ---
+	// ------------------------------
 
 	public void setupNextMicroGame() {
 		// Checks the indexHistory for fullness
@@ -312,7 +314,7 @@ public class GameScreen extends GLScreen {
 	}
 	
 	
-	//Returns false if the index wasn't found in the array
+	// Returns false if the index wasn't found in the array
 	public boolean checkIndex(int index)
 	{
 		for(int i = 0; i < indexHistory.length; i++)
@@ -333,6 +335,7 @@ public class GameScreen extends GLScreen {
 		for (int i = 0; i < indexHistory.length; i++)
 			indexHistory[i] = -1;
 	}
+	
 	// --------------------
 	// --- Draw Methods ---
 	// --------------------
@@ -471,32 +474,6 @@ public class GameScreen extends GLScreen {
 //	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
 //	    batcher.endBatch();
 	}
-	
-	// ----------------------------
-	// --- Utility Draw Methods ---
-	// ----------------------------
-	
-	// *** drawRunningBackground ***
-	public void drawBackground() {}
-	
-	// *** drawRunningObjects ***
-	public void drawObjects() {}
-	
-	// *** Implement to draw an icon of the type of MicroGame that is coming up. ***
-	public void drawInstruction(String string) {
-		// Could make instruction temporary this way...
-//		if (totalRunningTime < 3) {
-//			batcher.beginBatch(Assets.items);
-//			Assets.font.drawText(batcher, "BROFIST!", 600, 700);
-//			batcher.endBatch();
-//		}
-		// ...or could just dedicate screen space for it for the entire microgame.
-		batcher.beginBatch(Assets.items);
-		Assets.font.drawText(batcher, string, 600, 700);
-		batcher.endBatch();
-	}
-	
-	public void drawRunningBounds() {}
 	
 	// --------------------------------
 	// --- Android State Management ---
