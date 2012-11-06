@@ -201,10 +201,8 @@ public class CircuitMicroGame extends MicroGame {
     
 	@Override
 	public void updateRunning(float deltaTime) {
-		totalRunningTime += deltaTime;
-		
 		// Checks for time-based loss.
-		if (lostTimeBased()) {
+		if (lostTimeBased(deltaTime)) {
 			Assets.playSound(Assets.hitSound);
 			return;
 		}
@@ -244,7 +242,7 @@ public class CircuitMicroGame extends MicroGame {
 			*/
 			 for (CircuitGap gap : circuitGaps){
 				 if(!gap.isClosed)
-					 if(targetTouched(touchEvent, touchPoint, gap.bounds)){
+					 if(targetTouchDown(touchEvent, touchPoint, gap.bounds)){
 						 gap.isClosed = true;
 						 Assets.playSound(Assets.hitSound);
 					 }
@@ -322,10 +320,10 @@ public class CircuitMicroGame extends MicroGame {
 	
 	@Override
 	public void presentRunning() {
+		
+		drawRunningBackground();
+		drawRunningObjects();
 		drawRunningBounds();
-		drawBackground();
-		drawObjects();
-		//drawRunningBounds();
 		drawInstruction("Connect the Circuit!" + String.valueOf(sparkBounds.lowerLeft.x) + String.valueOf(sparkBounds.lowerLeft.y));
 		super.presentRunning();
 	}
@@ -336,7 +334,7 @@ public class CircuitMicroGame extends MicroGame {
 	// ---------------------------
 	
 	@Override
-	public void drawBackground() {
+	public void drawRunningBackground() {
 		// Draw background.
 		batcher.beginBatch(Assets.circuitBackground);
 		batcher.drawSprite(0, 0, 1280, 800, Assets.circuitBackgroundRegion);
@@ -344,7 +342,7 @@ public class CircuitMicroGame extends MicroGame {
 	}
 		
 	@Override
-	public void drawObjects() {
+	public void drawRunningObjects() {
 		// Draw circuits
 		batcher.beginBatch(Assets.circuit);
 		batcher.drawSprite(0, 0, 1280, 800, Assets.circuitLinesRegion);

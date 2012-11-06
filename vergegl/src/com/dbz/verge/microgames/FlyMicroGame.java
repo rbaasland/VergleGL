@@ -20,8 +20,9 @@ public class FlyMicroGame extends MicroGame {
 	private int requiredFlySwatCount[] = { 1, 2, 3 };
 	private int flySwatCount = 0;
 
-	private int accelX = 10; 
-	private int accelY = 0;
+	// Speed variables for fly movement.
+	private int speedX = 10; 
+	private int speedY = 0;
 	
 	// Bounds for touch detection.
 	private Rectangle flyBounds = new Rectangle(600, 60, 80, 60);
@@ -40,26 +41,36 @@ public class FlyMicroGame extends MicroGame {
     
 	@Override
 	public void updateRunning(float deltaTime) {
-		totalRunningTime += deltaTime;
-
-		// Moves fly in a pre-defined way.
-		moveFly();
-		
 		// Checks for time-based loss.
-		if (lostTimeBased()) {
+		if (lostTimeBased(deltaTime)) {
 			Assets.playSound(Assets.hitSound);
 			return;
 		}
 		
+		// Moves fly in a pre-defined way.
+		moveFly();
+		
+		// Gets all TouchEvents and stores them in a list.
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	    
+	    // Cycles through and tests all touch events.
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
+	    	// Gets a single TouchEvent from the list.
 	        TouchEvent event = touchEvents.get(i);
+	        
+	        // Skip handling if the TouchEvent is TOUCH_DRAGGED.
+	        if(event.type == TouchEvent.TOUCH_DRAGGED)
+	            continue;
+	        
+	        // Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
         	touchPoint.set(event.x, event.y);
+        	// Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
-	        // Tests if target (brofist) is touched.
-        	if (targetTouched(event, touchPoint, flyBounds)) {
+	        // TODO: Make this TOUCH_DRAGGED to make the MicroGame more forgiving. (?)
+	        // Fly Bounds (TOUCH_DOWN) Check.
+        	if (targetTouchDown(event, touchPoint, flyBounds)) {
         		flySwatCount++;
         		if (flySwatCount == requiredFlySwatCount[level-1]) {
         			Assets.playSound(Assets.highJumpSound);
@@ -70,7 +81,7 @@ public class FlyMicroGame extends MicroGame {
         		return;
         	}
 	        
-        	// Tests for non-unique touch events, which is currently pause only.
+        	// Non-Unique, Super Class Bounds (TOUCH_UP) Check.
 	        if (event.type == TouchEvent.TOUCH_UP)
 	        	super.updateRunning(touchPoint);
 	    }   
@@ -84,29 +95,31 @@ public class FlyMicroGame extends MicroGame {
 	public void reset() {
 		super.reset();
 		flySwatCount = 0;
-		accelX = 10;
-		accelY = 0;
+		speedX = 10;
+		speedY = 0;
 		flyBounds.lowerLeft.set(600, 60);
 	}
 	
+	// TODO: Make movement randomized.
+	// Moves fly in a predefined manner.
 	public void moveFly() {
 		float x = flyBounds.lowerLeft.x;
 		float y = flyBounds.lowerLeft.y;
 		
 		if (x == 1200) {
-			accelX = -10;
-			accelY = 5;
+			speedX = -10;
+			speedY = 5;
 		} else if (x == 80) {
-			accelX = 10;
-			accelY = -5;
+			speedX = 10;
+			speedY = -5;
 		} else if (x == 600) {
-			if (accelY > 0)
-				accelY = -5;
+			if (speedY > 0)
+				speedY = -5;
 			else 
-				accelY = 5;
+				speedY = 5;
 		}
-		x += accelX;
-		y += accelY;
+		x += speedX;
+		y += speedY;
 		
 		flyBounds.lowerLeft.set(x, y);
 	}
@@ -117,8 +130,8 @@ public class FlyMicroGame extends MicroGame {
 	
 	@Override
 	public void presentRunning() {
-		drawBackground();
-		drawObjects();
+		drawRunningBackground();
+		drawRunningObjects();
 		// drawRunningBounds();
 		drawInstruction("Swat the Fly!");
 		super.presentRunning();
@@ -129,7 +142,7 @@ public class FlyMicroGame extends MicroGame {
 	// ---------------------------
 	
 	@Override
-	public void drawBackground() {
+	public void drawRunningBackground() {
 		// Draw the background.
 		batcher.beginBatch(Assets.flyBackground);
 		batcher.drawSprite(0, 0, 1280, 800, Assets.flyBackgroundRegion);
@@ -137,7 +150,7 @@ public class FlyMicroGame extends MicroGame {
 	}
 	
 	@Override
-	public void drawObjects() {
+	public void drawRunningObjects() {
 		// Draw the fly.
 		batcher.beginBatch(Assets.fly);
 		batcher.drawSprite(flyBounds, Assets.flyRegion);

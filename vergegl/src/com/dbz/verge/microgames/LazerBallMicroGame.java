@@ -7,9 +7,11 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
+// TODO: Comment code. Try to match the standard that is created with other MicroGame comments.
 // TODO: The lazerBallBounds need to accurately reflect the lazer ball's size.
 // TODO: Explosion Art, better laser art, something better than bob as target, Good "Firin Mah Lazer" sound byte
 //tap the lazer to charge it.
+// TODO: JASON! ... Your difficulty levels don't work.
 public class LazerBallMicroGame extends MicroGame  {
 	
 	// --------------
@@ -50,10 +52,8 @@ public class LazerBallMicroGame extends MicroGame  {
 	// ---------------------   
 	@Override
 	public void updateRunning(float deltaTime) {
-			totalRunningTime += deltaTime;
-			
 			// Checks for time-based loss.
-			if (lostTimeBased()) {
+			if (lostTimeBased(deltaTime)) {
 				Assets.playSound(Assets.hitSound);
 				resetGrowthStage();
 				return;
@@ -79,7 +79,7 @@ public class LazerBallMicroGame extends MicroGame  {
 		        guiCam.touchToWorld(touchPoint);
 		        
 		        // Tests if lazer is touched.
-	        	if (targetTouched(event, touchPoint, lazerBallBounds)) {
+	        	if (targetTouchDown(event, touchPoint, lazerBallBounds)) {
 	        		
 	    			if(!readyToFire){
 		        		chargeCount++;
@@ -98,7 +98,7 @@ public class LazerBallMicroGame extends MicroGame  {
 	        	}
 	        	
 		        //Tests if fire button is touched
-		        if(targetTouched(event, touchPoint, fireButtonBounds))
+		        if(targetTouchDown(event, touchPoint, fireButtonBounds))
 		        	if(readyToFire){
 		        		firelazer();
 		        		return;
@@ -173,8 +173,8 @@ public class LazerBallMicroGame extends MicroGame  {
 	// -------------------	
 	@Override
 	public void presentRunning() {
-			drawBackground();
-			drawObjects();
+			drawRunningBackground();
+			drawRunningObjects();
 			// drawRunningBounds();
 			
 			if (readyToFire || lazerFired)
@@ -188,7 +188,7 @@ public class LazerBallMicroGame extends MicroGame  {
 	// ----------------------------
 		
 	@Override
-	public void drawBackground() {
+	public void drawRunningBackground() {
 		// Draw background.
 		batcher.beginBatch(Assets.lazerBackground);
 		batcher.drawSprite(0, 0, 1280, 800, Assets.lazerBackgroundRegion);
@@ -196,7 +196,7 @@ public class LazerBallMicroGame extends MicroGame  {
 	}
 		
 	@Override
-	public void drawObjects() {
+	public void drawRunningObjects() {
 		// Draw Brofist.
 		batcher.beginBatch(Assets.lazer);
 		batcher.drawSprite(lazerBallBounds, Assets.lazerState1Region);

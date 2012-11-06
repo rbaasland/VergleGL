@@ -43,47 +43,59 @@ public class TrafficMicroGame extends MicroGame {
     
 	@Override
 	public void updateRunning(float deltaTime) {
-		totalRunningTime += deltaTime;
+		// Checks for time-based win.
+		if (wonTimeBased(deltaTime)) {
+			Assets.playSound(Assets.highJumpSound);
+			return;
+		}
 
-		// Moves obstacles at the rate of obstacleAccelY.
+		// Moves obstacles at the rate of obstacleSpeedY.
 		moveObstacles();
 		
-		// Moves car at the rate of the Acceleromter's Y axis.
+		// Moves car at the rate of the Accelerometer's Y axis.
 		moveCar();
 		
-		// Tests for collision-based loss.
+		// Checks for collision-based loss. (obstacleOne)
 		if (collision(carBounds, obstacleOneBounds)) {
 				Assets.playSound(Assets.hitSound);
 				microGameState = MicroGameState.Lost;
 				return;
 		}
+		
+		// Checks for collision-based loss. (obstacleTwo)
 		if (collision(carBounds, obstacleTwoBounds)) {
 			Assets.playSound(Assets.hitSound);
 			microGameState = MicroGameState.Lost;
 			return;
 		}
+		
+		// Checks for collision-based loss. (obstacleThree)
 		if (collision(carBounds, obstacleThreeBounds)) {
 			Assets.playSound(Assets.hitSound);
 			microGameState = MicroGameState.Lost;
 			return;
 		}
 		
-		// Checks for time-based win.
-		if (wonTimeBased()) {
-			Assets.playSound(Assets.highJumpSound);
-			return;
-		}
-		
+		// Gets all TouchEvents and stores them in a list.
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	    
+	    // Cycles through and tests all touch events.
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
+	    	// Gets a single TouchEvent from the list.
 	        TouchEvent event = touchEvents.get(i);
+	        
+	        // Skip handling if the TouchEvent isn't TOUCH_UP
+	        if(event.type != TouchEvent.TOUCH_UP)
+	            continue;
+	        
+	        // Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
         	touchPoint.set(event.x, event.y);
+        	// Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
-        	// Tests for non-unique touch events, which is currently pause only.
-	        if (event.type == TouchEvent.TOUCH_UP)
-	        	super.updateRunning(touchPoint);
+	        // Non-Unique, Super Class Bounds (TOUCH_UP) Check.
+	        super.updateRunning(touchPoint);
 	    }   
 	}
 	
@@ -100,6 +112,7 @@ public class TrafficMicroGame extends MicroGame {
 		carBounds.lowerLeft.set(480, 0);
 	}
 	
+	// Moves obstacles at the rate of obstacleSpeedY.
 	public void moveObstacles() {
 		// Move Obstacle #1.
 		float obstacleX = obstacleOneBounds.lowerLeft.x;
@@ -132,10 +145,12 @@ public class TrafficMicroGame extends MicroGame {
 		obstacleThreeBounds.lowerLeft.set(obstacleX, obstacleY);
 	}
 	
+	// Moves car at the rate of the Accelerometer's Y axis.
 	public void moveCar() {
 		carBounds.lowerLeft.x += (int) game.getInput().getAccelY();
 	}
 	
+	// Checks for collision-based loss.
 	public boolean collision(Rectangle car, Rectangle obstacle) {
 		float obstacleX = obstacle.lowerLeft.x;
 		float obstacleY = obstacle.lowerLeft.y;
@@ -158,8 +173,8 @@ public class TrafficMicroGame extends MicroGame {
 	@Override
 	public void presentRunning() {
 		batcher.beginBatch(Assets.traffic);
-		drawBackground();
-		drawObjects();
+		drawRunningBackground();
+		drawRunningObjects();
 		batcher.endBatch();
 		// drawRunningBounds();
 		drawInstruction("Dodge!");
@@ -171,26 +186,26 @@ public class TrafficMicroGame extends MicroGame {
 	// ---------------------------
 	
 	@Override
-	public void drawBackground() {
+	public void drawRunningBackground() {
 		batcher.drawSprite(0, 0, 1280, 800, Assets.trafficBackgroundRegion);
 	}
 	
 	@Override
-	public void drawObjects() {
-		batcher.drawSprite(obstacleOneBounds, Assets.trafficRedCarRegion); // Draws obstacle car.
-		batcher.drawSprite(obstacleTwoBounds, Assets.trafficBlackCarRegion); // Draws obstacle car.
-		batcher.drawSprite(obstacleThreeBounds, Assets.trafficBlueCarRegion); // Draws obstacle car.
-		batcher.drawSprite(carBounds, Assets.trafficBlueCarRegion); // Draws player car.
+	public void drawRunningObjects() {
+		batcher.drawSprite(obstacleOneBounds, Assets.trafficRedCarRegion); 		// Draws obstacle car.
+		batcher.drawSprite(obstacleTwoBounds, Assets.trafficBlackCarRegion); 	// Draws obstacle car.
+		batcher.drawSprite(obstacleThreeBounds, Assets.trafficBlueCarRegion); 	// Draws obstacle car.
+		batcher.drawSprite(carBounds, Assets.trafficBlueCarRegion); 			// Draws player car.
 	}
 	
 	@Override
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-		batcher.drawSprite(obstacleOneBounds, Assets.boundOverlayRegion); // Obstacle Car Bounding Box
-		batcher.drawSprite(obstacleTwoBounds, Assets.boundOverlayRegion); // Obstacle Car Bounding Box
+		batcher.drawSprite(obstacleOneBounds, Assets.boundOverlayRegion); 	// Obstacle Car Bounding Box
+		batcher.drawSprite(obstacleTwoBounds, Assets.boundOverlayRegion); 	// Obstacle Car Bounding Box
 		batcher.drawSprite(obstacleThreeBounds, Assets.boundOverlayRegion); // Obstacle Car Bounding Box
-	    batcher.drawSprite(carBounds, Assets.boundOverlayRegion); // Car Bounding Box    
+	    batcher.drawSprite(carBounds, Assets.boundOverlayRegion); 			// Car Bounding Box    
 	    batcher.endBatch();
 	}
 	

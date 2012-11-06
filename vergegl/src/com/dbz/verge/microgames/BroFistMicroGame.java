@@ -37,23 +37,32 @@ public class BroFistMicroGame extends MicroGame {
     
 	@Override
 	public void updateRunning(float deltaTime) {
-		totalRunningTime += deltaTime;
-		
 		// Checks for time-based loss.
-		if (lostTimeBased()) {
+		if (lostTimeBased(deltaTime)) {
 			Assets.playSound(Assets.hitSound);
 			return;
 		}
 		
+		// Gets all TouchEvents and stores them in a list.
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	    
+	    // Cycles through and tests all touch events.
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
+	    	// Gets a single TouchEvent from the list.
 	        TouchEvent event = touchEvents.get(i);
+	        
+	        // Skip handling if the TouchEvent is TOUCH_DRAGGED.
+	        if(event.type == TouchEvent.TOUCH_DRAGGED)
+	            continue;
+	        
+	        // Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
         	touchPoint.set(event.x, event.y);
+        	// Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
-	        // Tests if target (BroFist) is touched.
-        	if (targetTouched(event, touchPoint, broFistBounds)) {
+	        // BroFist Bounds (TOUCH_DOWN) Check.
+        	if (targetTouchDown(event, touchPoint, broFistBounds)) {
         		broFistCount++;
         		if (broFistCount == requiredBroFistCount[level-1]) {
         			Assets.playSound(Assets.highJumpSound);
@@ -64,7 +73,7 @@ public class BroFistMicroGame extends MicroGame {
         		return;
         	}
 	        
-        	// Tests for non-unique touch events, which is currently pause only.
+        	// Non-Unique, Super Class Bounds (TOUCH_UP) Check.
 	        if (event.type == TouchEvent.TOUCH_UP)
 	        	super.updateRunning(touchPoint);
 	    }   
@@ -86,8 +95,8 @@ public class BroFistMicroGame extends MicroGame {
 	
 	@Override
 	public void presentRunning() {
-		drawBackground();
-		drawObjects();
+		drawRunningBackground();
+		drawRunningObjects();
 		// drawRunningBounds();
 		drawInstruction("Brofist!");
 		super.presentRunning();
@@ -98,7 +107,7 @@ public class BroFistMicroGame extends MicroGame {
 	// ----------------------------
 	
 	@Override
-	public void drawBackground() {
+	public void drawRunningBackground() {
 		// Draw background.
 		batcher.beginBatch(Assets.broFistBackground);
 		batcher.drawSprite(0, 0, 1280, 800, Assets.broFistBackgroundRegion);
@@ -106,8 +115,8 @@ public class BroFistMicroGame extends MicroGame {
 	}
 	
 	@Override
-	public void drawObjects() {
-		// Draw Brofist.
+	public void drawRunningObjects() {
+		// Draw BroFist.
 		batcher.beginBatch(Assets.broFist);
 		batcher.drawSprite(broFistBounds, Assets.broFistRegion);
 		batcher.endBatch();
