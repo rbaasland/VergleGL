@@ -10,8 +10,7 @@ import com.dbz.verge.MicroGame;
 // TODO: Comment code. Try to match the standard that is created with other MicroGame comments.
 // TODO: The lazerBallBounds need to accurately reflect the lazer ball's size.
 // TODO: Explosion Art, better laser art, something better than bob as target, Good "Firin Mah Lazer" sound byte
-//tap the lazer to charge it.
-// TODO: JASON! ... Your difficulty levels don't work.
+
 public class LazerBallMicroGame extends MicroGame  {
 	
 	// --------------
@@ -28,8 +27,9 @@ public class LazerBallMicroGame extends MicroGame  {
 	int[] level2GrowthRate = {4, 8, 12, 16, 20};
 	int[] level3GrowthRate = {6, 12, 18, 24, 30};
 	
-	//set to growth rate for lv 1 -- 	//TODO: add logic to handle difficulty changes
-	int[] currentLevelGrowthRate = level1GrowthRate;
+	//used to store appropriate growthrate based on level. uses isFirstRun bool in updateRunning()
+	int[] currentLevelGrowthRate;
+	boolean isFirstRun = true;
 
 	//used to track state of laser
 	private boolean readyToFire = false;
@@ -57,6 +57,22 @@ public class LazerBallMicroGame extends MicroGame  {
 				Assets.playSound(Assets.hitSound);
 				resetGrowthStage();
 				return;
+			}
+			
+			if(isFirstRun){
+				
+				switch(level){
+				case 1:
+					currentLevelGrowthRate = level1GrowthRate;
+					break;
+				case 2:
+					currentLevelGrowthRate = level2GrowthRate;
+					break;
+				case 3:
+					currentLevelGrowthRate = level3GrowthRate;
+					break;
+				}
+				isFirstRun = false;
 			}
 			
 	        //if lazer has been fired, keep lazer moving & check for target collision
@@ -158,7 +174,7 @@ public class LazerBallMicroGame extends MicroGame  {
 	}
 		
 	private void movelazer() {
-		lazerBallBounds.lowerLeft.x *= 2;
+		lazerBallBounds.lowerLeft.x += 128;
 	}
 		
 	public boolean collision(Rectangle lazer, Rectangle target) {

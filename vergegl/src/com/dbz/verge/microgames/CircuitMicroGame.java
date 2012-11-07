@@ -10,8 +10,13 @@ import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
 //TODO: Comment code. Try to match the standard that is created with other MicroGame comments.
+//Add light to update at end of circuit
 public class CircuitMicroGame extends MicroGame {
     
+	// --------------
+	//  Inner Classes
+	// --------------
+	
 	//private inner class to manage each gap in the circuit
 	private class CircuitGap {
 		
@@ -20,14 +25,13 @@ public class CircuitMicroGame extends MicroGame {
 		public Rectangle bounds;
 		
 		/**
-		 * 
 		 * @param isClosed true if connection has been completed
 		 * @param connector anim of textures to fill gap
 		 * @param bounds rectangle bounds
 		 */
 		public CircuitGap(boolean isClosed, Animation connector,
 				Rectangle bounds) {
-			super();
+			
 			this.isClosed = isClosed;
 			this.connector = connector;
 			this.bounds = bounds;
@@ -35,7 +39,7 @@ public class CircuitMicroGame extends MicroGame {
 		}
 	}
 	
-	
+	//private inner class to manage each intercept point on the spark's path through the circuit
 	private class SparkIntercept {
 		
 		public static final int LEFT = 0;
@@ -44,123 +48,109 @@ public class CircuitMicroGame extends MicroGame {
 		public static final int UP = 3;
 		
 		public int direction;
-		public Rectangle intercept;
+		public Rectangle bounds;
 		
 		
 		public SparkIntercept(Rectangle intercept, int direction) {
 			super();
 			this.direction = direction;
-			this.intercept = intercept;
+			this.bounds = intercept;
 		}
 		
 		
 	}
 	
-	//====================================================================
-	//====Spark Stuff=====================================================
-	//====================================================================
-									  			//0, 620, 128, 128
-	private Rectangle sparkBounds = new Rectangle(1, 620, 128, 128); //spark start location
-	private Rectangle turnOneBounds = new Rectangle(190, 620, 128,128); //first turn in circuit
-	private Rectangle turnTwoBounds = new Rectangle(190, 492, 128, 128); //2nd turn in circuit
-	private Rectangle turnThreeBounds = new Rectangle(702, 492, 128, 128); //...
-	private Rectangle turnFourBounds = new Rectangle(702, 108, 128, 128);
-	private Rectangle turnFiveBounds = new Rectangle(446, 108, 128, 128); 
-	private Rectangle turnSixBounds = new Rectangle(446, -20, 128, 128); 
-	private Rectangle turnSevenBounds = new Rectangle(958, -20, 128, 128); 
-	private Rectangle turnEightBounds = new Rectangle(958, 492, 128, 128); 
-	private Rectangle turnNineBounds = new Rectangle(1086, 492, 128, 128); 
-	
-	
-	private SparkIntercept[] sparkIntercepts = {new SparkIntercept(turnOneBounds, SparkIntercept.DOWN), 
-												new SparkIntercept(turnTwoBounds, SparkIntercept.RIGHT), 
-												new SparkIntercept(turnThreeBounds, SparkIntercept.DOWN), 
-												new SparkIntercept(turnFourBounds, SparkIntercept.LEFT), 
-												new SparkIntercept(turnFiveBounds,SparkIntercept.DOWN), 
-												new SparkIntercept(turnSixBounds, SparkIntercept.RIGHT),
-												new SparkIntercept(turnSevenBounds, SparkIntercept.UP), 
-												new SparkIntercept(turnEightBounds, SparkIntercept.RIGHT),
-												new SparkIntercept(turnNineBounds, SparkIntercept.RIGHT)};
-	
-	private float sparkSpeed = 1.1f;
-	boolean sparkFired = false;
-	int sparkInterceptTotal = sparkIntercepts.length;
-    int sparkDirectionChangeCount = 0;
-	
-	private void changeSparkDirection(int direction){
+	//private inner class to manage the spark
+	private class Spark{
 		
-		switch(direction){
+		//bounds for spark
+		public Rectangle bounds;
+		public int currentDirection;
 		
-		case SparkIntercept.LEFT:
-			moveSparkLeft();
-			break;
-		case SparkIntercept.RIGHT:
-			moveSparkRight();
-			break;
-		case SparkIntercept.DOWN:
-			moveSparkDown();
-			break;
-		case SparkIntercept.UP:
-			moveSparkUp();
-			break;
+		//vars set explicitly in class for ease of readability/modification
+		public int speed = 16; //works best in power of 2
+		public boolean isFired = false;
+		public int directionChangeCount = 0;
+		
+		//used for spark animation. later, TODO: remove these and pass deltaTime into animation getKeyFrame()
+		public int animationIndex = 0;
+		private int animationDelayCounter = 3;
+		
+		/**
+		 * 
+		 * @param bounds bounds for spark
+		 * @param initialDirection initial move direction for start when circuit is complete
+		 */
+		public Spark(Rectangle bounds, int initialDirection) {
+				this.bounds = bounds;
+				this.currentDirection = initialDirection;
 		}
-	}
-	
-	private void fireSpark() {
-		moveSparkLeft();
-		sparkFired = true;
-	}
-		
-	private void moveSparkRight() {
-		sparkBounds.lowerLeft.x *= sparkSpeed;
-	}
-	
-	private void moveSparkLeft() {
-		sparkBounds.lowerLeft.x *= -sparkSpeed;
-	}
-	
-	private void moveSparkDown() {
-		sparkBounds.lowerLeft.y *= sparkSpeed;
-	}
-	
-	private void moveSparkUp(){
-		sparkBounds.lowerLeft.y *= -sparkSpeed;
-	}
-	
-	
-	
-	
-	//TODO: Problems with bound checking.... 
-	public boolean collision(Rectangle spark, Rectangle intercept) {
-		//from lazer
 
-			if(intercept.lowerLeft.x <= spark.lowerLeft.x)
-				return true;
-			if(intercept.lowerLeft.y <= spark.lowerLeft.y)
-				return true;
+		
+		private void changeSparkDirection(int direction){
 			
-			return false;	
+			currentDirection = direction;
+
+		}
 		
-		/*
-		float obstacleX = intercept.lowerLeft.x;
-		float obstacleY = intercept.lowerLeft.y;
-		float carX = spark.lowerLeft.x;
-		float carY = spark.lowerLeft.y;
-		
-		if (obstacleY <= spark.height)
-			if (obstacleY + intercept.height >= carY)
-				if (obstacleX <= carX + spark.width)
-					if (obstacleX + intercept.width >= carX)
-						return true;
-		
-		return false;
-*/
+		private void moveSpark(){
 			
+			switch(currentDirection){
+			
+			case SparkIntercept.LEFT:
+				moveSparkLeft();
+				break;
+			case SparkIntercept.RIGHT:
+				moveSparkRight();
+				break;
+			case SparkIntercept.DOWN:
+				moveSparkDown();
+				break;
+			case SparkIntercept.UP:
+				moveSparkUp();
+				break;
+			}
+			
+			updateAnimationIndex();
+		}
+		
+		private void fireSpark() {
+			currentDirection = SparkIntercept.RIGHT;
+			moveSpark();
+			isFired = true;
+		}
+		
+		private void moveSparkRight() {
+			bounds.lowerLeft.x += speed;
+		}
+		
+		private void moveSparkLeft() {
+			bounds.lowerLeft.x -= speed;
+		}
+		
+		private void moveSparkDown() {
+			bounds.lowerLeft.y -= speed;
+		}
+		
+		private void moveSparkUp(){
+			bounds.lowerLeft.y += speed;
+		}
+
+		//used to prevent array out of bounds. One MUST know how many textures in the spark animation
+		private void updateAnimationIndex(){
+			
+			if(animationDelayCounter == 0){
+				if (animationIndex == 0)
+					animationIndex = 1;
+				else animationIndex = 0;
+				
+				animationDelayCounter = 3;
+				
+			} else animationDelayCounter--;
+			
+		}
+		
 	}
-	
-	//====================================================================
-	//====END OF Spark Stuff==============================================
-	//====================================================================
 	
 	
 	// --------------
@@ -168,6 +158,7 @@ public class CircuitMicroGame extends MicroGame {
 	// --------------
     //used to store the different number of required gaps in a difficulty level
 	private int[] requiredGapCount = {2, 3, 4};
+
 	
 	// Bounds for touch detection.
     private Rectangle gapOneBounds = new Rectangle(512, 527, 128, 35); //first horizontal gap
@@ -175,13 +166,40 @@ public class CircuitMicroGame extends MicroGame {
 	private Rectangle gapThreeBounds = new Rectangle(752, 276, 35, 128); //1st vertical gap
 	private Rectangle gapFourBounds = new Rectangle(1008, 173, 35, 128); //2nd vertical gap
 	
-	// Boolean to track target touching.
-	//private boolean touchingFistOne = false; 
-	//private boolean touchingFistTwo = false;
+	//Array of CircitGaps on the circuit
+	private CircuitGap[] circuitGaps = initCircitGaps(); //this is called again to set to the appropriate level
+	private boolean isFirstRun = true; //used to set circuitGaps appropriately based on level.
 	
+	//private Rectangle sparkBounds = new Rectangle(1, 620, 128, 128);
+		Spark spark = new Spark(new Rectangle(1, 620, 128, 128), SparkIntercept.RIGHT); //spark start location
+		
+		//create bounds at each "turn" in the circuit
+		private Rectangle turnOneBounds = new Rectangle(190, 620, 128,128); //first turn in circuit
+		private Rectangle turnTwoBounds = new Rectangle(190, 492, 128, 128); //2nd turn in circuit
+		private Rectangle turnThreeBounds = new Rectangle(702, 492, 128, 128); //...
+		private Rectangle turnFourBounds = new Rectangle(702, 108, 128, 128);
+		private Rectangle turnFiveBounds = new Rectangle(446, 108, 128, 128); 
+		private Rectangle turnSixBounds = new Rectangle(446, -20, 128, 128); 
+		private Rectangle turnSevenBounds = new Rectangle(958, -20, 128, 128); 
+		private Rectangle turnEightBounds = new Rectangle(958, 492, 128, 128); 
+		private Rectangle turnNineBounds = new Rectangle(1086, 492, 128, 128); 
+		
+		//create array of intercepts for iteration
+		private SparkIntercept[] sparkIntercepts = {
+				new SparkIntercept(turnOneBounds, SparkIntercept.DOWN), 
+				new SparkIntercept(turnTwoBounds, SparkIntercept.RIGHT), 
+				new SparkIntercept(turnThreeBounds, SparkIntercept.DOWN), 
+				new SparkIntercept(turnFourBounds, SparkIntercept.LEFT), 
+				new SparkIntercept(turnFiveBounds,SparkIntercept.DOWN), 
+				new SparkIntercept(turnSixBounds, SparkIntercept.RIGHT),
+				new SparkIntercept(turnSevenBounds, SparkIntercept.UP), 
+				new SparkIntercept(turnEightBounds, SparkIntercept.RIGHT),
+				new SparkIntercept(turnNineBounds, SparkIntercept.RIGHT) 
+				};
+		
+	int interceptTotal = sparkIntercepts.length;
 	
-	//creates CircitGaps based on current level.
-	private CircuitGap[] circuitGaps = initCircitGaps();
+
 	// -------------------
 	// --- Constructor ---
 	// -------------------
@@ -205,37 +223,46 @@ public class CircuitMicroGame extends MicroGame {
 			return;
 		}
 		
+		//loads gaps based on current level.
+		if(isFirstRun){
+			circuitGaps = initCircitGaps();  
+			isFirstRun = false;
+		}
+		
 		//check if spark fired
-		if(sparkFired){
+		if(spark.isFired){
 			
-			if(collision(sparkBounds, sparkIntercepts[sparkDirectionChangeCount].intercept)){
-				changeSparkDirection(sparkIntercepts[sparkDirectionChangeCount].direction);
+			if(collision(spark, sparkIntercepts[spark.directionChangeCount])){
+				spark.changeSparkDirection(sparkIntercepts[spark.directionChangeCount].direction); //changes behavior of moveSpark()
 				
-				if(sparkDirectionChangeCount == sparkInterceptTotal-1){
+				if(spark.directionChangeCount == interceptTotal-1){
 					Assets.playSound(Assets.highJumpSound);
 					microGameState = MicroGameState.Won;
+					return;
 				}
 				
-					sparkDirectionChangeCount++;
-					return;
+				spark.directionChangeCount++;
 			}
+			
+			spark.moveSpark();
+			return;
 		}
 		
 		
 		//check for circuit completion, if complete - fire spark
 		if(isCircuitComplete()){
-			fireSpark();
+			spark.fireSpark();
     		return;	
 		}
 		
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 	    
+	    //iterate though all touches, check if any of the touches are in the gaps of the circuit
 		for(TouchEvent touchEvent : touchEvents) {
 			 touchPoint.set(touchEvent.x, touchEvent.y);
 			 guiCam.touchToWorld(touchPoint);
 			 
 			/*
-			 * 	Checks for touch in each incomplete circuit connection.
 			 *  Sets isClosed to true if gap is touched. 
 			*/
 			 for (CircuitGap gap : circuitGaps){
@@ -311,6 +338,41 @@ public class CircuitMicroGame extends MicroGame {
 	   		 return true;
 	   }
 		
+
+		//due to nature of the beast... and to save time, 
+		//handle the collision detection based on sparks direction
+	   public boolean collision(Spark spark, SparkIntercept sIntercept) {
+
+			Rectangle sparkBounds = spark.bounds;
+			Rectangle intercept = sIntercept.bounds;
+			boolean isDetected = false;
+			
+			switch(spark.currentDirection){
+			
+			case SparkIntercept.LEFT: //untested
+				if(sparkBounds.lowerLeft.x <= intercept.lowerLeft.x)
+					isDetected = true;
+					break;
+					
+			case SparkIntercept.RIGHT: //good
+				if(intercept.lowerLeft.x <= sparkBounds.lowerLeft.x)
+					isDetected = true;
+					break;
+					
+			case SparkIntercept.DOWN:
+				if(sparkBounds.lowerLeft.y <= intercept.lowerLeft.y)
+					isDetected = true;
+					break;
+					
+			case SparkIntercept.UP:
+				if(intercept.lowerLeft.y <= sparkBounds.lowerLeft.y)
+					isDetected = true;
+					break;	
+			}
+			
+			return isDetected;
+			
+		}
 	
 	// -------------------
 	// --- Draw Method ---
@@ -321,8 +383,8 @@ public class CircuitMicroGame extends MicroGame {
 		
 		drawRunningBackground();
 		drawRunningObjects();
-		drawRunningBounds();
-		drawInstruction("Connect the Circuit!" + String.valueOf(sparkBounds.lowerLeft.x) + String.valueOf(sparkBounds.lowerLeft.y));
+		//drawRunningBounds();
+		//drawInstruction("Connect the Circuit!" + String.valueOf(sparkBounds.lowerLeft.x) + String.valueOf(sparkBounds.lowerLeft.y));
 		super.presentRunning();
 	}
 	
@@ -352,7 +414,10 @@ public class CircuitMicroGame extends MicroGame {
 			else batcher.drawSprite(gap.bounds, gap.connector.getKeyFrame(0));
 		}
 		
-		batcher.drawSprite(sparkBounds, Assets.circuitSparkState1Region);
+		if(spark.isFired){
+			batcher.drawSprite(spark.bounds, 
+					Assets.circuitSparkAnim.getKeyFrame(spark.animationIndex));
+		}
 
 		batcher.endBatch();
 	}
@@ -361,7 +426,7 @@ public class CircuitMicroGame extends MicroGame {
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(sparkBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
+	    batcher.drawSprite(spark.bounds, Assets.boundOverlayRegion); // Brofist Bounding Box
 	    batcher.drawSprite(turnOneBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
 	    batcher.drawSprite(turnTwoBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
 	    batcher.drawSprite(turnThreeBounds, Assets.boundOverlayRegion); // Brofist Bounding Box
