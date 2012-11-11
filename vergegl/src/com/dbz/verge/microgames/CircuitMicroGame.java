@@ -10,6 +10,7 @@ import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
 //TODO: Comment code. Try to match the standard that is created with other MicroGame comments.
+// TODO: Spark isn't reseting properly after a second play in Survival Mode
 //Add light to update at end of circuit
 public class CircuitMicroGame extends MicroGame {
 
@@ -283,6 +284,8 @@ public class CircuitMicroGame extends MicroGame {
 	@Override
 	public void reset() {
 		super.reset();
+		isFirstRun = true;
+		spark.bounds.lowerLeft.set(1, 620);;
 	}
 
 	/*
@@ -320,9 +323,9 @@ public class CircuitMicroGame extends MicroGame {
 	}
 
 
-	private boolean isCircuitComplete(){
+	private boolean isCircuitComplete() {
 
-		for(CircuitGap gap : circuitGaps){
+		for(CircuitGap gap : circuitGaps) {
 			if(!gap.isClosed)
 				return false;
 		}

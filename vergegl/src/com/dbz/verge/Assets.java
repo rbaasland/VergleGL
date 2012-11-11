@@ -338,7 +338,8 @@ public class Assets {
         traffic.reload();
         lazerBackground.reload();
         lazer.reload();
-        
+        circuitBackground.reload();
+        circuit.reload();
         // *** Reload Testing Assets. ***
         boundOverlay.reload();
         items.reload();
