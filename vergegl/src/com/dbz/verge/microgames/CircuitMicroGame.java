@@ -6,11 +6,11 @@ import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Animation;
 import com.dbz.framework.math.Rectangle;
+import com.dbz.framework.math.Vector2;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
 //TODO: Comment code. Try to match the standard that is created with other MicroGame comments.
-// TODO: Spark isn't reseting properly after a second play in Survival Mode
 //Add light to update at end of circuit
 public class CircuitMicroGame extends MicroGame {
 
@@ -66,6 +66,7 @@ public class CircuitMicroGame extends MicroGame {
 
 		//bounds for spark
 		public Rectangle bounds;
+		public Vector2 startCoordinates; //store starting coordinates for spark
 		public int currentDirection;
 
 		//vars set explicitly in class for ease of readability/modification
@@ -84,7 +85,16 @@ public class CircuitMicroGame extends MicroGame {
 		 */
 		public Spark(Rectangle bounds, int initialDirection) {
 			this.bounds = bounds;
+			startCoordinates = bounds.lowerLeft.cpy();
 			this.currentDirection = initialDirection;
+		}
+		
+		private void resetSpark(){
+			isFired = false;
+			directionChangeCount = 0;
+			animationIndex = 0;
+			animationDelayCounter = 3;
+			bounds.lowerLeft.set(startCoordinates);
 		}
 		
 		private void changeSparkDirection(int direction){
@@ -152,7 +162,6 @@ public class CircuitMicroGame extends MicroGame {
 
 	}
 
-
 	// --------------
 	// --- Fields ---
 	// --------------
@@ -198,7 +207,6 @@ public class CircuitMicroGame extends MicroGame {
 	
 	int interceptTotal = sparkIntercepts.length;
 
-
 	// -------------------
 	// --- Constructor ---
 	// -------------------
@@ -223,7 +231,7 @@ public class CircuitMicroGame extends MicroGame {
 		}
 
 		//loads gaps based on current level.
-		if(isFirstRun){
+		if(isFirstRun){ //TODO: Code SMELL
 			circuitGaps = initCircitGaps();  
 			isFirstRun = false;
 		}
@@ -284,8 +292,16 @@ public class CircuitMicroGame extends MicroGame {
 	@Override
 	public void reset() {
 		super.reset();
-		isFirstRun = true;
-		spark.bounds.lowerLeft.set(1, 620);;
+		//reset class members
+		isFirstRun = true; //ensure's gaps are reloaded on next run
+		//spark.bounds.lowerLeft.set(1, 620); //put spark back to original position
+		spark.resetSpark();
+		//reset spark members
+		//spark.isFired = false;
+		//spark.directionChangeCount = 0;
+		//spark.animationIndex = 0;
+		//spark.animationDelayCounter = 3;
+		
 	}
 
 	/*
@@ -295,7 +311,7 @@ public class CircuitMicroGame extends MicroGame {
 
 		CircuitGap[] circuitGaps = new CircuitGap[4];
 
-		switch(level){//TODO: does not work... this is called before the level is actually set.
+		switch(level){
 
 		case 1: 
 			circuitGaps[0] = new CircuitGap(false, Assets.circuitHorizontalGapAnim, gapOneBounds);
@@ -321,8 +337,7 @@ public class CircuitMicroGame extends MicroGame {
 
 		return circuitGaps;
 	}
-
-
+	
 	private boolean isCircuitComplete() {
 
 		for(CircuitGap gap : circuitGaps) {
@@ -332,7 +347,6 @@ public class CircuitMicroGame extends MicroGame {
 
 		return true;
 	}
-
 
 	//due to nature of the beast... and to save time, 
 	//handle the collision detection based on sparks direction
@@ -382,7 +396,6 @@ public class CircuitMicroGame extends MicroGame {
 		drawInstruction("Connect the Circuit!");
 		super.presentRunning();
 	}
-
 
 	// ---------------------------
 	// --- Utility Draw Method ---

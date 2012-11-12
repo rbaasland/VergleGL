@@ -10,7 +10,6 @@ import com.dbz.verge.MicroGame;
 // TODO: Comment code. Try to match the standard that is created with other MicroGame comments.
 // TODO: The lazerBallBounds need to accurately reflect the lazer ball's size.
 // TODO: Explosion Art, better laser art, something better than bob as target, Good "Firin Mah Lazer" sound byte
-// TODO: Force close during Survival Mode and the game is played a second time.
 
 public class LazerBallMicroGame extends MicroGame  {
 
@@ -59,7 +58,7 @@ public class LazerBallMicroGame extends MicroGame  {
 			return;
 		}
 
-		if(isFirstRun){
+		if(isFirstRun){//TODO: Code SMELL
 
 			switch(level){
 			case 1:
@@ -133,15 +132,17 @@ public class LazerBallMicroGame extends MicroGame  {
 	@Override
 	public void reset() {
 		super.reset();
+		//reset members
+		isFirstRun = true;
 		chargeCount = 0;
 		readyToFire = false;
 		lazerFired = false;
-		lazerBallBounds.lowerLeft.set(150, 40);
+		lazerBallBounds.lowerLeft.set(150, 40); //reset lazer to original bounds
 		growthStage = 0;
 		Assets.lazerState1Region = Assets.lazerChargingAnim.getKeyFrame(growthStage);
 		// * Won't need to reset width/height if we never change the bounds. *
-		lazerBallBounds.width = 600;
-		lazerBallBounds.height = 600;
+		//lazerBallBounds.width = 600;
+		//lazerBallBounds.height = 600;
 	}
 
 	//Increments lazer's growth stage, changes lazer animation
