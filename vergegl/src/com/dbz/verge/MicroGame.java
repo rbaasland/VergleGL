@@ -57,7 +57,7 @@ public abstract class MicroGame extends GLScreen {
     
     // Tracks running time for the game's timer.
     public float totalRunningTime = 0;
-    public float totalMicroGameTime = 5.0f;
+    public float totalMicroGameTime[] = new float[] {5.0f, 4.25f, 3.5f};
     
     // Booleans used to enable UI components (Used when launched from GameGrid)
     public boolean pauseEnabled = true;
@@ -270,7 +270,7 @@ public abstract class MicroGame extends GLScreen {
 	public boolean lostTimeBased(float deltaTime) {
 		totalRunningTime += deltaTime;
 		
-		if (totalRunningTime > totalMicroGameTime) {
+		if (totalRunningTime > totalMicroGameTime[speed-1]) {
 			microGameState = MicroGameState.Lost;
 			return true;
 		}
@@ -282,7 +282,7 @@ public abstract class MicroGame extends GLScreen {
 	public boolean wonTimeBased(float deltaTime) {
 		totalRunningTime += deltaTime;
 		
-		if (totalRunningTime > totalMicroGameTime) {
+		if (totalRunningTime > totalMicroGameTime[speed-1]) {
 			microGameState = MicroGameState.Won;
 			return true;
 		}
@@ -465,7 +465,7 @@ public abstract class MicroGame extends GLScreen {
 	public void presentRunning() {
 		// Draw the Timer.
 		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, String.format("%.2f", totalMicroGameTime-totalRunningTime), 600, 100);
+	    Assets.font.drawText(batcher, String.format("%.2f", totalMicroGameTime[speed-1]-totalRunningTime), 600, 100);
 		batcher.endBatch();
 	    
 		// If Pause is enabled...

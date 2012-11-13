@@ -216,7 +216,7 @@ public class CircuitMicroGame extends MicroGame {
 		super(game);
 
 		// Extend allowed time for testing.
-		totalMicroGameTime = 10.0f;
+		totalMicroGameTime = new float[]{10.0f, 8.5f, 7.0f};
 	}
 
 	// ---------------------
