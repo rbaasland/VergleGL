@@ -5,6 +5,8 @@ import java.util.Random;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.util.Log;
+
 import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Camera2D;
@@ -69,8 +71,12 @@ public class GameScreen extends GLScreen {
     
     // Tracks win and loss conditions for game mode.
     public int winCount = 0;
-    public int requiredWins = 9;
+    public int requiredWins = 12;
     public int lives = 3;
+    
+    // Tracks rounds completed.
+    public int roundsCompleted = 0;
+    public int roundsToLevel = 3;
     
     // Array of all possible MicroGames.
     // * Initialized in Constructor to avoid possible conflicts with Game variable. *
@@ -183,12 +189,12 @@ public class GameScreen extends GLScreen {
 	        }
 	    }
 	}
-	
+
 	// Prepares the next MicroGame for launching.
 	public void updateTransition(float deltaTime) {
 		// Collects total time spent in Transition state.
 		totalTransitionTime += deltaTime;
-		
+
 		// After the time limit has past, switch to running state.
 		if (totalTransitionTime >= transitionTimeLimit) {
 			totalTransitionTime = 0;
@@ -226,6 +232,7 @@ public class GameScreen extends GLScreen {
 			totalTimeOver += deltaTime;
 			if (totalTimeOver >= timeOverLimit) {
 				totalTimeOver = 0;
+				roundsCompleted++;
 				winCount++;
 				if (winCount >= requiredWins) {
 					gameState = GameState.Won;
@@ -241,6 +248,7 @@ public class GameScreen extends GLScreen {
 			totalTimeOver += deltaTime;
 			if (totalTimeOver >= timeOverLimit) {
 				totalTimeOver = 0;
+				roundsCompleted++;
 				lives--;
 				if (lives <= 0) {
 					gameState = GameState.Lost;
@@ -307,10 +315,17 @@ public class GameScreen extends GLScreen {
 		{
 			microGameIndex = random.nextInt(microGames.length);
 		} while(checkIndex(microGameIndex));
+		for(int i = 0; i < indexHistory.length; i++)
+			Log.d("indexHistory", "Index History = " + indexHistory[i]);
+		// Increases difficulty level based on rounds completed.
+		if (roundsCompleted % roundsToLevel == 0 && roundsCompleted != 0)
+			if (level != 3)
+				level++;
 		
 		// Resets the MicroGame, and sets it's state to Running to skip the Ready state.
 		microGames[microGameIndex].reset();
 		microGames[microGameIndex].microGameState = MicroGameState.Running;
+		microGames[microGameIndex].level = level;
 	}
 	
 	
@@ -418,7 +433,7 @@ public class GameScreen extends GLScreen {
 //	    batcher.drawSprite(1130, 640, 160, 160, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
 //	    batcher.endBatch();
 	}
-	
+	// TODO Updating
 	public void presentTransition() {
 		// Draws background.
 		batcher.beginBatch(Assets.broFistBackground);
@@ -429,6 +444,7 @@ public class GameScreen extends GLScreen {
 	    Assets.font.drawText(batcher, "Level: " + String.valueOf(level), 600, 500);
 	    Assets.font.drawText(batcher, "Lives: " + String.valueOf(lives), 600, 450);
 	    Assets.font.drawText(batcher, "Win Count: " + String.valueOf(winCount), 600, 400);
+	    Assets.font.drawText(batcher, "Rounds Completed: " + String.valueOf(roundsCompleted), 600, 350);
 		batcher.endBatch();
 		
 		// Draws the pause symbol.

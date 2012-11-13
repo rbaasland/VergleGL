@@ -6,6 +6,7 @@ import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Animation;
 import com.dbz.framework.math.Rectangle;
+import com.dbz.framework.math.Vector2;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
@@ -65,6 +66,7 @@ public class CircuitMicroGame extends MicroGame {
 
 		//bounds for spark
 		public Rectangle bounds;
+		public Vector2 startCoordinates; //store starting coordinates for spark
 		public int currentDirection;
 
 		//vars set explicitly in class for ease of readability/modification
@@ -83,7 +85,16 @@ public class CircuitMicroGame extends MicroGame {
 		 */
 		public Spark(Rectangle bounds, int initialDirection) {
 			this.bounds = bounds;
+			startCoordinates = bounds.lowerLeft.cpy();
 			this.currentDirection = initialDirection;
+		}
+		
+		private void resetSpark(){
+			isFired = false;
+			directionChangeCount = 0;
+			animationIndex = 0;
+			animationDelayCounter = 3;
+			bounds.lowerLeft.set(startCoordinates);
 		}
 		
 		private void changeSparkDirection(int direction){
@@ -151,7 +162,6 @@ public class CircuitMicroGame extends MicroGame {
 
 	}
 
-
 	// --------------
 	// --- Fields ---
 	// --------------
@@ -159,28 +169,29 @@ public class CircuitMicroGame extends MicroGame {
 	//private int[] requiredGapCount = {2, 3, 4};
 
 	// Bounds for touch detection.
-	private Rectangle gapOneBounds = new Rectangle(512, 527, 128, 35); //first horizontal gap
-	private Rectangle gapTwoBounds = new Rectangle(640, 20, 128, 35); //second horizontal gap
-	private Rectangle gapThreeBounds = new Rectangle(752, 276, 35, 128); //1st vertical gap
-	private Rectangle gapFourBounds = new Rectangle(1008, 173, 35, 128); //2nd vertical gap
+	//Noted: Added 40 pixels to each y value to move the circuit lines up
+	private Rectangle gapOneBounds = new Rectangle(512, 567, 128, 35); //first horizontal gap
+	private Rectangle gapTwoBounds = new Rectangle(640, 60, 128, 35); //second horizontal gap
+	private Rectangle gapThreeBounds = new Rectangle(752, 316, 35, 128); //1st vertical gap
+	private Rectangle gapFourBounds = new Rectangle(1008, 213, 35, 128); //2nd vertical gap
 
 	//Array of CircitGaps on the circuit
-	private CircuitGap[] circuitGaps = initCircitGaps(); //Note: this is called again to set to the appropriate level
+	private CircuitGap[] circuitGaps = initCircuitGaps(); //Note: this is called again to set to the appropriate level
 	private boolean isFirstRun = true; //used to set circuitGaps appropriately based on level.
 
 	//private Rectangle sparkBounds = new Rectangle(1, 620, 128, 128);
-	Spark spark = new Spark(new Rectangle(1, 620, 128, 128), SparkIntercept.RIGHT); //spark start location
+	Spark spark = new Spark(new Rectangle(1, 660, 128, 128), SparkIntercept.RIGHT); //spark start location
 
 	//create bounds at each "turn" in the circuit
-	private Rectangle turnOneBounds = new Rectangle(190, 620, 128,128); //first turn in circuit
-	private Rectangle turnTwoBounds = new Rectangle(190, 492, 128, 128); //2nd turn in circuit
-	private Rectangle turnThreeBounds = new Rectangle(702, 492, 128, 128); //...
-	private Rectangle turnFourBounds = new Rectangle(702, 108, 128, 128);
-	private Rectangle turnFiveBounds = new Rectangle(446, 108, 128, 128); 
-	private Rectangle turnSixBounds = new Rectangle(446, -20, 128, 128); 
-	private Rectangle turnSevenBounds = new Rectangle(958, -20, 128, 128); 
-	private Rectangle turnEightBounds = new Rectangle(958, 492, 128, 128); 
-	private Rectangle turnNineBounds = new Rectangle(1086, 492, 128, 128); 
+	private Rectangle turnOneBounds = new Rectangle(190, 660, 128,128); //first turn in circuit
+	private Rectangle turnTwoBounds = new Rectangle(190, 532, 128, 128); //2nd turn in circuit
+	private Rectangle turnThreeBounds = new Rectangle(702, 532, 128, 128); //...
+	private Rectangle turnFourBounds = new Rectangle(702, 148, 128, 128);
+	private Rectangle turnFiveBounds = new Rectangle(446, 148, 128, 128); 
+	private Rectangle turnSixBounds = new Rectangle(446, 20, 128, 128); 
+	private Rectangle turnSevenBounds = new Rectangle(958, 20, 128, 128); 
+	private Rectangle turnEightBounds = new Rectangle(958, 532, 128, 128); 
+	private Rectangle turnNineBounds = new Rectangle(1086, 532, 128, 128); 
 
 	//create array of intercepts for iteration
 	private SparkIntercept[] sparkIntercepts = {
@@ -196,7 +207,6 @@ public class CircuitMicroGame extends MicroGame {
 	};
 	
 	int interceptTotal = sparkIntercepts.length;
-
 
 	// -------------------
 	// --- Constructor ---
@@ -222,8 +232,8 @@ public class CircuitMicroGame extends MicroGame {
 		}
 
 		//loads gaps based on current level.
-		if(isFirstRun){
-			circuitGaps = initCircitGaps();  
+		if(isFirstRun){ //TODO: Code SMELL
+			circuitGaps = initCircuitGaps();  
 			isFirstRun = false;
 		}
 
@@ -283,16 +293,26 @@ public class CircuitMicroGame extends MicroGame {
 	@Override
 	public void reset() {
 		super.reset();
+		//reset class members
+		isFirstRun = true; //ensure's gaps are reloaded on next run
+		//spark.bounds.lowerLeft.set(1, 620); //put spark back to original position
+		spark.resetSpark();
+		//reset spark members
+		//spark.isFired = false;
+		//spark.directionChangeCount = 0;
+		//spark.animationIndex = 0;
+		//spark.animationDelayCounter = 3;
+		
 	}
 
 	/*
 	 * Used to initialize the active gaps based on current level. Could probably use some refactoring. 
 	 */
-	private CircuitGap[] initCircitGaps(){
+	private CircuitGap[] initCircuitGaps(){
 
 		CircuitGap[] circuitGaps = new CircuitGap[4];
 
-		switch(level){//TODO: does not work... this is called before the level is actually set.
+		switch(level){
 
 		case 1: 
 			circuitGaps[0] = new CircuitGap(false, Assets.circuitHorizontalGapAnim, gapOneBounds);
@@ -318,18 +338,16 @@ public class CircuitMicroGame extends MicroGame {
 
 		return circuitGaps;
 	}
+	
+	private boolean isCircuitComplete() {
 
-
-	private boolean isCircuitComplete(){
-
-		for(CircuitGap gap : circuitGaps){
+		for(CircuitGap gap : circuitGaps) {
 			if(!gap.isClosed)
 				return false;
 		}
 
 		return true;
 	}
-
 
 	//due to nature of the beast... and to save time, 
 	//handle the collision detection based on sparks direction
@@ -380,7 +398,6 @@ public class CircuitMicroGame extends MicroGame {
 		super.presentRunning();
 	}
 
-
 	// ---------------------------
 	// --- Utility Draw Method ---
 	// ---------------------------
@@ -397,7 +414,7 @@ public class CircuitMicroGame extends MicroGame {
 	public void drawRunningObjects() {
 		// Draw circuits
 		batcher.beginBatch(Assets.circuit);
-		batcher.drawSprite(0, 0, 1280, 800, Assets.circuitLinesRegion);
+		batcher.drawSprite(0, 40, 1280, 800, Assets.circuitLinesRegion);
 
 		//draw the appropriate connector when gap is closed
 		for(CircuitGap gap : circuitGaps){

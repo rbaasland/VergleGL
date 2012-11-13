@@ -18,7 +18,7 @@ public class LazerBallMicroGame extends MicroGame  {
 	// --------------
 
 	// Array used to store the different required counts of the 3 difficulty levels.
-	private int requiredlazerChargeCount[] = { 10, 20, 30 };
+	private int requiredLazerChargeCount[] = { 10, 20, 30 };
 	private int chargeCount = 0;
 
 	//growth rates for each level (one rate per animation)
@@ -27,7 +27,7 @@ public class LazerBallMicroGame extends MicroGame  {
 	int[] level2GrowthRate = {4, 8, 12, 16, 20};
 	int[] level3GrowthRate = {6, 12, 18, 24, 30};
 
-	//used to store appropriate growthrate based on level. uses isFirstRun bool in updateRunning()
+	//used to store appropriate growth rate based on level. uses isFirstRun bool in updateRunning()
 	int[] currentLevelGrowthRate;
 	boolean isFirstRun = true;
 
@@ -55,11 +55,10 @@ public class LazerBallMicroGame extends MicroGame  {
 		// Checks for time-based loss.
 		if (lostTimeBased(deltaTime)) {
 			Assets.playSound(Assets.hitSound);
-			resetGrowthStage();
 			return;
 		}
 
-		if(isFirstRun){
+		if(isFirstRun){//TODO: Code SMELL
 
 			switch(level){
 			case 1:
@@ -82,7 +81,6 @@ public class LazerBallMicroGame extends MicroGame  {
 			if(collision(lazerBallBounds, targetBounds)){
 				Assets.playSound(Assets.highJumpSound);
 				microGameState = MicroGameState.Won;
-				resetGrowthStage();
 			}
 			return;
 		}
@@ -103,12 +101,12 @@ public class LazerBallMicroGame extends MicroGame  {
 						increaseGrowthStage();
 				}
 
-				if (chargeCount == requiredlazerChargeCount[level-1]) {
+				if (chargeCount == requiredLazerChargeCount[level-1]) {
 					readyToFire = true;
 					fireButtonReady();
 
 				}
-				else if (chargeCount < requiredlazerChargeCount[level-1])
+				else if (chargeCount < requiredLazerChargeCount[level-1])
 					Assets.playSound(Assets.coinSound);
 				return;
 			}
@@ -134,28 +132,23 @@ public class LazerBallMicroGame extends MicroGame  {
 	@Override
 	public void reset() {
 		super.reset();
+		//reset members
+		isFirstRun = true;
 		chargeCount = 0;
 		readyToFire = false;
 		lazerFired = false;
-		lazerBallBounds.lowerLeft.set(150, 40);
-
+		lazerBallBounds.lowerLeft.set(150, 40); //reset lazer to original bounds
+		growthStage = 0;
+		Assets.lazerState1Region = Assets.lazerChargingAnim.getKeyFrame(growthStage);
 		// * Won't need to reset width/height if we never change the bounds. *
-		lazerBallBounds.width = 600;
-		lazerBallBounds.height = 600;
+		//lazerBallBounds.width = 600;
+		//lazerBallBounds.height = 600;
 	}
 
 	//Increments lazer's growth stage, changes lazer animation
 	private void increaseGrowthStage() {
 		growthStage++;
 		Assets.lazerState1Region = Assets.lazerChargingAnim.getKeyFrame(growthStage); //overrides first texture w/ next anim
-	}
-
-	//resets growth stage and lazer animation.
-	private void resetGrowthStage() {
-		growthStage = 0;
-		readyToFire = false;
-		lazerFired = false;
-		Assets.lazerState1Region = Assets.lazerChargingAnim.getKeyFrame(growthStage);
 	}
 
 	private void fireButtonReady() {
