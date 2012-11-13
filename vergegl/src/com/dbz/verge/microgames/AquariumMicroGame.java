@@ -22,8 +22,8 @@ public class AquariumMicroGame extends MicroGame{
 	private class crack
 	{
 		public Rectangle bounds;
-		public boolean isLeaking=false;
-		public int leakRate=16;
+		public boolean isLeaking=true;
+		public int leakRate=4;
 		public boolean onScreen=false;
 		
 		public crack(Rectangle r)
@@ -94,7 +94,7 @@ public class AquariumMicroGame extends MicroGame{
 			Assets.playSound(Assets.highJumpSound);
 			return;
 		}
-		if(waterLevel==0)
+		if(waterLevel<=0)
 		{
 			Assets.playSound(Assets.hitSound);
 			microGameState = MicroGameState.Lost;
@@ -121,12 +121,15 @@ public class AquariumMicroGame extends MicroGame{
 						CrackList[i].isLeaking = true;
 					}
 			}
-			decreaseWaterLevel(CrackList[0]);
 
 			//Tests for non-unique touch events, which is currently pause only.
 			if (touchEvents.get(0).type == TouchEvent.TOUCH_UP)
 				super.updateRunning(touchPoint);
 		}
+		
+		for(crack c : CrackList)
+			if(c.isLeaking && c.onScreen)
+				decreaseWaterLevel(CrackList[0]);
 
 	}
 
