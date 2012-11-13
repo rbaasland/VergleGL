@@ -12,6 +12,7 @@ import com.dbz.verge.microgames.FireMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
 import com.dbz.verge.microgames.TrafficMicroGame;
+import com.dbz.verge.microgames.AquariumMicroGame;
 
 // TODO: Keep naming conventions standard between Bounds and Asset Regions.
 //		 Fix the issue where the LVL text will shift over by a few pixels when you switch through them.
@@ -102,7 +103,7 @@ public class GameGridMenuScreen extends MenuScreen {
                 	if (currentPage == 1)
                 		selectedMicroGame = new BroFistMicroGame(game);
                 	else if (currentPage == 2)
-                		selectedMicroGame = new TrafficMicroGame(game); // Replace with new MicroGame.
+                		selectedMicroGame = new AquariumMicroGame(game); // Replace with new MicroGame.
                 	overlayPresent = true;
                 	return;
                 }

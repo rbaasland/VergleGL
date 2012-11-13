@@ -114,6 +114,11 @@ public class Assets {
     public static Animation lazerChargingAnim;
     public static Animation lazerFireButtonAnim;
     
+    public static Texture aquariumBackround;
+    public static Texture aquariumTank;
+    public static TextureRegion aquariumBackroundRegion;
+    public static TextureRegion aquariumTankRegion;
+    public static TextureRegion aquariumCrack;
     
     // ------------------------
   	// --- Sound Assets -----
@@ -255,7 +260,11 @@ public class Assets {
         								lazerState3Region, lazerState4Region, lazerState5Region, lazerState6Region);
         lazerFireButtonAnim = new Animation(0, lazerFireButtonInitialRegion, lazerFireButtonReadyRegion);
         
-        
+        aquariumBackround=new Texture(game,"aquariumBackground.png");
+        aquariumBackroundRegion=new TextureRegion(aquariumBackround,0,0,1280,800);
+        aquariumTank=new Texture(game,"aquariumTank.png");
+        aquariumTankRegion=new TextureRegion(aquariumTank,0,0,1280,800);
+        aquariumCrack=new TextureRegion(aquariumTank,1280,0,128,128);
         
         // *** Initialize Testing Assets. ***
         boundOverlay = new Texture(game, "boundoverlay.png");
@@ -330,6 +339,8 @@ public class Assets {
         pauseToggle.reload();
 
         // *** Reload MicroGame Assets. ***
+        aquariumBackround.reload();
+        aquariumTank.reload();
         broFistBackground.reload();
         broFist.reload();
         flyBackground.reload();
