@@ -12,7 +12,6 @@ import com.dbz.verge.MicroGame;
 import com.dbz.verge.MicroGame.MicroGameState;
 
 
-// TODO: Fix touch event possibly Touch Drag
 public class AquariumMicroGame extends MicroGame{
 
 	// Speed variation based on speed
@@ -114,15 +113,18 @@ public class AquariumMicroGame extends MicroGame{
 
 			//Sets isClosed to true if gap is touched. 
 			for (int i=0;i<(level+1);i++){
-				if(CrackList[i].onScreen==true)
-					if(targetTouchDown(touchEvent, touchPoint, CrackList[i].bounds)){
+				if(CrackList[i].onScreen==true){
+					
+					if(targetTouchDragged(touchEvent, touchPoint, CrackList[i].bounds)){
 						CrackList[i].isLeaking = false;
 						Assets.playSound(Assets.hitSound);
 					}
-					else
-					{
+					
+					if(touchEvent.type == TouchEvent.TOUCH_UP)
 						CrackList[i].isLeaking = true;
-					}
+					
+				}
+					
 			}
 
 			//Tests for non-unique touch events, which is currently pause only.
