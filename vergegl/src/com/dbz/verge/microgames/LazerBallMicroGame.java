@@ -59,6 +59,7 @@ public class LazerBallMicroGame extends MicroGame  {
 		// Checks for time-based loss.
 		if (lostTimeBased(deltaTime)) {
 			Assets.playSound(Assets.hitSound);
+			resetLazerSize();
 			return;
 		}
 
@@ -85,6 +86,7 @@ public class LazerBallMicroGame extends MicroGame  {
 			if(collision(lazerBallBounds, targetBounds)){
 				Assets.playSound(Assets.highJumpSound);
 				microGameState = MicroGameState.Won;
+				resetLazerSize();
 			}
 			return;
 		}
@@ -162,6 +164,13 @@ public class LazerBallMicroGame extends MicroGame  {
 	private void resetFireButton() {
 		Assets.lazerFireButtonInitialRegion = Assets.lazerFireButtonAnim.getKeyFrame(0);
 	}
+	
+		//resets growth stage and lazer animation.
+	
+	private void resetLazerSize() {
+		Assets.lazerState1Region = Assets.lazerChargingAnim.getKeyFrame(0);
+	}
+
 
 	private void firelazer() {
 		movelazer();
