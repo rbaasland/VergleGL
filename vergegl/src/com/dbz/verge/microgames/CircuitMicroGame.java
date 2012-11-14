@@ -17,7 +17,10 @@ public class CircuitMicroGame extends MicroGame {
 	// --------------
 	//  Inner Classes
 	// --------------
-
+	
+	// Speed variation based on speed
+	private float animationScalar[] = new float[]{1.0f, 1.5f, 2.0f};
+	
 	//private inner class to manage each gap in the circuit
 	private class CircuitGap {
 
@@ -70,7 +73,7 @@ public class CircuitMicroGame extends MicroGame {
 		public int currentDirection;
 
 		//vars set explicitly in class for ease of readability/modification
-		public int speed = 16; //works best in power of 2
+		public int sparkSpeed = 16; //works best in power of 2
 		public boolean isFired = false;
 		public int directionChangeCount = 0;
 
@@ -131,19 +134,19 @@ public class CircuitMicroGame extends MicroGame {
 		}
 
 		private void moveSparkRight() {
-			bounds.lowerLeft.x += speed;
+			bounds.lowerLeft.x += sparkSpeed * animationScalar[speed-1];
 		}
 
 		private void moveSparkLeft() {
-			bounds.lowerLeft.x -= speed;
+			bounds.lowerLeft.x -= sparkSpeed * animationScalar[speed-1];
 		}
 
 		private void moveSparkDown() {
-			bounds.lowerLeft.y -= speed;
+			bounds.lowerLeft.y -= sparkSpeed * animationScalar[speed-1];
 		}
 
 		private void moveSparkUp(){
-			bounds.lowerLeft.y += speed;
+			bounds.lowerLeft.y += sparkSpeed * animationScalar[speed-1];
 		}
 
 		//used to prevent array out of bounds. One MUST know how many textures in the spark animation

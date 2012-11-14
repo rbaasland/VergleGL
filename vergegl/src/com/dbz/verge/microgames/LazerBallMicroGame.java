@@ -10,6 +10,7 @@ import com.dbz.verge.MicroGame;
 // TODO: Comment code. Try to match the standard that is created with other MicroGame comments.
 // TODO: The lazerBallBounds need to accurately reflect the lazer ball's size.
 // TODO: Explosion Art, better laser art, something better than bob as target, Good "Firin Mah Lazer" sound byte
+// TODO: Needs to reset when called from GameGrid and Survival
 
 public class LazerBallMicroGame extends MicroGame  {
 
@@ -26,6 +27,9 @@ public class LazerBallMicroGame extends MicroGame  {
 	int[] level1GrowthRate = {2, 4, 6, 8 ,10};
 	int[] level2GrowthRate = {4, 8, 12, 16, 20};
 	int[] level3GrowthRate = {6, 12, 18, 24, 30};
+	
+	// Speed variation based on speed
+	private float animationScalar[] = new float[]{1.0f, 1.5f, 2.0f};
 
 	//used to store appropriate growth rate based on level. uses isFirstRun bool in updateRunning()
 	int[] currentLevelGrowthRate;
@@ -167,7 +171,7 @@ public class LazerBallMicroGame extends MicroGame  {
 	}
 
 	private void movelazer() {
-		lazerBallBounds.lowerLeft.x += 128;
+		lazerBallBounds.lowerLeft.x += 128 * animationScalar[speed-1];
 	}
 
 	public boolean collision(Rectangle lazer, Rectangle target) {

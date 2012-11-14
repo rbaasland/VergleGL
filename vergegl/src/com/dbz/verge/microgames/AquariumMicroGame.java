@@ -12,10 +12,13 @@ import com.dbz.verge.MicroGame;
 import com.dbz.verge.MicroGame.MicroGameState;
 
 
-
+// TODO: Fix touch event possibly Touch Drag
 public class AquariumMicroGame extends MicroGame{
 
-	int waterLevel=800;
+	// Speed variation based on speed
+	private float animationScalar[] = new float[]{1.0f, 1.5f, 2.0f};
+	
+	float waterLevel=800;
 	boolean isTankEmpty=false;
 	crack[] CrackList ={new crack(new Rectangle(0,0,128,128)), new crack(new Rectangle(600,600,128,128)), new crack(new Rectangle(250,450,128,128)), new crack(new Rectangle(400,100,128,128))};
 	float[] levelCrackTimes={4,2.5f,1};
@@ -74,7 +77,7 @@ public class AquariumMicroGame extends MicroGame{
 	}
 	public void decreaseWaterLevel(crack c)
 	{
-		waterLevel=waterLevel-c.leakRate;
+		waterLevel=waterLevel-c.leakRate * animationScalar[speed-1];
 	}
 	public AquariumMicroGame(Game game) {
 		super(game);

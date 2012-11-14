@@ -10,6 +10,7 @@ import com.dbz.verge.MicroGame;
 
 // TODO: Make fly's movement random.
 //		 Generate more flies for higher difficulties.
+//		 Splat texture on death
 public class FlyMicroGame extends MicroGame {
     
 	// --------------
@@ -21,8 +22,9 @@ public class FlyMicroGame extends MicroGame {
 	private int flySwatCount = 0;
 
 	// Speed variables for fly movement.
-	private int speedX = 10; 
-	private int speedY = 0;
+	private float speedX = 10; 
+	private float speedY = 0;
+	private float animationScalar[] = new float[]{1.0f, 1.5f, 2.0f};
 	
 	// Bounds for touch detection.
 	private Rectangle flyBounds = new Rectangle(600, 60, 80, 60);
@@ -106,20 +108,37 @@ public class FlyMicroGame extends MicroGame {
 		float x = flyBounds.lowerLeft.x;
 		float y = flyBounds.lowerLeft.y;
 		
-		if (x == 1200) {
-			speedX = -10;
-			speedY = 5;
-		} else if (x == 80) {
-			speedX = 10;
-			speedY = -5;
-		} else if (x == 600) {
-			if (speedY > 0)
-				speedY = -5;
-			else 
-				speedY = 5;
+		if (x >= 1200) {
+			speedX = -10.0f;
+			speedY = 5.0f;
 		}
-		x += speedX;
-		y += speedY;
+		else if (y >= 720) {
+			speedX = -10.0f;
+			speedY = -5.0f;
+		}
+		else if (x <= 80) {
+			speedX = 10.0f;
+			speedY = -5.0f;
+		}
+		else if (y <= 80) {
+			speedX = 10.0f;
+			speedY = 5.0f;
+		}
+		
+//		if (x >= 1200) {
+//			speedX = -10.0f;
+//			speedY = 5.0f;
+//		} else if (x <= 80) {
+//			speedX = 10.0f;
+//			speedY = -5.0f;
+//		} else if (x >= 580 && x <= 620) {
+//			if (speedY > 0)
+//				speedY = -5.0f;
+//			else 
+//				speedY = 5.0f;
+//		}
+		x += speedX * animationScalar[speed-1];
+		y += speedY * animationScalar[speed-1];
 		
 		flyBounds.lowerLeft.set(x, y);
 	}
