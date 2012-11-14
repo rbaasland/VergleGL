@@ -61,6 +61,10 @@ public class GameScreen extends GLScreen {
     // *Could also try to use a class, struct or enum.*
     public int level = 1;
     
+    // *Possible Speed Implementation.*
+    // *Could also try to use a class, struct or enum.*
+    public int speed = 1;
+    
     // Tracks transition time.
     public float totalTransitionTime = 0;
     public float transitionTimeLimit = 2.0f;
@@ -74,9 +78,10 @@ public class GameScreen extends GLScreen {
     public int requiredWins = 12;
     public int lives = 3;
     
-    // Tracks rounds completed.
-    public int roundsCompleted = 0;
-    public int roundsToLevel = 3;
+    // Tracks rounds completed, and level/speed increase rates.
+    public int currentRound = 1;
+    public int roundsToLevel = 6;
+    public int roundsToSpeed = 3;
     
     // Array of all possible MicroGames.
     // * Initialized in Constructor to avoid possible conflicts with Game variable. *
@@ -232,7 +237,7 @@ public class GameScreen extends GLScreen {
 			totalTimeOver += deltaTime;
 			if (totalTimeOver >= timeOverLimit) {
 				totalTimeOver = 0;
-				roundsCompleted++;
+				currentRound++;
 				winCount++;
 				if (winCount >= requiredWins) {
 					gameState = GameState.Won;
@@ -248,7 +253,7 @@ public class GameScreen extends GLScreen {
 			totalTimeOver += deltaTime;
 			if (totalTimeOver >= timeOverLimit) {
 				totalTimeOver = 0;
-				roundsCompleted++;
+				currentRound++;
 				lives--;
 				if (lives <= 0) {
 					gameState = GameState.Lost;
@@ -317,15 +322,22 @@ public class GameScreen extends GLScreen {
 		} while(checkIndex(microGameIndex));
 		for(int i = 0; i < indexHistory.length; i++)
 			Log.d("indexHistory", "Index History = " + indexHistory[i]);
+		
 		// Increases difficulty level based on rounds completed.
-		if (roundsCompleted % roundsToLevel == 0 && roundsCompleted != 0)
+		if (currentRound % roundsToLevel == 0 && currentRound != 1)
 			if (level != 3)
 				level++;
+		
+		// Increases speed level based on rounds completed.
+		if (currentRound % roundsToSpeed == 0 && currentRound != 1)
+			if (speed != 3)
+				speed++;
 		
 		// Resets the MicroGame, and sets it's state to Running to skip the Ready state.
 		microGames[microGameIndex].reset();
 		microGames[microGameIndex].microGameState = MicroGameState.Running;
 		microGames[microGameIndex].level = level;
+		microGames[microGameIndex].speed = speed;
 	}
 	
 	
@@ -441,10 +453,11 @@ public class GameScreen extends GLScreen {
 		batcher.endBatch();
 		
 		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, "Level: " + String.valueOf(level), 600, 500);
+	    Assets.font.drawText(batcher, "Level: " + String.valueOf(level), 600, 550);
+	    Assets.font.drawText(batcher, "Speed: " + String.valueOf(speed), 600, 500);
 	    Assets.font.drawText(batcher, "Lives: " + String.valueOf(lives), 600, 450);
 	    Assets.font.drawText(batcher, "Win Count: " + String.valueOf(winCount), 600, 400);
-	    Assets.font.drawText(batcher, "Rounds Completed: " + String.valueOf(roundsCompleted), 600, 350);
+	    Assets.font.drawText(batcher, "Current Round: " + String.valueOf(currentRound), 600, 350);
 		batcher.endBatch();
 		
 		// Draws the pause symbol.
