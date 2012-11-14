@@ -134,7 +134,7 @@ public class AquariumMicroGame extends MicroGame{
 		
 		for(crack c : CrackList)
 			if(c.isLeaking && c.onScreen)
-				decreaseWaterLevel(CrackList[0]);
+				decreaseWaterLevel(c);
 
 	}
 
