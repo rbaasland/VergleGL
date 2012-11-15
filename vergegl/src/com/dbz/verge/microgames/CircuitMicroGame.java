@@ -150,7 +150,7 @@ public class CircuitMicroGame extends MicroGame {
 		}
 
 		//used to prevent array out of bounds. One MUST know how many textures in the spark animation
-		private void updateAnimationIndex(){
+		private void updateAnimationIndex() {
 
 			if(animationDelayCounter == 0){
 				if (animationIndex == 0)

@@ -1,4 +1,4 @@
-package com.dbz.verge;
+package com.dbz.verge.menus;
 
 import java.util.List;
 
@@ -6,6 +6,9 @@ import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
+import com.dbz.verge.Assets;
+import com.dbz.verge.Menu;
+import com.dbz.verge.MicroGame;
 import com.dbz.verge.microgames.BroFistMicroGame;
 import com.dbz.verge.microgames.CircuitMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
@@ -19,7 +22,7 @@ import com.dbz.verge.microgames.AquariumMicroGame;
 //		 *** I played through the games and I think I might have gotten the same game in the same set.
 //		 I think it happened on the 5th-6th game, so in other words one game earlier than it should have.
 //		 We should test this more throughly to make sure I didn't just imagine things. ***
-public class GameGridMenuScreen extends MenuScreen {
+public class GameGridMenu extends Menu {
    
 	// --------------
 	// --- Fields ---
@@ -67,7 +70,7 @@ public class GameGridMenuScreen extends MenuScreen {
     // -------------------
  	// --- Constructor ---
     // -------------------
-    public GameGridMenuScreen(Game game) {
+    public GameGridMenu(Game game) {
         super(game); 
     }       
 
@@ -156,7 +159,7 @@ public class GameGridMenuScreen extends MenuScreen {
                 // Back Arrow Bounds Check.
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    game.setScreen(new PlayMenuScreen(game));
+                    game.setScreen(new PlayMenu(game));
                     return;
                 }
                 
@@ -331,7 +334,6 @@ public class GameGridMenuScreen extends MenuScreen {
 		batcher.drawSprite(speedSelectAreaBounds, Assets.selectionRegion);
 		batcher.drawSprite(decrementSpeedBounds, Assets.leftArrowRegion);
 		
-
 		if (selectedMicroGame.speed == 1)
 			batcher.drawSprite(speedTextBounds, Assets.speedOneRegion);
 		else if (selectedMicroGame.speed == 2)

@@ -5,13 +5,14 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.dbz.framework.Screen;
 import com.dbz.framework.impl.GLGame;
+import com.dbz.verge.menus.MainMenu;
 
 public class VergeGame extends GLGame {
     boolean firstTimeCreate = true;
     
     @Override
     public Screen getStartScreen() {
-        return new MainMenuScreen(this);
+        return new MainMenu(this);
     }
     
     @Override

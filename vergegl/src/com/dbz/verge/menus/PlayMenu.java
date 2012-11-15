@@ -1,4 +1,4 @@
-package com.dbz.verge;
+package com.dbz.verge.menus;
 
 import java.util.List;
 
@@ -6,8 +6,12 @@ import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
+import com.dbz.verge.Assets;
+import com.dbz.verge.Menu;
+import com.dbz.verge.modes.SurvivalMode;
+import com.dbz.verge.modes.TimeAttackMode;
 
-public class PlayMenuScreen extends MenuScreen {
+public class PlayMenu extends Menu {
 	
 	// --------------
 	// --- Fields ---
@@ -22,7 +26,7 @@ public class PlayMenuScreen extends MenuScreen {
     // -------------------
  	// --- Constructor ---
     // -------------------
-    public PlayMenuScreen(Game game) {
+    public PlayMenu(Game game) {
         super(game);                    
     }       
 
@@ -51,28 +55,28 @@ public class PlayMenuScreen extends MenuScreen {
                 // Game Grid Button Bounds Check.
                 if(OverlapTester.pointInRectangle(gameGridBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    game.setScreen(new GameGridMenuScreen(game));
+                    game.setScreen(new GameGridMenu(game));
                     return;
                 }
                 
                 // Survival Button Bounds Check.
                 if(OverlapTester.pointInRectangle(survivalBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    game.setScreen(new GameScreen(game));
+                    game.setScreen(new SurvivalMode(game));
                     return;
                 }
                 
                 // Time Attack Button Bounds Check.
                 if(OverlapTester.pointInRectangle(timeAttackBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    //  game.setScreen(new HelpScreen(game));
+                    game.setScreen(new TimeAttackMode(game));
                     return;
                 }
                 
                 // Back Arrow Bounds Check.
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    game.setScreen(new MainMenuScreen(game));
+                    game.setScreen(new MainMenu(game));
                     return;
                 }
                 

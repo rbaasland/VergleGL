@@ -10,7 +10,7 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 
-public abstract class MenuScreen extends GLScreen {
+public abstract class Menu extends GLScreen {
 	
 	// --------------
 	// --- Fields ---
@@ -27,7 +27,7 @@ public abstract class MenuScreen extends GLScreen {
     // -------------------
  	// --- Constructor ---
     // -------------------
-    public MenuScreen(Game game) {
+    public Menu(Game game) {
         super(game);                    
     }       
 
