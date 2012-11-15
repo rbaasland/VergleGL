@@ -5,16 +5,18 @@ import com.dbz.verge.Assets;
 import com.dbz.verge.Mode;
 
 // TODO: Display total time accumulated on status report.
+// TODO: Currently, if you lose round on the round before level/speed up will occur...
+//		 ...you will be forced to replay the game you lost at a higher speed and level than originally.
+
 public class TimeAttackMode extends Mode {
 
 	// --------------
 	// --- Fields ---
 	// --------------
 	
-	// Tracks win count, history, and required MicroGame wins to win the TimeAttack.
-    public int winCount = 0;
-    public int winCountHistory = 0;
-    public int winsRequired; // * Initialized in Constructor. *
+	// Tracks required MicroGame wins to win the TimeAttack.
+	// * Initialized in Constructor. *
+    public int winsRequired;
 	
 	// -------------------
 	// --- Constructor ---
@@ -32,17 +34,15 @@ public class TimeAttackMode extends Mode {
 	// ----------------------
 	
 	@Override
-	// TODO: Insert MicroGame Win handling.
 	public void updateMicroGameWon() {
-		winCount++;
-		if (winCount > winsRequired)
+		currentRound++;
+		if (currentRound > winsRequired)
 			gameState = GameState.Won;
 		else
 			gameState = GameState.Transition;
 	}
 	
 	@Override
-	// TODO: Insert MicroGame Loss handling.
 	public void updateMicroGameLost() {
 		gameState = GameState.Transition;
 	}
@@ -52,19 +52,10 @@ public class TimeAttackMode extends Mode {
 	// ------------------------------
 	
 	@Override
-	// TODO: Insert Time Attack setup implementation, unique code.
 	// Goes through MicroGames sequentially.
 	public void setupNextMicroGame() {
-		super.setupNextMicroGame();
-		
-		// If player won the last MicroGame, then procede to next MicroGame in set.
-		if (winCountHistory < winCount) {
-			winCountHistory = winCount;
-			if (microGameIndex < microGames.length)
-				microGameIndex++;
-			else
-				microGameIndex = 0;
-		}
+		microGameIndex = (currentRound-1) % microGames.length;
+		super.setupNextMicroGame();		
 	}
 	
 	// ----------------------------
@@ -76,7 +67,7 @@ public class TimeAttackMode extends Mode {
 		batcher.beginBatch(Assets.items);
 	    Assets.font.drawText(batcher, "Level: " + String.valueOf(level), 600, 550);
 	    Assets.font.drawText(batcher, "Speed: " + String.valueOf(speed), 600, 500);
-	    Assets.font.drawText(batcher, "Win Count: " + String.valueOf(winCount) + " / " + String.valueOf(winsRequired), 600, 400);
+	    Assets.font.drawText(batcher, "Wins: " + String.valueOf(currentRound-1) + " / " + String.valueOf(winsRequired), 600, 400);
 		batcher.endBatch();
 	}
 	
