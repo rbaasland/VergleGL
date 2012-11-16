@@ -23,8 +23,8 @@ public class TrafficMicroGame extends MicroGame {
 	private int obstacleTwoSpeedY = 8;
 	private int obstacleThreeSpeedY = 15;
 	
-	// Speed variation based on speed
-	private float animationScalar[] = new float[]{1.0f, 1.5f, 2.0f};
+	// Animation scalar based on speed variable.
+	private float animationScalar[] = {1.0f, 1.5f, 2.0f};
 	
 	// Bounds for touch detection.
 	private Rectangle obstacleOneBounds = new Rectangle(250, 800, 80, 170);

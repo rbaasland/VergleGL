@@ -11,181 +11,33 @@ import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
 //TODO: Comment code. Try to match the standard that is created with other MicroGame comments.
-//Add light to update at end of circuit
+//		Add light to update at end of circuit
 public class CircuitMicroGame extends MicroGame {
-
-	// --------------
-	//  Inner Classes
-	// --------------
-	
-	// Speed variation based on speed
-	private float animationScalar[] = new float[]{1.0f, 1.5f, 2.0f};
-	
-	//private inner class to manage each gap in the circuit
-	private class CircuitGap {
-
-		public boolean isClosed;
-		public Animation connector;
-		public Rectangle bounds;
-
-		/**
-		 * @param isClosed true if connection has been completed
-		 * @param connector anim of textures to fill gap
-		 * @param bounds rectangle bounds
-		 */
-		public CircuitGap(boolean isClosed, Animation connector,
-				Rectangle bounds) {
-
-			this.isClosed = isClosed;
-			this.connector = connector;
-			this.bounds = bounds;
-
-		}
-	}
-
-	//private inner class to manage each intercept point on the spark's path through the circuit
-	private class SparkIntercept {
-
-		public static final int LEFT = 0;
-		public static final int RIGHT = 1;
-		public static final int DOWN = 2;
-		public static final int UP = 3;
-
-		public int direction;
-		public Rectangle bounds;
-
-
-		public SparkIntercept(Rectangle intercept, int direction) {
-			super();
-			this.direction = direction;
-			this.bounds = intercept;
-		}
-
-
-	}
-
-	//private inner class to manage the spark
-	private class Spark{
-
-		//bounds for spark
-		public Rectangle bounds;
-		public Vector2 startCoordinates; //store starting coordinates for spark
-		public int currentDirection;
-
-		//vars set explicitly in class for ease of readability/modification
-		public int sparkSpeed = 16; //works best in power of 2
-		public boolean isFired = false;
-		public int directionChangeCount = 0;
-
-		//used for spark animation. later, TODO: remove these and pass deltaTime into animation getKeyFrame()
-		public int animationIndex = 0;
-		private int animationDelayCounter = 3;
-
-		/**
-		 * 
-		 * @param bounds bounds for spark
-		 * @param initialDirection initial move direction for start when circuit is complete
-		 */
-		public Spark(Rectangle bounds, int initialDirection) {
-			this.bounds = bounds;
-			startCoordinates = bounds.lowerLeft.cpy();
-			this.currentDirection = initialDirection;
-		}
-		
-		private void resetSpark(){
-			isFired = false;
-			directionChangeCount = 0;
-			animationIndex = 0;
-			animationDelayCounter = 3;
-			bounds.lowerLeft.set(startCoordinates);
-		}
-		
-		private void changeSparkDirection(int direction){
-
-			currentDirection = direction;
-
-		}
-
-		private void moveSpark(){
-
-			switch(currentDirection){
-
-			case SparkIntercept.LEFT:
-				moveSparkLeft();
-				break;
-			case SparkIntercept.RIGHT:
-				moveSparkRight();
-				break;
-			case SparkIntercept.DOWN:
-				moveSparkDown();
-				break;
-			case SparkIntercept.UP:
-				moveSparkUp();
-				break;
-			}
-
-			updateAnimationIndex();
-		}
-
-		private void fireSpark() {
-			currentDirection = SparkIntercept.RIGHT;
-			moveSpark();
-			isFired = true;
-		}
-
-		private void moveSparkRight() {
-			bounds.lowerLeft.x += sparkSpeed * animationScalar[speed-1];
-		}
-
-		private void moveSparkLeft() {
-			bounds.lowerLeft.x -= sparkSpeed * animationScalar[speed-1];
-		}
-
-		private void moveSparkDown() {
-			bounds.lowerLeft.y -= sparkSpeed * animationScalar[speed-1];
-		}
-
-		private void moveSparkUp(){
-			bounds.lowerLeft.y += sparkSpeed * animationScalar[speed-1];
-		}
-
-		//used to prevent array out of bounds. One MUST know how many textures in the spark animation
-		private void updateAnimationIndex() {
-
-			if(animationDelayCounter == 0){
-				if (animationIndex == 0)
-					animationIndex = 1;
-				else animationIndex = 0;
-
-				animationDelayCounter = 3;
-
-			} else animationDelayCounter--;
-
-		}
-
-	}
 
 	// --------------
 	// --- Fields ---
 	// --------------
 	//used to store the different number of required gaps in a difficulty level
 	//private int[] requiredGapCount = {2, 3, 4};
-
+	
+	// Animation scalar based on speed variable.
+	private float animationScalar[] = { 1.0f, 1.5f, 2.0f };
+	
 	// Bounds for touch detection.
-	//Noted: Added 40 pixels to each y value to move the circuit lines up
+	// Noted: Added 40 pixels to each y value to move the circuit lines up
 	private Rectangle gapOneBounds = new Rectangle(512, 567, 128, 35); //first horizontal gap
 	private Rectangle gapTwoBounds = new Rectangle(640, 60, 128, 35); //second horizontal gap
 	private Rectangle gapThreeBounds = new Rectangle(752, 316, 35, 128); //1st vertical gap
 	private Rectangle gapFourBounds = new Rectangle(1008, 213, 35, 128); //2nd vertical gap
 
-	//Array of CircitGaps on the circuit
+	// Array of CircitGaps on the circuit
 	private CircuitGap[] circuitGaps = initCircuitGaps(); //Note: this is called again to set to the appropriate level
 	private boolean isFirstRun = true; //used to set circuitGaps appropriately based on level.
 
-	//private Rectangle sparkBounds = new Rectangle(1, 620, 128, 128);
+	// private Rectangle sparkBounds = new Rectangle(1, 620, 128, 128);
 	Spark spark = new Spark(new Rectangle(1, 660, 128, 128), SparkIntercept.RIGHT); //spark start location
 
-	//create bounds at each "turn" in the circuit
+	// create bounds at each "turn" in the circuit
 	private Rectangle turnOneBounds = new Rectangle(190, 660, 128,128); //first turn in circuit
 	private Rectangle turnTwoBounds = new Rectangle(190, 532, 128, 128); //2nd turn in circuit
 	private Rectangle turnThreeBounds = new Rectangle(702, 532, 128, 128); //...
@@ -196,7 +48,7 @@ public class CircuitMicroGame extends MicroGame {
 	private Rectangle turnEightBounds = new Rectangle(958, 532, 128, 128); 
 	private Rectangle turnNineBounds = new Rectangle(1086, 532, 128, 128); 
 
-	//create array of intercepts for iteration
+	// create array of intercepts for iteration
 	private SparkIntercept[] sparkIntercepts = {
 			new SparkIntercept(turnOneBounds, SparkIntercept.DOWN), 
 			new SparkIntercept(turnTwoBounds, SparkIntercept.RIGHT), 
@@ -448,4 +300,150 @@ public class CircuitMicroGame extends MicroGame {
 		batcher.endBatch();
 	}
 
+	// --------------------
+	// --- Game Objects ---
+	// --------------------
+	
+	//private inner class to manage each gap in the circuit
+	private class CircuitGap {
+		public boolean isClosed;
+		public Animation connector;
+		public Rectangle bounds;
+
+		/**
+		 * @param isClosed true if connection has been completed
+		 * @param connector anim of textures to fill gap
+		 * @param bounds rectangle bounds
+		 */
+		public CircuitGap(boolean isClosed, Animation connector,
+				Rectangle bounds) {
+
+			this.isClosed = isClosed;
+			this.connector = connector;
+			this.bounds = bounds;
+
+		}
+	}
+
+	//private inner class to manage each intercept point on the spark's path through the circuit
+	private class SparkIntercept {
+
+		public static final int LEFT = 0;
+		public static final int RIGHT = 1;
+		public static final int DOWN = 2;
+		public static final int UP = 3;
+
+		public int direction;
+		public Rectangle bounds;
+
+
+		public SparkIntercept(Rectangle intercept, int direction) {
+			super();
+			this.direction = direction;
+			this.bounds = intercept;
+		}
+
+
+	}
+
+	//private inner class to manage the spark
+	private class Spark{
+
+		//bounds for spark
+		public Rectangle bounds;
+		public Vector2 startCoordinates; //store starting coordinates for spark
+		public int currentDirection;
+
+		//vars set explicitly in class for ease of readability/modification
+		public int sparkSpeed = 16; //works best in power of 2
+		public boolean isFired = false;
+		public int directionChangeCount = 0;
+
+		//used for spark animation. later, TODO: remove these and pass deltaTime into animation getKeyFrame()
+		public int animationIndex = 0;
+		private int animationDelayCounter = 3;
+
+		/**
+		 * 
+		 * @param bounds bounds for spark
+		 * @param initialDirection initial move direction for start when circuit is complete
+		 */
+		public Spark(Rectangle bounds, int initialDirection) {
+			this.bounds = bounds;
+			startCoordinates = bounds.lowerLeft.cpy();
+			this.currentDirection = initialDirection;
+		}
+		
+		private void resetSpark(){
+			isFired = false;
+			directionChangeCount = 0;
+			animationIndex = 0;
+			animationDelayCounter = 3;
+			bounds.lowerLeft.set(startCoordinates);
+		}
+		
+		private void changeSparkDirection(int direction){
+
+			currentDirection = direction;
+
+		}
+
+		private void moveSpark(){
+
+			switch(currentDirection){
+
+			case SparkIntercept.LEFT:
+				moveSparkLeft();
+				break;
+			case SparkIntercept.RIGHT:
+				moveSparkRight();
+				break;
+			case SparkIntercept.DOWN:
+				moveSparkDown();
+				break;
+			case SparkIntercept.UP:
+				moveSparkUp();
+				break;
+			}
+
+			updateAnimationIndex();
+		}
+
+		private void fireSpark() {
+			currentDirection = SparkIntercept.RIGHT;
+			moveSpark();
+			isFired = true;
+		}
+
+		private void moveSparkRight() {
+			bounds.lowerLeft.x += sparkSpeed * animationScalar[speed-1];
+		}
+
+		private void moveSparkLeft() {
+			bounds.lowerLeft.x -= sparkSpeed * animationScalar[speed-1];
+		}
+
+		private void moveSparkDown() {
+			bounds.lowerLeft.y -= sparkSpeed * animationScalar[speed-1];
+		}
+
+		private void moveSparkUp(){
+			bounds.lowerLeft.y += sparkSpeed * animationScalar[speed-1];
+		}
+
+		//used to prevent array out of bounds. One MUST know how many textures in the spark animation
+		private void updateAnimationIndex() {
+
+			if(animationDelayCounter == 0){
+				if (animationIndex == 0)
+					animationIndex = 1;
+				else animationIndex = 0;
+
+				animationDelayCounter = 3;
+
+			} else animationDelayCounter--;
+
+		}
+
+	}
 }

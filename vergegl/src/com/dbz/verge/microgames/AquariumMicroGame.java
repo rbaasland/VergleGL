@@ -12,73 +12,24 @@ import com.dbz.verge.MicroGame;
 
 public class AquariumMicroGame extends MicroGame{
 
-	// Speed variation based on speed
-	private float animationScalar[] = new float[]{1.0f, 1.5f, 2.0f};
+	// Animation scalar based on speed variable.
+	private float animationScalar[] = { 1.0f, 1.5f, 2.0f };
 	
-	float waterLevel=800;
-	boolean isTankEmpty=false;
-	crack[] CrackList ={new crack(new Rectangle(0,0,128,128)), new crack(new Rectangle(600,600,128,128)), new crack(new Rectangle(250,450,128,128)), new crack(new Rectangle(400,100,128,128))};
-	float[] levelCrackTimes={4,2.5f,1};
+	// Array used to store the crack appearance times for the 3 difficulty levels.
+	public float crackTimes[] = { 4.0f, 2.5f, 1.0f };
 	
-	private class crack
-	{
-		public Rectangle bounds;
-		public boolean isLeaking=true;
-		public int leakRate=4;
-		public boolean onScreen=false;
-		
-		public crack(Rectangle r)
-		{
-			bounds=r;
-		}
-	}
+	// Original aquarium water level.
+	float waterLevel = 800;
 	
-	public void showNewCracks()
-	{
-		CrackList[0].onScreen=true;
-		if(level==1)
-		{
-			if(totalRunningTime>levelCrackTimes[0])
-			{
-				CrackList[1].onScreen=true;
-			}
-		}
-		else if(level==2)
-		{
-			if(totalRunningTime>levelCrackTimes[1]&&totalRunningTime<(levelCrackTimes[1]*2))
-			{
-				CrackList[1].onScreen=true;
-			}
-			else if(totalRunningTime>levelCrackTimes[1]&&totalRunningTime<(levelCrackTimes[1]*3))
-			{
-				CrackList[2].onScreen=true;
-			}
-		}
-		else
-		{
-			if(totalRunningTime>levelCrackTimes[2]&&totalRunningTime<(levelCrackTimes[2]*2))
-			{
-				CrackList[1].onScreen=true;
-			}
-			else if(totalRunningTime>levelCrackTimes[2]&&totalRunningTime<(levelCrackTimes[2]*3))
-			{
-				CrackList[1].onScreen=true;
-				CrackList[2].onScreen=true;
-			}
-			else if(totalRunningTime>levelCrackTimes[2]&&totalRunningTime<(levelCrackTimes[2]*4))
-			{
-				CrackList[1].onScreen=true;
-				CrackList[2].onScreen=true;
-				CrackList[3].onScreen=true;
-			}
-			
-		}
-	}
+	// Array of all possible cracks.
+	Crack[] crackList = { new Crack(new Rectangle(0,0,128,128)), 
+						  new Crack(new Rectangle(600,600,128,128)), 
+						  new Crack(new Rectangle(250,450,128,128)), 
+						  new Crack(new Rectangle(400,100,128,128)) };
 	
-	public void decreaseWaterLevel(crack c)
-	{
-		waterLevel=waterLevel-c.leakRate * animationScalar[speed-1];
-	}
+	// -------------------
+	// --- Constructor ---
+	// ------------------- 	
 	
 	public AquariumMicroGame(Game game) {
 		super(game);
@@ -93,19 +44,23 @@ public class AquariumMicroGame extends MicroGame{
 
 	@Override
 	public void updateRunning(float deltaTime) {
-		// Checks for time-based loss.
+		// Checks for time-based win.
 		if (wonTimeBased(deltaTime)) {
 			Assets.playSound(Assets.highJumpSound);
 			return;
 		}
-		if(waterLevel<=0)
-		{
+		
+		// Checks for water level based loss.
+		if(waterLevel <= 0) {
 			Assets.playSound(Assets.hitSound);
 			microGameState = MicroGameState.Lost;
 			return;
 		}
-		showNewCracks();//places cracks at certain time based intervals
-		//get touches from screen
+		
+		// Places cracks on the screen at timed intervals, based on level.
+		showNewCracks();
+		
+		// Gets all TouchEvents and stores them in a list.
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 		
 		//iterate though all touches, check if any of the touches are in the gaps of the circuit
@@ -113,20 +68,18 @@ public class AquariumMicroGame extends MicroGame{
 			touchPoint.set(touchEvent.x, touchEvent.y);
 			guiCam.touchToWorld(touchPoint);
 
-			//Sets isClosed to true if gap is touched. 
-			for (int i=0;i<(level+1);i++){
-				if(CrackList[i].onScreen==true){
+			// Sets isClosed to true if gap is touched. 
+			for (int i = 0; i < level+1; i++){
+				if(crackList[i].onScreen == true) {
 					
-					if(targetTouchDragged(touchEvent, touchPoint, CrackList[i].bounds)){
-						CrackList[i].isLeaking = false;
+					if(targetTouchDragged(touchEvent, touchPoint, crackList[i].bounds)) {
+						crackList[i].isLeaking = false;
 						Assets.playSound(Assets.hitSound);
 					}
 					
 					if(touchEvent.type == TouchEvent.TOUCH_UP)
-						CrackList[i].isLeaking = true;
-					
+						crackList[i].isLeaking = true;
 				}
-					
 			}
 
 			//Tests for non-unique touch events, which is currently pause only.
@@ -134,27 +87,56 @@ public class AquariumMicroGame extends MicroGame{
 				super.updateRunning(touchPoint);
 		}
 		
-		for(crack c : CrackList)
+		for(Crack c : crackList)
 			if(c.isLeaking && c.onScreen)
 				decreaseWaterLevel(c);
-
 	}
 
-	// -----------------------------
-	// --- Utility Update Method ---
-	// -----------------------------
+	// ------------------------------
+	// --- Utility Update Methods ---
+	// ------------------------------
 
 	@Override
+	// TODO: Write necessary reset code.
 	public void reset() {
 		super.reset();
 	}
 
-	/*
-	 * Used to initialize the active gaps based on current level. Could probably use some refactoring. 
-	 */
+	// TODO: Redesign and clean up this code.
+	// Places cracks on the screen at timed intervals, based on level.
+	public void showNewCracks() {
+		crackList[0].onScreen=true;
+		
+		if (level == 1) {
+			if (totalRunningTime>crackTimes[0])
+				crackList[1].onScreen=true;
+		}
+		
+		else if (level == 2) {
+			if (totalRunningTime>crackTimes[1]&&totalRunningTime<(crackTimes[1]*2))
+				crackList[1].onScreen=true;
+			else if (totalRunningTime>crackTimes[1]&&totalRunningTime<(crackTimes[1]*3))
+				crackList[2].onScreen=true;
+		}
+		
+		else {
+			if(totalRunningTime>crackTimes[2]&&totalRunningTime<(crackTimes[2]*2))	
+				crackList[1].onScreen=true;
+			else if(totalRunningTime>crackTimes[2]&&totalRunningTime<(crackTimes[2]*3)) {
+				crackList[1].onScreen=true;
+				crackList[2].onScreen=true;
+			}
+			else if(totalRunningTime>crackTimes[2]&&totalRunningTime<(crackTimes[2]*4)) {
+				crackList[1].onScreen=true;
+				crackList[2].onScreen=true;
+				crackList[3].onScreen=true;
+			}	
+		}
+	}
 	
-	//due to nature of the beast... and to save time, 
-	//handle the collision detection based on sparks direction
+	public void decreaseWaterLevel(Crack crack) {
+		waterLevel -= (crack.leakRate * animationScalar[speed-1]);
+	}
 	
 	// -------------------
 	// --- Draw Method ---
@@ -162,7 +144,6 @@ public class AquariumMicroGame extends MicroGame{
 
 	@Override
 	public void presentRunning() {
-
 		drawRunningBackground();
 		drawRunningObjects();
 		//drawRunningBounds();
@@ -170,10 +151,9 @@ public class AquariumMicroGame extends MicroGame{
 		super.presentRunning();
 	}
 
-
-	// ---------------------------
-	// --- Utility Draw Method ---
-	// ---------------------------
+	// ----------------------------
+	// --- Utility Draw Methods ---
+	// ----------------------------
 
 	@Override
 	public void drawRunningBackground() {
@@ -185,24 +165,42 @@ public class AquariumMicroGame extends MicroGame{
 
 	@Override
 	public void drawRunningObjects() {
-		// Draw circuits
 		batcher.beginBatch(Assets.aquariumTank);
+		
 		batcher.drawSprite(0, 0, 1280, waterLevel, Assets.aquariumTankRegion);
-		//draw the appropriate connector when gap is closed
-		for (int i=0;i<(level+1);i++){
-			if(CrackList[i].onScreen==true)
-				batcher.drawSprite(CrackList[i].bounds,Assets.aquariumCrack);
-		}
+		for (int i = 0; i < level+1; i++)
+			if(crackList[i].onScreen == true)
+				batcher.drawSprite(crackList[i].bounds,Assets.aquariumCrack);
+		
 		batcher.endBatch();
 	}
 
 	@Override
+	// TODO: Draw bounding boxes.
 	public void drawRunningBounds() {
 		// Bounding Boxes
 	}
 	
 	
+	// -------------------
+	// --- Game Object ---
+	// ------------------- 
 	
-	
-	
+	private class Crack
+	{
+		// Crack's leak speed.
+		public int leakRate = 4;
+		
+		// Booleans to track Crack states.
+		public boolean isLeaking = true;
+		public boolean onScreen = false;
+		
+		// Bounds for touch detection.
+		public Rectangle bounds;
+			
+		// Constructor.
+		public Crack(Rectangle rectangle) {
+			bounds = rectangle;
+		}
+	}
 }
