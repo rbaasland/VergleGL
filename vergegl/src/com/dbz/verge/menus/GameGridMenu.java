@@ -23,6 +23,8 @@ import com.dbz.verge.microgames.AquariumMicroGame;
 //		 *** I played through the games and I think I might have gotten the same game in the same set.
 //		 I think it happened on the 5th-6th game, so in other words one game earlier than it should have.
 //		 We should test this more throughly to make sure I didn't just imagine things. ***
+//		 Test all empty micro game selection areas. Currently empty produces null
+
 public class GameGridMenu extends Menu {
    
 	// --------------
@@ -117,6 +119,8 @@ public class GameGridMenu extends Menu {
                 	Assets.playSound(Assets.clickSound);
                 	if (currentPage == 1)
                 		selectedMicroGame = new FlyMicroGame(game);
+                	else if (currentPage == 2)
+                		selectedMicroGame = new DirtBikeMicroGame(game); // Replace with new MicroGame.
                 	overlayPresent = true;
                 	return;
                 }
@@ -126,8 +130,6 @@ public class GameGridMenu extends Menu {
                 	Assets.playSound(Assets.clickSound);
                 	if (currentPage == 1)
                 		selectedMicroGame = new FireMicroGame(game);
-                	else if (currentPage == 2)
-                		selectedMicroGame = new DirtBikeMicroGame(game); // Replace with new MicroGame.
                 	overlayPresent = true;
                 	return;
                 }
