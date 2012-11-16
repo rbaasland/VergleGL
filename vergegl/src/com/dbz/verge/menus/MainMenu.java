@@ -1,4 +1,4 @@
-package com.dbz.verge;
+package com.dbz.verge.menus;
 
 import java.util.List;
 
@@ -6,8 +6,10 @@ import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
+import com.dbz.verge.Assets;
+import com.dbz.verge.Menu;
 
-public class MainMenuScreen extends MenuScreen {
+public class MainMenu extends Menu {
 	
 	// --------------
 	// --- Fields ---
@@ -21,7 +23,7 @@ public class MainMenuScreen extends MenuScreen {
     // -------------------
  	// --- Constructor ---
     // -------------------
-    public MainMenuScreen(Game game) {
+    public MainMenu(Game game) {
         super(game);                    
     }       
 
@@ -50,7 +52,7 @@ public class MainMenuScreen extends MenuScreen {
                 // Play Button Bounds Check.
                 if(OverlapTester.pointInRectangle(playBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    game.setScreen(new PlayMenuScreen(game));
+                    game.setScreen(new PlayMenu(game));
                     return;
                 }
                 

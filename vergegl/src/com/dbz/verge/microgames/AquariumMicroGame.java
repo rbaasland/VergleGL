@@ -5,11 +5,9 @@ import java.util.List;
 
 import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
-import com.dbz.framework.gl.Animation;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
-import com.dbz.verge.MicroGame.MicroGameState;
 
 
 public class AquariumMicroGame extends MicroGame{
@@ -21,6 +19,7 @@ public class AquariumMicroGame extends MicroGame{
 	boolean isTankEmpty=false;
 	crack[] CrackList ={new crack(new Rectangle(0,0,128,128)), new crack(new Rectangle(600,600,128,128)), new crack(new Rectangle(250,450,128,128)), new crack(new Rectangle(400,100,128,128))};
 	float[] levelCrackTimes={4,2.5f,1};
+	
 	private class crack
 	{
 		public Rectangle bounds;
@@ -33,6 +32,7 @@ public class AquariumMicroGame extends MicroGame{
 			bounds=r;
 		}
 	}
+	
 	public void showNewCracks()
 	{
 		CrackList[0].onScreen=true;
@@ -74,10 +74,12 @@ public class AquariumMicroGame extends MicroGame{
 			
 		}
 	}
+	
 	public void decreaseWaterLevel(crack c)
 	{
 		waterLevel=waterLevel-c.leakRate * animationScalar[speed-1];
 	}
+	
 	public AquariumMicroGame(Game game) {
 		super(game);
 

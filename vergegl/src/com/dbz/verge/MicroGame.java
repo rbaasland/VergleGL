@@ -14,6 +14,7 @@ import com.dbz.framework.impl.GLScreen;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
+import com.dbz.verge.menus.GameGridMenu;
 
 // TODO: Add unique won/lost states for each MicroGame.
 //		 Combine assets into single sprite sheet to allow for single batcher calls.
@@ -129,7 +130,7 @@ public abstract class MicroGame extends GLScreen {
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		            Assets.playSound(Assets.clickSound);
-		            game.setScreen(new GameGridMenuScreen(game));
+		            game.setScreen(new GameGridMenu(game));
 		            return;     
 		        }
 	        }
@@ -170,7 +171,7 @@ public abstract class MicroGame extends GLScreen {
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		            Assets.playSound(Assets.clickSound);
-		            game.setScreen(new GameGridMenuScreen(game));
+		            game.setScreen(new GameGridMenu(game));
 		            return;     
 		        }
 	        }
@@ -218,7 +219,7 @@ public abstract class MicroGame extends GLScreen {
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		            Assets.playSound(Assets.clickSound);
-		            game.setScreen(new GameGridMenuScreen(game));
+		            game.setScreen(new GameGridMenu(game));
 		            return;     
 		        }
 	        }
@@ -249,7 +250,7 @@ public abstract class MicroGame extends GLScreen {
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		            Assets.playSound(Assets.clickSound);
-		            game.setScreen(new GameGridMenuScreen(game));
+		            game.setScreen(new GameGridMenu(game));
 		            return;     
 		        }
 	        }

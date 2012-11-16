@@ -13,8 +13,8 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.Assets;
-import com.dbz.verge.MainMenuScreen;
 import com.dbz.verge.Settings;
+import com.dbz.verge.menus.MainMenu;
 
 public class HighScoresScreen extends GLScreen {
     Camera2D guiCam;
@@ -52,7 +52,7 @@ public class HighScoresScreen extends GLScreen {
             if(event.type == TouchEvent.TOUCH_UP) {
                 if(OverlapTester.pointInRectangle(backBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
-                    game.setScreen(new MainMenuScreen(game));
+                    game.setScreen(new MainMenu(game));
                     return;
                 }
             }

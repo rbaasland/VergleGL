@@ -11,6 +11,7 @@ import com.dbz.verge.MicroGame;
 // TODO: The lazerBallBounds need to accurately reflect the lazer ball's size.
 // TODO: Explosion Art, better laser art, something better than bob as target, Good "Firin Mah Lazer" sound byte
 // TODO: Needs to reset when called from GameGrid and Survival
+// TODO: Currently the fire button starts red in Time Attack.
 
 public class LazerBallMicroGame extends MicroGame  {
 

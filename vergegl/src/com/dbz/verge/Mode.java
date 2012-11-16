@@ -1,11 +1,8 @@
 package com.dbz.verge;
 
 import java.util.List;
-import java.util.Random;
 
 import javax.microedition.khronos.opengles.GL10;
-
-import android.util.Log;
 
 import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
@@ -17,6 +14,7 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.MicroGame.MicroGameState;
+import com.dbz.verge.menus.PlayMenu;
 import com.dbz.verge.microgames.BroFistMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
@@ -24,12 +22,11 @@ import com.dbz.verge.microgames.TrafficMicroGame;
 import com.dbz.verge.microgames.CircuitMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
 
-// TODO: Make class abstract, and extract necessary code to SurvivalGameScreen.
-// 		 Implement speed increase after every 5 games.
-//		 Implement difficulty increase every 10 games.
+// TODO: Make game speed level affect the transition and MicroGame win/loss state time.
+//		 Enable Pausing during the individual MicroGames to resolve issue regarding Android State Managment.
 //		 Extract Bounding Boxes draw calls (in each present()) to their own method.
 //		 ^^^ Note: Doing this in MicroGame as well, should be the same. ^^^ 
-public class GameScreen extends GLScreen {
+public abstract class Mode extends GLScreen {
 	
 	// --------------
 	// --- Fields ---
@@ -67,21 +64,16 @@ public class GameScreen extends GLScreen {
     
     // Tracks transition time.
     public float totalTransitionTime = 0;
-    public float transitionTimeLimit = 2.0f;
+    public float transitionTimeLimit = 3.0f;
     
     // Allows time for individual MicroGame wins/loses to show.
     public float totalTimeOver = 0;
     public float timeOverLimit = 2.0f;
     
-    // Tracks win and loss conditions for game mode.
-    public int winCount = 0;
-    public int requiredWins = 12;
-    public int lives = 3;
-    
     // Tracks rounds completed, and level/speed increase rates.
     public int currentRound = 1;
-    public int roundsToLevel = 6;
-    public int roundsToSpeed = 3;
+    public int roundsToLevelUp = 6;
+    public int roundsToSpeedUp = 3;
     
     // Array of all possible MicroGames.
     // * Initialized in Constructor to avoid possible conflicts with Game variable. *
@@ -90,23 +82,16 @@ public class GameScreen extends GLScreen {
     // Index for the current MicroGame.
     public int microGameIndex = 0;
     
-    // Random number generator used for randomizing games.
-    public Random random = new Random();
-    
-    // Keeps track of randomized indexes.
-    public int indexHistory[];
-    
     // -------------------
 	// --- Constructor ---
     // -------------------
-	public GameScreen(Game game) {
+	public Mode(Game game) {
 		super(game);
 		
 		// Initialize MicroGame set.
 		microGames = new MicroGame[] { new BroFistMicroGame(game), new FlyMicroGame(game), new FireMicroGame(game),
 									   new TrafficMicroGame(game), new CircuitMicroGame(game), new LazerBallMicroGame(game) };
-		indexHistory = new int[microGames.length];
-		clearIndexHistory();
+
 		// Disables BackArrow and Pause UI elements for all MicroGames in the set.
 		for (int i = 0; i < microGames.length; i++) {
 			microGames[i].backArrowEnabled = false;
@@ -146,50 +131,70 @@ public class GameScreen extends GLScreen {
 	}
 	
 	public void updateReady() {
+		// Gets all TouchEvents and stores them in a list.
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	    
+	    // Cycles through and tests all touch events.
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
+	    	// Gets a single TouchEvent from the list.
 	        TouchEvent event = touchEvents.get(i);
+	        
+	        // Skip handling if the TouchEvent isn't TOUCH_UP.
 	        if(event.type != TouchEvent.TOUCH_UP)
 	            continue;
 	        
+	        // Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
 	        touchPoint.set(event.x, event.y);
+	        // Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
+	        // Ready Bounds Check.
 	        if(OverlapTester.pointInRectangle(readyBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
 	            gameState = GameState.Transition;
 	            return;     
 	        }
 	        
+	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            game.setScreen(new PlayMenuScreen(game));
+	            game.setScreen(new PlayMenu(game));
 	            return;     
 	        }
 	    }
 	}
 		
 	public void updatePaused() {
+		// Gets all TouchEvents and stores them in a list.
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	    
+	    // Cycles through and tests all touch events.
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
+	    	// Gets a single TouchEvent from the list.
 	        TouchEvent event = touchEvents.get(i);
+	        
+	        // Skip handling if the TouchEvent isn't TOUCH_UP.
 	        if(event.type != TouchEvent.TOUCH_UP)
 	            continue;
 
+	        // Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
 	        touchPoint.set(event.x, event.y);
+	        // Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
+	        // Pause Toggle Bounds Check.
 	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
 	            gameState = GameState.Transition;
 	            return;
 	        }
 	        
+	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            game.setScreen(new PlayMenuScreen(game));
+	            game.setScreen(new PlayMenu(game));
 	            return;
 	        }
 	    }
@@ -208,24 +213,31 @@ public class GameScreen extends GLScreen {
 			return;
 		}
 		
+		// Gets all TouchEvents and stores them in a list.
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	    
+	    // Cycles through and tests all touch events.
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
+	    	// Gets a single TouchEvent from the list.
 	        TouchEvent event = touchEvents.get(i);
+	        
+	        // Skip handling if the TouchEvent isn't TOUCH_UP.
 	        if(event.type != TouchEvent.TOUCH_UP)
 	            continue;
 
+	        // Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
 	        touchPoint.set(event.x, event.y);
+	        // Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
-	        // Tests if pause toggle was pressed.
+	        // Pause Toggle Bounds Check.
 	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
 	            totalTransitionTime = 0;
 	            gameState = GameState.Paused;
 	            return;
-	        }
-	        
+	        }  
 	    }
 	}
 	
@@ -237,70 +249,73 @@ public class GameScreen extends GLScreen {
 			totalTimeOver += deltaTime;
 			if (totalTimeOver >= timeOverLimit) {
 				totalTimeOver = 0;
-				currentRound++;
-				winCount++;
-				if (winCount >= requiredWins) {
-					gameState = GameState.Won;
-					return;
-				}
-				else {
-					gameState = GameState.Transition;
-					return;
-				}
+				updateMicroGameWon();
 			}
 		}
 		else if (microGames[microGameIndex].microGameState == MicroGameState.Lost) {
 			totalTimeOver += deltaTime;
 			if (totalTimeOver >= timeOverLimit) {
 				totalTimeOver = 0;
-				currentRound++;
-				lives--;
-				if (lives <= 0) {
-					gameState = GameState.Lost;
-					return;
-				}
-				else {
-					gameState = GameState.Transition;
-					return;
-				}
+				updateMicroGameLost();
 			}
-
 		}
 	}
 	
+	public abstract void updateMicroGameWon();
+	
+	public abstract void updateMicroGameLost();
+	
 	public void updateWon() {
+		// Gets all TouchEvents and stores them in a list.
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	    
+	    // Cycles through and tests all touch events.
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
+	    	// Gets a single TouchEvent from the list.
 	        TouchEvent event = touchEvents.get(i);
+	        
+	        // Skip handling if the TouchEvent isn't TOUCH_UP.
 	        if(event.type != TouchEvent.TOUCH_UP)
 	            continue;
 	        
+	        // Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
 	        touchPoint.set(event.x, event.y);
+	        // Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
+	        /// Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            game.setScreen(new PlayMenuScreen(game));
+	            game.setScreen(new PlayMenu(game));
 	            return;     
 	        }
 	    }
 	}
 	
 	public void updateLost() {
-		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+		// Gets all TouchEvents and stores them in a list.
+	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	    
+	    // Cycles through and tests all touch events.
 	    int len = touchEvents.size();
 	    for(int i = 0; i < len; i++) {
+	    	// Gets a single TouchEvent from the list.
 	        TouchEvent event = touchEvents.get(i);
+	        
+	        // Skip handling if the TouchEvent isn't TOUCH_UP.
 	        if(event.type != TouchEvent.TOUCH_UP)
 	            continue;
 	        
+	        // Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
 	        touchPoint.set(event.x, event.y);
+	        // Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
+	        /// Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            game.setScreen(new PlayMenuScreen(game));
+	            game.setScreen(new PlayMenu(game));
 	            return;     
 	        }
 	    }
@@ -311,58 +326,23 @@ public class GameScreen extends GLScreen {
 	// ------------------------------
 
 	public void setupNextMicroGame() {
-		// Checks the indexHistory for fullness
-		if (!checkIndex(-1))
-			clearIndexHistory();
-
-		// Randomizes the microGameIndex (Dependent)
-		do
-		{
-			microGameIndex = random.nextInt(microGames.length);
-		} while(checkIndex(microGameIndex));
-		for(int i = 0; i < indexHistory.length; i++)
-			Log.d("indexHistory", "Index History = " + indexHistory[i]);
-		
 		// Increases difficulty level based on rounds completed.
-		if (currentRound % roundsToLevel == 0 && currentRound != 1)
+		if (currentRound % roundsToLevelUp == 0 && currentRound != 1)
 			if (level != 3)
 				level++;
-		
+
 		// Increases speed level based on rounds completed.
-		if (currentRound % roundsToSpeed == 0 && currentRound != 1)
+		if (currentRound % roundsToSpeedUp == 0 && currentRound != 1)
 			if (speed != 3)
 				speed++;
-		
-		// Resets the MicroGame, and sets it's state to Running to skip the Ready state.
+
+		// Resets the MicroGame, and sets its state to Running to skip the Ready state.
 		microGames[microGameIndex].reset();
 		microGames[microGameIndex].microGameState = MicroGameState.Running;
 		microGames[microGameIndex].level = level;
 		microGames[microGameIndex].speed = speed;
 	}
-	
-	
-	// Returns false if the index wasn't found in the array
-	public boolean checkIndex(int index)
-	{
-		for(int i = 0; i < indexHistory.length; i++)
-		{
-			if(indexHistory[i] == index)
-				return true;
-			else if (indexHistory[i] == -1) {
-				indexHistory[i] = microGameIndex;
-				break;
-			}
-		}
-		return false;
-	}
-	
-	// Clears indexHistory
-	public void clearIndexHistory()
-	{
-		for (int i = 0; i < indexHistory.length; i++)
-			indexHistory[i] = -1;
-	}
-	
+
 	// --------------------
 	// --- Draw Methods ---
 	// --------------------
@@ -445,20 +425,15 @@ public class GameScreen extends GLScreen {
 //	    batcher.drawSprite(1130, 640, 160, 160, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
 //	    batcher.endBatch();
 	}
-	// TODO Updating
+	
 	public void presentTransition() {
 		// Draws background.
-		batcher.beginBatch(Assets.broFistBackground);
-		batcher.drawSprite(0, 0, 1280, 800, Assets.broFistBackgroundRegion);
-		batcher.endBatch();
+//		batcher.beginBatch(Assets.broFistBackground);
+//		batcher.drawSprite(0, 0, 1280, 800, Assets.broFistBackgroundRegion);
+//		batcher.endBatch();
 		
-		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, "Level: " + String.valueOf(level), 600, 550);
-	    Assets.font.drawText(batcher, "Speed: " + String.valueOf(speed), 600, 500);
-	    Assets.font.drawText(batcher, "Lives: " + String.valueOf(lives), 600, 450);
-	    Assets.font.drawText(batcher, "Win Count: " + String.valueOf(winCount), 600, 400);
-	    Assets.font.drawText(batcher, "Current Round: " + String.valueOf(currentRound), 600, 350);
-		batcher.endBatch();
+		// Draws the mid game status report.
+		presentStatusReport();
 		
 		// Draws the pause symbol.
 		batcher.beginBatch(Assets.pauseToggle);
@@ -471,10 +446,13 @@ public class GameScreen extends GLScreen {
 	}
 	
 	public void presentWon() {
-		// Temporary win message.
+		// Draws the win message.
 		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, "You Win The Game!", 600, 500);
+	    Assets.font.drawText(batcher, "You Win The Game!", 600, 650);
 		batcher.endBatch();
+		
+		// Draws the end game status report.
+		presentStatusReport();
 		
 		// Draws the back arrow.
         batcher.beginBatch(Assets.backArrow);
@@ -488,12 +466,15 @@ public class GameScreen extends GLScreen {
 	}
 	
 	public void presentLost() {
-		// Temporary lose message.
+		// Draws the lose message.
 		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, "You Lost The Game!", 600, 500);
+	    Assets.font.drawText(batcher, "You Lost The Game!", 600, 650);
 		batcher.endBatch();
 		
-		// Back arrow drawn.
+		// Draws the end game status report.
+		presentStatusReport();
+		
+		// Draws the back arrow.
         batcher.beginBatch(Assets.backArrow);
         batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
         batcher.endBatch();
@@ -503,6 +484,13 @@ public class GameScreen extends GLScreen {
 //	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
 //	    batcher.endBatch();
 	}
+	
+	// ----------------------------
+	// --- Utility Draw Methods ---
+	// ----------------------------
+	
+	// TODO: Call shared lines via super.presentStatusReport() (???)
+	public abstract void presentStatusReport();
 	
 	// --------------------------------
 	// --- Android State Management ---
