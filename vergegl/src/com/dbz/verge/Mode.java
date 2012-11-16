@@ -42,6 +42,7 @@ public abstract class Mode extends GLScreen {
 	}
 	
 	public GameState gameState = GameState.Ready;
+	public GameState previousGameState = GameState.Ready;
 	
     // OpenGL Related Objects
     public Camera2D guiCam = new Camera2D(glGraphics, 1280, 800);
@@ -87,6 +88,9 @@ public abstract class Mode extends GLScreen {
     // -------------------
 	public Mode(Game game) {
 		super(game);
+		
+		//"Notify" game (base activity) that Mode is active screen
+		game.setCurrentModeScreen(this);
 		
 		// Initialize MicroGame set.
 		microGames = new MicroGame[] { new BroFistMicroGame(game), new FlyMicroGame(game), new FireMicroGame(game),
@@ -187,7 +191,12 @@ public abstract class Mode extends GLScreen {
 	        // Pause Toggle Bounds Check.
 	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            gameState = GameState.Transition;
+	            if(previousGameState == GameState.Transition)  //new logic for paused state changes
+	            	gameState = GameState.Transition;
+	            else if(previousGameState == GameState.Running)
+	            		gameState = GameState.Running;
+	            else if(previousGameState == GameState.Ready)
+	            		gameState = GameState.Transition;
 	            return;
 	        }
 	        
@@ -209,6 +218,7 @@ public abstract class Mode extends GLScreen {
 		if (totalTransitionTime >= transitionTimeLimit) {
 			totalTransitionTime = 0;
 			gameState = GameState.Running;
+			previousGameState = gameState; //TODO: seems counter intuitive, but it tells game how to handle pause
 			setupNextMicroGame();
 			return;
 		}
@@ -235,6 +245,7 @@ public abstract class Mode extends GLScreen {
 	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
 	            totalTransitionTime = 0;
+	            previousGameState = gameState; //transition
 	            gameState = GameState.Paused;
 	            return;
 	        }  
@@ -244,6 +255,10 @@ public abstract class Mode extends GLScreen {
 	// Launches the MicroGame and waits for it to finish.
 	public void updateRunning(float deltaTime) {
 		microGames[microGameIndex].update(deltaTime);
+		
+		if (microGames[microGameIndex].microGameState == MicroGameState.Paused){
+			
+		}
 		
 		if (microGames[microGameIndex].microGameState == MicroGameState.Won) {
 			totalTimeOver += deltaTime;
@@ -341,6 +356,7 @@ public abstract class Mode extends GLScreen {
 		microGames[microGameIndex].microGameState = MicroGameState.Running;
 		microGames[microGameIndex].level = level;
 		microGames[microGameIndex].speed = speed;
+		//here... reference to current screen
 	}
 
 	// --------------------
@@ -506,5 +522,8 @@ public abstract class Mode extends GLScreen {
 	public void resume() {}
 
 	@Override
-	public void dispose() {}
+	public void dispose() {
+		//dereference Mode from game activity
+		game.setCurrentModeScreen(null);
+	}
 }
