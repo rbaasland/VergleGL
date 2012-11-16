@@ -120,6 +120,11 @@ public class Assets {
     public static TextureRegion aquariumTankRegion;
     public static TextureRegion aquariumCrack;
     
+    public static Texture dirtBikeBackground;
+    public static TextureRegion dirtBikeBackgroundRegion;
+    public static TextureRegion dirtBikeRegion;
+    public static TextureRegion gasPedalRegion;
+    
     // ------------------------
   	// --- Sound Assets -----
   	// ------------------------
@@ -265,6 +270,11 @@ public class Assets {
         aquariumTank=new Texture(game,"aquariumTank.png");
         aquariumTankRegion=new TextureRegion(aquariumTank,0,0,1280,800);
         aquariumCrack=new TextureRegion(aquariumTank,1280,0,128,128);
+        
+        dirtBikeBackground = new Texture(game,"testDirtBike.png");
+        dirtBikeBackgroundRegion = new TextureRegion(dirtBikeBackground,0,0,1300,700);
+        dirtBikeRegion = new TextureRegion(dirtBikeBackground, 1400,1,256,256);
+        gasPedalRegion = new TextureRegion(dirtBikeBackground,1440,300,160,160);
         
         // *** Initialize Testing Assets. ***
         boundOverlay = new Texture(game, "boundoverlay.png");

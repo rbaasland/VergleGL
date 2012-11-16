@@ -8,11 +8,11 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.microgames.BroFistMicroGame;
 import com.dbz.verge.microgames.CircuitMicroGame;
+import com.dbz.verge.microgames.DirtBikeMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
 import com.dbz.verge.microgames.TrafficMicroGame;
-import com.dbz.verge.microgames.AquariumMicroGame;
 
 // TODO: Keep naming conventions standard between Bounds and Asset Regions.
 //		 Fix the issue where the LVL text will shift over by a few pixels when you switch through them.
@@ -102,8 +102,8 @@ public class GameGridMenuScreen extends MenuScreen {
                 	Assets.playSound(Assets.clickSound);
                 	if (currentPage == 1)
                 		selectedMicroGame = new BroFistMicroGame(game);
-                	else if (currentPage == 2)
-                		selectedMicroGame = new AquariumMicroGame(game); // Replace with new MicroGame.
+                	//else if (currentPage == 2)
+                		//selectedMicroGame = new AquariumMicroGame(game); // Replace with new MicroGame.
                 	overlayPresent = true;
                 	return;
                 }
@@ -113,6 +113,8 @@ public class GameGridMenuScreen extends MenuScreen {
                 	Assets.playSound(Assets.clickSound);
                 	if (currentPage == 1)
                 		selectedMicroGame = new FlyMicroGame(game);
+                	else if (currentPage == 2)
+                		selectedMicroGame = new DirtBikeMicroGame(game); // Replace with new MicroGame.
                 	overlayPresent = true;
                 	return;
                 }
