@@ -24,7 +24,9 @@ public class FlyMicroGame extends MicroGame {
 	// Speed variables for fly movement.
 	private float speedX = 10; 
 	private float speedY = 0;
-	private float animationScalar[] = new float[]{1.0f, 1.5f, 2.0f};
+	
+	// Animation scalar based on speed variable.
+	private float animationScalar[] = {1.0f, 1.5f, 2.0f};
 	
 	// Bounds for touch detection.
 	private Rectangle flyBounds = new Rectangle(600, 60, 80, 60);
@@ -152,7 +154,7 @@ public class FlyMicroGame extends MicroGame {
 		drawRunningBackground();
 		drawRunningObjects();
 		// drawRunningBounds();
-		drawInstruction("Swat the Fly!");
+		drawInstruction("Pet the Fly!");
 		super.presentRunning();
 	}
 	

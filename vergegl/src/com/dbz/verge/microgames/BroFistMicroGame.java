@@ -98,7 +98,7 @@ public class BroFistMicroGame extends MicroGame {
 		drawRunningBackground();
 		drawRunningObjects();
 		// drawRunningBounds();
-		drawInstruction("Brofist!");
+		drawInstruction("Unleash your Bro-ness!");
 		super.presentRunning();
 	}
 	

@@ -29,8 +29,8 @@ public class LazerBallMicroGame extends MicroGame  {
 	int[] level2GrowthRate = {4, 8, 12, 16, 20};
 	int[] level3GrowthRate = {6, 12, 18, 24, 30};
 	
-	// Speed variation based on speed
-	private float animationScalar[] = new float[]{1.0f, 1.5f, 2.0f};
+	// Animation scalar based on speed variable.
+	private float animationScalar[] = {1.0f, 1.5f, 2.0f};
 
 	//used to store appropriate growth rate based on level. uses isFirstRun bool in updateRunning()
 	int[] currentLevelGrowthRate;
@@ -171,7 +171,6 @@ public class LazerBallMicroGame extends MicroGame  {
 	private void resetLazerSize() {
 		Assets.lazerState1Region = Assets.lazerChargingAnim.getKeyFrame(0);
 	}
-
 
 	private void firelazer() {
 		movelazer();

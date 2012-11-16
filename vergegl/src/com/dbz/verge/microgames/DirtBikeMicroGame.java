@@ -7,7 +7,6 @@ import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
-import com.dbz.verge.MicroGame.MicroGameState;
 
 public class DirtBikeMicroGame extends MicroGame {
     
@@ -17,7 +16,9 @@ public class DirtBikeMicroGame extends MicroGame {
 	
 	// Speed variable for dirt bike movement.
 	private float speedX = 0;
-	private float animationScalar[] = new float[]{1.0f, 1.5f, 2.0f};
+	
+	// Animation scalar based on speed variable.
+	private float animationScalar[] = {1.0f, 1.5f, 2.0f};
 	
 	// Bounds for dirt bike.
 	private Rectangle dirtBikeBounds = new Rectangle(0,225,256,256);
