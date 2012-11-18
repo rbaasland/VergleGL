@@ -23,7 +23,7 @@ public class DirtBikeMicroGame extends MicroGame {
 	// Bounds for dirt bike.
 	private Rectangle dirtBikeBounds = new Rectangle(0,225,256,256);
 	private Rectangle gasBounds = new Rectangle(1050,20,160,160);
-	
+	boolean gasOn=false;
 	// -------------------
 	// --- Constructor ---
 	// ------------------- 
@@ -43,6 +43,11 @@ public class DirtBikeMicroGame extends MicroGame {
 			Assets.playSound(Assets.hitSound);
 			return;
 		}
+  		if (dirtBikeBounds.lowerLeft.x > 1200) {
+			Assets.playSound(Assets.highJumpSound);
+			microGameState = MicroGameState.Won;
+			return;
+		}
 		
 		// Gets all TouchEvents and stores them in a list.
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
@@ -58,27 +63,27 @@ public class DirtBikeMicroGame extends MicroGame {
         	// Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
-			if(targetTouchDragged(event, touchPoint, gasBounds)) {
-	        //if (targetTouchDown(event, touchPoint, gasBounds)) {
-        		moveDirtBike();
-        		if (dirtBikeBounds.lowerLeft.x > 1200) {
-        			Assets.playSound(Assets.highJumpSound);
-        			microGameState = MicroGameState.Won;
-        		}
-        		return;
+			//if(targetTouchDragged(event, touchPoint, gasBounds)) {
+	        if (targetTouchDown(event, touchPoint, gasBounds)) {
+				gasOn=true;
 	        }
-	        
+			if(event.type == TouchEvent.TOUCH_UP)
+				gasOn=false;
+
 	     // Tests for non-unique touch events, which is currently pause only.
-	     if (event.type == TouchEvent.TOUCH_UP)
+	    if (event.type == TouchEvent.TOUCH_UP)
 	    	 super.updateRunning(touchPoint); 
 	    }   
+        if(gasOn==true){
+        	moveDirtBike();
+        }
 	}
 	
 	// TODO: Make movement randomized.
 	// Moves fly in a predefined manner.
 	public void moveDirtBike() {
 		float x = dirtBikeBounds.lowerLeft.x;
-		speedX = 200;
+		speedX = 50;
 		x += speedX * animationScalar[speed-1];
 		
 		dirtBikeBounds.lowerLeft.set(x, 225);
