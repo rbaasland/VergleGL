@@ -271,7 +271,7 @@ public class Assets {
         aquariumTankRegion=new TextureRegion(aquariumTank,0,0,1280,800);
         aquariumCrack=new TextureRegion(aquariumTank,1280,0,128,128);
         
-        dirtBikeBackground = new Texture(game,"testDirtBike.png");
+        dirtBikeBackground = new Texture(game,"DirtBikeScreen.png");
         dirtBikeBackgroundRegion = new TextureRegion(dirtBikeBackground,0,0,1300,700);
         dirtBikeRegion = new TextureRegion(dirtBikeBackground, 1400,1,256,256);
         gasPedalRegion = new TextureRegion(dirtBikeBackground,1440,300,160,160);
