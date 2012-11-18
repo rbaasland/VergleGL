@@ -192,94 +192,9 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 
 	}
 
-	
 	@Override  //used for hardware back button
 	public void onBackPressed() {
-
-		/*
-		 * Back button for menu navigation
-		 */
-		if (screen instanceof Menu){
-			if (screen instanceof MainMenu)
-				super.onBackPressed();
-
-			else if (screen instanceof GameGridMenu){
-				setScreen(new PlayMenu(this));
-			}
-
-			else if (screen instanceof PlayMenu){
-				setScreen(new MainMenu(this));
-				
-			}
-
-		} else
-
-			/*
-			 * Back button for GameGrid navigation
-			 */   		
-			if (screen instanceof MicroGame){
-
-				MicroGame mg = (MicroGame)screen;
-
-				switch(mg.microGameState){
-
-				case Running:  //cases to pause
-					mg.microGameState = MicroGameState.Paused;
-					break;
-
-				case Paused:   //cases to resume			
-					mg.microGameState = MicroGameState.Running;
-					break;
-
-				default:
-					break;
-				}
-
-			} else
-
-				/*
-				 * Back button for mode navigation
-				 */	
-				if(currentModeScreen != null){ //!null, mode is assumed to be active screen
-
-					switch (currentModeScreen.gameState){
-
-
-					case Transition: //cases to pause
-						currentModeScreen.gameState = GameState.Paused;
-						break;
-					case Running:
-						currentModeScreen.gameState = GameState.Paused;
-						break;
-
-						//The if-else-if here needed because the microgames are screens w/in a screen
-						//to ensure the game resumes at the correct point, we add 2 sub-cases in respect to previous gameState
-						//NOTE: This isn't needed if back button doesn't resume when paused. Not sure if it would ever get confused w/ back button in lower
-						//left corner which returns to menu instead of unpausing. 
-
-					case Paused:   //cases to resume
-						if(currentModeScreen.previousGameState == GameState.Running)
-							currentModeScreen.gameState = GameState.Running;
-
-						else if(currentModeScreen.previousGameState == GameState.Transition || 
-														currentModeScreen.previousGameState == GameState.Ready)
-								currentModeScreen.gameState = GameState.Transition;
-						//else if(currentModeScreen.previousGameState == GameState.Ready)
-						//	currentModeScreen.gameState = GameState.Transition;
-						break;
-
-					case Ready:
-					case Won:
-					case Lost:
-						setScreen(new PlayMenu(this));
-						break;
-
-					default:
-						break;
-
-					} 
-
-				} 
-
+		screen.onBackPressed();
+		
 	}
 }
