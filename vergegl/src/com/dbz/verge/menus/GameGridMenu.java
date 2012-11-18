@@ -382,4 +382,11 @@ public class GameGridMenu extends Menu {
     
     // TODO: Update to draw all new assets from Overlay implementation.
     public void drawOverlayBounds() {}
+    
+    
+    @Override
+    public void onBackPressed(){
+    	game.setScreen(new PlayMenu(game));
+    	
+    }
 }

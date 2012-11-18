@@ -119,5 +119,13 @@ public class PlayMenu extends Menu {
       super.drawBounds();
       batcher.endBatch();
     }
+    
+    
+    
+    @Override
+    public void onBackPressed(){
+    	game.setScreen(new MainMenu(game));
+    }
+    
 
 }

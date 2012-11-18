@@ -15,6 +15,7 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.menus.GameGridMenu;
+import com.dbz.verge.menus.PlayMenu;
 
 // TODO: Add unique won/lost states for each MicroGame.
 //		 Combine assets into single sprite sheet to allow for single batcher calls.
@@ -561,4 +562,27 @@ public abstract class MicroGame extends GLScreen {
 
 	@Override
 	public void dispose() {}
+	
+	@Override
+	public void onBackPressed(){
+		
+		switch(microGameState){
+		
+		//TODO: Add condition where if Ready State, back to previous menu.
+		case Ready:
+			game.setScreen(new GameGridMenu(game));
+		
+		case Running:  //cases to pause
+			microGameState = MicroGameState.Paused;
+			break;
+
+		case Paused:   //cases to resume			
+			microGameState = MicroGameState.Running;
+			break;
+
+		default:
+			break;
+		}
+		
+	}
 }

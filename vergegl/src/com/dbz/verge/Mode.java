@@ -526,4 +526,42 @@ public abstract class Mode extends GLScreen {
 		//dereference Mode from game activity
 		game.setCurrentModeScreen(null);
 	}
+	
+	@Override
+	public void onBackPressed(){
+		
+		switch (gameState){
+
+
+		case Transition: //cases to pause
+			gameState = GameState.Paused;
+			break;
+		case Running:
+			gameState = GameState.Paused;
+			break;
+
+		//The if-else-if here needed because the microgames are screens w/in a screen
+			//to ensure the game resumes at the correct point, we add 2 sub-cases 
+			//in respect to previous gameState
+
+		case Paused:   //cases to resume
+			if(previousGameState == GameState.Running)
+				gameState = GameState.Running;
+
+			else if(previousGameState == GameState.Transition || previousGameState == GameState.Ready)
+					gameState = GameState.Transition;
+			break;
+
+		case Ready:
+		case Won:
+		case Lost:
+			game.setScreen(new PlayMenu(game));
+			break;
+
+		default:
+			break;
+			
+		}
+		
+	}
 }
