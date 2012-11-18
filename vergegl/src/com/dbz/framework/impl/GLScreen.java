@@ -12,5 +12,10 @@ public abstract class GLScreen extends Screen {
         glGame = (GLGame)game;
         glGraphics = ((GLGame)game).getGLGraphics();
     }
+    
+    //closes game by default onBackPressed
+    public void onBackPressed(){
+    	glGame.finish();
+    }
 
 }
