@@ -37,14 +37,14 @@ public class TimeAttackMode extends Mode {
 	public void updateMicroGameWon() {
 		currentRound++;
 		if (currentRound > winsRequired)
-			gameState = GameState.Won;
+			modeState = ModeState.Won;
 		else
-			gameState = GameState.Transition;
+			modeState = ModeState.Transition;
 	}
 	
 	@Override
 	public void updateMicroGameLost() {
-		gameState = GameState.Transition;
+		modeState = ModeState.Transition;
 	}
 	
 	// ------------------------------

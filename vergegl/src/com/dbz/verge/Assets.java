@@ -196,13 +196,13 @@ public class Assets {
         gameGridIconsRegion = new TextureRegion(gameGridIcons, 0, 0, 1024, 800);
         
         soundToggle = new Texture(game, "volumetoggle.png");
-        soundOnRegion = new TextureRegion(soundToggle, 0, 0, 160, 160);
-        soundOffRegion = new TextureRegion(soundToggle, 160, 0, 160, 160);
+        soundOnRegion = new TextureRegion(soundToggle, 0, 0, 140, 140);
+        soundOffRegion = new TextureRegion(soundToggle, 140, 0, 140, 140);
         backArrow = new Texture(game, "backarrow.png");
-        backArrowRegion = new TextureRegion(backArrow, 0, 0, 160, 160); 
+        backArrowRegion = new TextureRegion(backArrow, 0, 0, 140, 140); 
         pauseToggle = new Texture(game, "pausetoggle.png");
-        pauseRegion = new TextureRegion(pauseToggle, 0, 0, 160, 160);
-        unpauseRegion = new TextureRegion(pauseToggle, 160, 0, 160, 160);
+        pauseRegion = new TextureRegion(pauseToggle, 0, 0, 140, 140);
+        unpauseRegion = new TextureRegion(pauseToggle, 140, 0, 140, 140);
         
         // *** Initialize MicroGame Assets. ***
         broFistBackground = new Texture(game, "brofistbackground.png");

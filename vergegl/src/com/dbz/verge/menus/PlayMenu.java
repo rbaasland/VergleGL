@@ -21,11 +21,12 @@ public class PlayMenu extends Menu {
     private Rectangle gameGridBounds = new Rectangle(350, 510, 580, 100);
     private Rectangle survivalBounds = new Rectangle(350, 350, 580, 100);
     private Rectangle timeAttackBounds = new Rectangle(350, 190, 580, 100);
-    private Rectangle backArrowBounds = new Rectangle(0, 0, 160, 160);
+    private Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
 
     // -------------------
  	// --- Constructor ---
     // -------------------
+    
     public PlayMenu(Game game) {
         super(game);                    
     }       
@@ -33,6 +34,7 @@ public class PlayMenu extends Menu {
     // ---------------------
  	// --- Update Method ---
  	// ---------------------
+    
     @Override
     public void update(float deltaTime) {
     	// Gets all TouchEvents and stores them in a list.
@@ -120,12 +122,9 @@ public class PlayMenu extends Menu {
       batcher.endBatch();
     }
     
-    
-    
     @Override
     public void onBackPressed(){
     	game.setScreen(new MainMenu(game));
     }
     
-
 }

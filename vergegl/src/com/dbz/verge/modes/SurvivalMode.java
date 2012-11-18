@@ -41,17 +41,17 @@ public class SurvivalMode extends Mode {
 	@Override
 	public void updateMicroGameWon() {
 		currentRound++;
-		gameState = GameState.Transition;
+		modeState = ModeState.Transition;
 	}
 	
 	@Override
 	public void updateMicroGameLost() {
 		lives--;
 		if (lives <= 0)
-			gameState = GameState.Lost;
+			modeState = ModeState.Lost;
 		else {
 			currentRound++;
-			gameState = GameState.Transition;
+			modeState = ModeState.Transition;
 		}
 	}
 	
