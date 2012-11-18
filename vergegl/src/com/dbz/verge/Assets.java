@@ -351,6 +351,7 @@ public class Assets {
         // *** Reload MicroGame Assets. ***
         aquariumBackround.reload();
         aquariumTank.reload();
+        dirtBikeBackground.reload();
         broFistBackground.reload();
         broFist.reload();
         flyBackground.reload();
