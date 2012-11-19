@@ -579,9 +579,10 @@ public abstract class MicroGame extends GLScreen {
 		case Paused:   //cases to resume			
 			microGameState = MicroGameState.Running;
 			break;
-
-		default:
-			break;
+			
+		case Won:
+		case Lost:
+			game.setScreen(new GameGridMenu(game));
 		}
 		
 	}
