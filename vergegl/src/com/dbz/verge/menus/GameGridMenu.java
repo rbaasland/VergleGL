@@ -42,7 +42,7 @@ public class GameGridMenu extends Menu {
     private Rectangle fourthMicroGameBounds = new Rectangle(315, 200, 170, 170);
     private Rectangle fifthMicroGameBounds = new Rectangle(555, 200, 170, 170);
     private Rectangle sixthMicroGameBounds = new Rectangle(795, 200, 170, 170);
-    private Rectangle backArrowBounds = new Rectangle(0, 0, 160, 160);
+    private Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
     private Rectangle prevPageBounds = new Rectangle(340, 20, 80, 120);
     private Rectangle nextPageBounds = new Rectangle(860, 20, 80, 120);
     

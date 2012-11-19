@@ -24,7 +24,7 @@ import com.dbz.verge.Menu;
 import com.dbz.verge.MicroGame;
 import com.dbz.verge.Mode;
 import com.dbz.verge.MicroGame.MicroGameState;
-import com.dbz.verge.Mode.GameState;
+import com.dbz.verge.Mode.ModeState;
 import com.dbz.verge.menus.GameGridMenu;
 import com.dbz.verge.menus.MainMenu;
 import com.dbz.verge.menus.PlayMenu;

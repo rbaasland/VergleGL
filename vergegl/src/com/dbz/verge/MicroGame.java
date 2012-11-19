@@ -15,7 +15,6 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.menus.GameGridMenu;
-import com.dbz.verge.menus.PlayMenu;
 
 // TODO: Add unique won/lost states for each MicroGame.
 //		 Combine assets into single sprite sheet to allow for single batcher calls.
@@ -46,8 +45,9 @@ public abstract class MicroGame extends GLScreen {
     // TouchPoint Vector and Bounding Boxes
     public Vector2 touchPoint = new Vector2();
     public Rectangle readyBounds = new Rectangle(160, 160, 960, 480);
-    public Rectangle pauseToggleBounds = new Rectangle(1130, 640, 160, 160);
-    public Rectangle backArrowBounds = new Rectangle(0, 0, 150, 150);
+    public Rectangle pauseToggleBounds = new Rectangle(1140, 660, 140, 140);
+    public Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
+    public Rectangle soundToggleBounds = new Rectangle(1135, 5, 140, 140);
     
     // *Possible Difficulty Level Implementation.*
     // *Could also try to use a class, struct or enum.*
@@ -135,6 +135,16 @@ public abstract class MicroGame extends GLScreen {
 		            return;     
 		        }
 	        }
+	        
+	        // Sound Toggle Bounds Check.
+	        if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
+	            Assets.playSound(Assets.clickSound);
+	            Settings.soundEnabled = !Settings.soundEnabled;
+	            if(Settings.soundEnabled) 
+	                Assets.music.play();
+	            else
+	                Assets.music.pause();
+	        }
 	    }
 	}
 	
@@ -176,6 +186,16 @@ public abstract class MicroGame extends GLScreen {
 		            return;     
 		        }
 	        }
+	        
+	        // Sound Toggle Bounds Check.
+	        if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
+	            Assets.playSound(Assets.clickSound);
+	            Settings.soundEnabled = !Settings.soundEnabled;
+	            if(Settings.soundEnabled) 
+	                Assets.music.play();
+	            else
+	                Assets.music.pause();
+	        }
 	    }
 	}
 	
@@ -184,7 +204,7 @@ public abstract class MicroGame extends GLScreen {
 	
 	// * Currently only used to test if the game was paused during the run state. *
 	// * Later, it may be used to test other non-unique touch events during the run state. *
-	public void updateRunning(Vector2 touchPoint) {		
+	public void updateRunning(Vector2 touchPoint) {
 		// If Pause Toggle is enabled...
 		if(pauseEnabled) {
 			// ... Pause Toggle Bounds Check.
@@ -421,14 +441,19 @@ public abstract class MicroGame extends GLScreen {
 		if (backArrowEnabled) {
 		    // Draws the Back Arrow.
 	        batcher.beginBatch(Assets.backArrow);
-	        batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+	        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
 	        batcher.endBatch();
 		}
+		
+		// Draws Sound Toggle.
+        batcher.beginBatch(Assets.soundToggle);
+        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
+        batcher.endBatch();
 	    
 	    // Bounding Boxes
 //	    batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(160, 160, 960, 480, Assets.boundOverlayRegion); // Ready Bounding Box
-//	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+//	    batcher.drawSprite(readyBounds, Assets.boundOverlayRegion); // Ready Bounding Box
+//	    batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); // Back Arrow Bounding Box
 //	    batcher.endBatch();
 	}
 	
@@ -445,7 +470,7 @@ public abstract class MicroGame extends GLScreen {
 		if (pauseEnabled) {
 			// ... Draws the Unpause Symbol.
 			batcher.beginBatch(Assets.pauseToggle);
-			batcher.drawSprite(1130, 640, 160, 160, Assets.unpauseRegion);
+			batcher.drawSprite(pauseToggleBounds, Assets.unpauseRegion);
 			batcher.endBatch();
 		}
 	    
@@ -453,14 +478,19 @@ public abstract class MicroGame extends GLScreen {
 		if (backArrowEnabled) {
 			// ... Draws the back arrow.
 	        batcher.beginBatch(Assets.backArrow);
-	        batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+	        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
 	        batcher.endBatch();
 		}
+		
+		// Draws Sound Toggle.
+        batcher.beginBatch(Assets.soundToggle);
+        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
+        batcher.endBatch();
 	    
 	    // Bounding Boxes
-//      batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
-//	    batcher.drawSprite(1130, 640, 160, 160, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
+//		batcher.beginBatch(Assets.boundOverlay);
+//	    batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+//	    batcher.drawSprite(pauseToggleBounds, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
 //	    batcher.endBatch();
 	}
 	
@@ -474,13 +504,13 @@ public abstract class MicroGame extends GLScreen {
 		if (pauseEnabled) {
 			// ... Draws the Pause symbol.
 			batcher.beginBatch(Assets.pauseToggle);
-			batcher.drawSprite(1130, 640, 160, 160, Assets.pauseRegion);
+			batcher.drawSprite(pauseToggleBounds, Assets.pauseRegion);
 			batcher.endBatch();
 		}
 	    
 	    // Bounding Boxes
 //		batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(1130, 640, 160, 160, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
+//	    batcher.drawSprite(pauseToggleBounds, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
 //	    batcher.endBatch();
 	}
 	
@@ -494,13 +524,13 @@ public abstract class MicroGame extends GLScreen {
 		if (backArrowEnabled) {
 			// ... Draws the Back Arrow.
 	        batcher.beginBatch(Assets.backArrow);
-	        batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+	        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
 	        batcher.endBatch();
 		}
 		
 		// Bounding Boxes
 //      batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+//	    batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); // Back Arrow Bounding Box
 //	    batcher.endBatch();
 	}
 	
@@ -514,13 +544,13 @@ public abstract class MicroGame extends GLScreen {
 		if (backArrowEnabled) {
 			// ... Draws the Back Arrow.
 			batcher.beginBatch(Assets.backArrow);
-			batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+			batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
 			batcher.endBatch();
 		}
 
 		// Bounding Boxes
 //      batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+//	    batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); // Back Arrow Bounding Box
 //	    batcher.endBatch();
 	}
 	

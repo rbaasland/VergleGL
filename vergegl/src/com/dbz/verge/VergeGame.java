@@ -5,7 +5,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.dbz.framework.Screen;
 import com.dbz.framework.impl.GLGame;
-import com.dbz.verge.Mode.GameState;
 import com.dbz.verge.menus.MainMenu;
 
 public class VergeGame extends GLGame {
@@ -14,7 +13,6 @@ public class VergeGame extends GLGame {
     @Override
     public Screen getStartScreen() {
         return new MainMenu(this);
-
     }
     
     @Override

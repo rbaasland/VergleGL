@@ -22,7 +22,7 @@ public abstract class Menu extends GLScreen {
     
     // TouchPoint Vector and Bounding Boxes.
     public Vector2 touchPoint = new Vector2();
-    public Rectangle soundToggleBounds = new Rectangle(1120, 0, 160, 160);
+    public Rectangle soundToggleBounds = new Rectangle(1135, 5, 140, 140);
 
     // -------------------
  	// --- Constructor ---
@@ -112,6 +112,5 @@ public abstract class Menu extends GLScreen {
 
     @Override
     public void dispose() {}
-    
-    
+     
 }

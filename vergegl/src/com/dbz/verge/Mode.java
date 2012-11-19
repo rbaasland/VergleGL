@@ -32,7 +32,7 @@ public abstract class Mode extends GLScreen {
 	// --- Fields ---
 	// --------------
 	
-	public enum GameState {
+	public enum ModeState {
 		Ready,
 		Paused,
 		Transition,
@@ -41,8 +41,8 @@ public abstract class Mode extends GLScreen {
 		Lost
 	}
 	
-	public GameState gameState = GameState.Ready;
-	public GameState previousGameState = GameState.Ready;
+	public ModeState modeState = ModeState.Ready;
+	public ModeState previousModeState = ModeState.Ready;
 	
     // OpenGL Related Objects
     public Camera2D guiCam = new Camera2D(glGraphics, 1280, 800);
@@ -52,8 +52,9 @@ public abstract class Mode extends GLScreen {
     // TouchPoint Vector and Bounding Boxes
     public Vector2 touchPoint = new Vector2();
     public Rectangle readyBounds = new Rectangle(160, 160, 960, 480);
-    public Rectangle pauseToggleBounds = new Rectangle(1130, 640, 160, 160);
-    public Rectangle backArrowBounds = new Rectangle(0, 0, 150, 150);
+    public Rectangle pauseToggleBounds = new Rectangle(1140, 660, 140, 140);
+    public Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
+    public Rectangle soundToggleBounds = new Rectangle(1135, 5, 140, 140);
     
     // *Possible Difficulty Level Implementation.*
     // *Could also try to use a class, struct or enum.*
@@ -97,10 +98,10 @@ public abstract class Mode extends GLScreen {
 									   new TrafficMicroGame(game), new CircuitMicroGame(game), new LazerBallMicroGame(game) };
 
 		// Disables BackArrow and Pause UI elements for all MicroGames in the set.
-		for (int i = 0; i < microGames.length; i++) {
-			microGames[i].backArrowEnabled = false;
-			microGames[i].pauseEnabled = false;
-		}
+//		for (int i = 0; i < microGames.length; i++) {
+//			microGames[i].backArrowEnabled = false;
+//			microGames[i].pauseEnabled = false;
+//		}
 	}
 
 	// ----------------------
@@ -112,7 +113,7 @@ public abstract class Mode extends GLScreen {
 	    if(deltaTime > 0.1f)
 	        deltaTime = 0.1f;
 	    
-	    switch(gameState) {
+	    switch(modeState) {
 	    case Ready:
 	        updateReady();
 	        break;
@@ -156,7 +157,7 @@ public abstract class Mode extends GLScreen {
 	        // Ready Bounds Check.
 	        if(OverlapTester.pointInRectangle(readyBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            gameState = GameState.Transition;
+	            modeState = ModeState.Transition;
 	            return;     
 	        }
 	        
@@ -165,6 +166,16 @@ public abstract class Mode extends GLScreen {
 	            Assets.playSound(Assets.clickSound);
 	            game.setScreen(new PlayMenu(game));
 	            return;     
+	        }
+	        
+	        // Sound Toggle Bounds Check.
+	        if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
+	            Assets.playSound(Assets.clickSound);
+	            Settings.soundEnabled = !Settings.soundEnabled;
+	            if(Settings.soundEnabled) 
+	                Assets.music.play();
+	            else
+	                Assets.music.pause();
 	        }
 	    }
 	}
@@ -191,12 +202,12 @@ public abstract class Mode extends GLScreen {
 	        // Pause Toggle Bounds Check.
 	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
-	            if(previousGameState == GameState.Transition)  //new logic for paused state changes
-	            	gameState = GameState.Transition;
-	            else if(previousGameState == GameState.Running)
-	            		gameState = GameState.Running;
-	            else if(previousGameState == GameState.Ready)
-	            		gameState = GameState.Transition;
+	            if(previousModeState == ModeState.Transition)  //new logic for paused state changes
+	            	modeState = ModeState.Transition;
+	            else if(previousModeState == ModeState.Running)
+	            		modeState = ModeState.Running;
+	            else if(previousModeState == ModeState.Ready)
+	            		modeState = ModeState.Transition;
 	            return;
 	        }
 	        
@@ -205,6 +216,16 @@ public abstract class Mode extends GLScreen {
 	            Assets.playSound(Assets.clickSound);
 	            game.setScreen(new PlayMenu(game));
 	            return;
+	        }
+	        
+	        // Sound Toggle Bounds Check.
+	        if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
+	            Assets.playSound(Assets.clickSound);
+	            Settings.soundEnabled = !Settings.soundEnabled;
+	            if(Settings.soundEnabled) 
+	                Assets.music.play();
+	            else
+	                Assets.music.pause();
 	        }
 	    }
 	}
@@ -217,8 +238,8 @@ public abstract class Mode extends GLScreen {
 		// After the time limit has past, switch to running state.
 		if (totalTransitionTime >= transitionTimeLimit) {
 			totalTransitionTime = 0;
-			gameState = GameState.Running;
-			previousGameState = gameState; //TODO: seems counter intuitive, but it tells game how to handle pause
+			modeState = ModeState.Running;
+			previousModeState = modeState; //TODO: seems counter intuitive, but it tells game how to handle pause
 			setupNextMicroGame();
 			return;
 		}
@@ -245,8 +266,8 @@ public abstract class Mode extends GLScreen {
 	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
 	            Assets.playSound(Assets.clickSound);
 	            totalTransitionTime = 0;
-	            previousGameState = gameState; //transition
-	            gameState = GameState.Paused;
+	            previousModeState = modeState; //transition
+	            modeState = ModeState.Paused;
 	            return;
 	        }  
 	    }
@@ -375,7 +396,7 @@ public abstract class Mode extends GLScreen {
 	    
 	    // **We will need to compile all assets into one sprite sheet to support single batch.**
 	    // batcher.beginBatch(Assets.items); 
-	    switch(gameState) {
+	    switch(modeState) {
 	    case Ready:
 	        presentReady();
 	        break;
@@ -409,13 +430,18 @@ public abstract class Mode extends GLScreen {
 		
 	    // Back arrow drawn.
         batcher.beginBatch(Assets.backArrow);
-        batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
+        batcher.endBatch();
+        
+        // Draws Sound Toggle.
+        batcher.beginBatch(Assets.soundToggle);
+        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes
 //	    batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(160, 160, 960, 480, Assets.boundOverlayRegion); // Ready Bounding Box
-//	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+//	    batcher.drawSprite(readyBounds, Assets.boundOverlayRegion); // Ready Bounding Box
+//	    batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); // Back Arrow Bounding Box
 //	    batcher.endBatch();
 	}
 	
@@ -427,18 +453,23 @@ public abstract class Mode extends GLScreen {
 		
 		// Draw unpause symbol.
 		batcher.beginBatch(Assets.pauseToggle);
-		batcher.drawSprite(1130, 640, 160, 160, Assets.unpauseRegion);
+		batcher.drawSprite(pauseToggleBounds, Assets.unpauseRegion);
 		batcher.endBatch();
 		
 	    // Back arrow drawn.
         batcher.beginBatch(Assets.backArrow);
-        batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
+        batcher.endBatch();
+        
+        // Draws Sound Toggle.
+        batcher.beginBatch(Assets.soundToggle);
+        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes
 //      batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
-//	    batcher.drawSprite(1130, 640, 160, 160, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
+//	    batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+//	    batcher.drawSprite(pauseToggleBounds, Assets.boundOverlayRegion); // Pause Toggle Bounding Box
 //	    batcher.endBatch();
 	}
 	
@@ -453,7 +484,7 @@ public abstract class Mode extends GLScreen {
 		
 		// Draws the pause symbol.
 		batcher.beginBatch(Assets.pauseToggle);
-		batcher.drawSprite(1130, 640, 160, 160, Assets.pauseRegion);
+		batcher.drawSprite(pauseToggleBounds, Assets.pauseRegion);
 		batcher.endBatch();
 	}
 	
@@ -472,12 +503,12 @@ public abstract class Mode extends GLScreen {
 		
 		// Draws the back arrow.
         batcher.beginBatch(Assets.backArrow);
-        batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
         batcher.endBatch();
 		
 		// Bounding Boxes
 //      batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+//	    batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); // Back Arrow Bounding Box
 //	    batcher.endBatch();
 	}
 	
@@ -492,12 +523,12 @@ public abstract class Mode extends GLScreen {
 		
 		// Draws the back arrow.
         batcher.beginBatch(Assets.backArrow);
-        batcher.drawSprite(0, 0, 160, 160, Assets.backArrowRegion);
+        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
         batcher.endBatch();
 
 		// Bounding Boxes
 //      batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(0, 0, 160, 160, Assets.boundOverlayRegion); // Back Arrow Bounding Box
+//	    batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); // Back Arrow Bounding Box
 //	    batcher.endBatch();
 	}
 	
@@ -514,8 +545,8 @@ public abstract class Mode extends GLScreen {
 	
 	@Override
 	public void pause() {
-		if(gameState == GameState.Running)
-        	gameState = GameState.Paused;
+		if(modeState == ModeState.Running)
+        	modeState = ModeState.Paused;
 	}
 
 	@Override
@@ -530,14 +561,14 @@ public abstract class Mode extends GLScreen {
 	@Override
 	public void onBackPressed(){
 		
-		switch (gameState){
+		switch (modeState){
 
 
 		case Transition: //cases to pause
-			gameState = GameState.Paused;
+			modeState = ModeState.Paused;
 			break;
 		case Running:
-			gameState = GameState.Paused;
+			modeState = ModeState.Paused;
 			break;
 
 		//The if-else-if here needed because the microgames are screens w/in a screen
@@ -545,11 +576,11 @@ public abstract class Mode extends GLScreen {
 			//in respect to previous gameState
 
 		case Paused:   //cases to resume
-			if(previousGameState == GameState.Running)
-				gameState = GameState.Running;
+			if(previousModeState == ModeState.Running)
+				modeState = ModeState.Running;
 
-			else if(previousGameState == GameState.Transition || previousGameState == GameState.Ready)
-					gameState = GameState.Transition;
+			else if(previousModeState == ModeState.Transition || previousModeState == ModeState.Ready)
+					modeState = ModeState.Transition;
 			break;
 
 		case Ready:
