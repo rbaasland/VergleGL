@@ -90,9 +90,6 @@ public abstract class Mode extends GLScreen {
 	public Mode(Game game) {
 		super(game);
 		
-		//"Notify" game (base activity) that Mode is active screen
-		game.setCurrentModeScreen(this);
-		
 		// Initialize MicroGame set.
 		microGames = new MicroGame[] { new BroFistMicroGame(game), new FlyMicroGame(game), new FireMicroGame(game),
 									   new TrafficMicroGame(game), new CircuitMicroGame(game), new LazerBallMicroGame(game) };
@@ -553,10 +550,7 @@ public abstract class Mode extends GLScreen {
 	public void resume() {}
 
 	@Override
-	public void dispose() {
-		//dereference Mode from game activity
-		game.setCurrentModeScreen(null);
-	}
+	public void dispose() {}
 	
 	@Override
 	public void onBackPressed(){

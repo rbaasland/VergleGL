@@ -3,7 +3,6 @@ package com.dbz.framework.impl;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.R;
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -11,7 +10,6 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -20,14 +18,6 @@ import com.dbz.framework.FileIO;
 import com.dbz.framework.Game;
 import com.dbz.framework.Input;
 import com.dbz.framework.Screen;
-import com.dbz.verge.Menu;
-import com.dbz.verge.MicroGame;
-import com.dbz.verge.Mode;
-import com.dbz.verge.MicroGame.MicroGameState;
-import com.dbz.verge.Mode.ModeState;
-import com.dbz.verge.menus.GameGridMenu;
-import com.dbz.verge.menus.MainMenu;
-import com.dbz.verge.menus.PlayMenu;
 
 public abstract class GLGame extends Activity implements Game, Renderer {
 	enum GLGameState {
@@ -48,7 +38,6 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 	Object stateChanged = new Object();
 	long startTime = System.nanoTime();
 	WakeLock wakeLock;
-	Mode currentModeScreen; //is null when no mode is active
 
 	@Override 
 	public void onCreate(Bundle savedInstanceState) {
@@ -181,20 +170,9 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 		return screen;
 	}   
 
-	
-	/**
-	 *  Set current mode screen. If a non Mode Screen is passed, current mode screen will be dereferenced via null pointer
-	 */
-	public void setCurrentModeScreen(Screen modeScreen) {
-		if(modeScreen instanceof Mode)
-			currentModeScreen = (Mode)modeScreen;
-		else  currentModeScreen = null; 
-
-	}
-
 	@Override  //used for hardware back button
 	public void onBackPressed() {
-		screen.onBackPressed();
+		screen.onBackPressed(); //lil strategy pattern-esk - each instance of screen implements its own onBackPressed to define behavior.
 		
 	}
 }
