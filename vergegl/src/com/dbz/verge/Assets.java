@@ -97,8 +97,6 @@ public class Assets {
     public static Animation circuitVerticalGapAnim;
     public static Animation circuitSparkAnim;
 
-    
-    
     public static Texture lazerBackground;
     public static TextureRegion lazerBackgroundRegion;
     public static Texture lazer;
