@@ -191,7 +191,7 @@ public class TossMicroGame extends MicroGame {
 		drawRunningBackground();
 		drawRunningObjects();
 		batcher.endBatch();
-		drawRunningBounds();
+		//drawRunningBounds();
 		drawInstruction("Toss!");
 		super.presentRunning();
 	}
