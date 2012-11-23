@@ -13,7 +13,7 @@ public class VergeGame extends GLGame {
       
     @Override
     public Screen getStartScreen() {
-        return new TossMicroGame(this);
+        return new MainMenu(this);
     }
     
     @Override
