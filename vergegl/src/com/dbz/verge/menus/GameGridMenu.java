@@ -15,6 +15,7 @@ import com.dbz.verge.microgames.DirtBikeMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
+import com.dbz.verge.microgames.TossMicroGame;
 import com.dbz.verge.microgames.TrafficMicroGame;
 import com.dbz.verge.microgames.AquariumMicroGame;
 
@@ -130,6 +131,8 @@ public class GameGridMenu extends Menu {
                 	Assets.playSound(Assets.clickSound);
                 	if (currentPage == 1)
                 		selectedMicroGame = new FireMicroGame(game);
+                	else if (currentPage == 2)
+                		selectedMicroGame = new TossMicroGame(game);
                 	overlayPresent = true;
                 	return;
                 }
