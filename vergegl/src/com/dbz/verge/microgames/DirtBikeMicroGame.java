@@ -91,8 +91,8 @@ public class DirtBikeMicroGame extends MicroGame {
 	        guiCam.touchToWorld(touchPoint);
 	        
 	                
-			//TODO: weird... the logig for touch_up only seems to work for the DINC, not the DINC 2
-	        	//bug, when jumping while hitting the gas the bike doesn't move forward.
+			//TODO: weird... the logic for touch_up only seems to work for the DINC, not the DINC 2
+	        	//bug, when jumping while hitting the gas the bike doesn't move forward. AND works ok on jons phone.
 	        if (targetTouchDragged(event, touchPoint, gasBounds)) {
 	        	//used to ensure touch up on gas only affects gas
 	        	if(event.type == TouchEvent.TOUCH_UP){ 
