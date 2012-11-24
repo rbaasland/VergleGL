@@ -12,8 +12,6 @@ import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
 // TODO: Add comments.
-// TODO: Add speed implementation.
-// TODO: Add level implementation.
 // TODO: Fix jerky back board collision detection.
 
 public class TossMicroGame extends MicroGame {
@@ -30,13 +28,14 @@ public class TossMicroGame extends MicroGame {
 	private boolean touch = false;
 
 	// Animation scalar based on speed variable.
-	private float animationScalar[] = { 1.0f, 1.5f, 2.0f };
-
+	private float animationScalar[] = { 1.0f, 2.0f, 3.0f };
+	private int requiredBasketCount[] = { 1, 2, 3 };
+	private int basketCount = 0;
 	private Rectangle ball = new Rectangle(ballStartX, ballStartY, 80, 80);
 	private Rectangle backBoard = new Rectangle(200, 325, 25, 215);
 	private Rectangle hoop = new Rectangle(250, 325, 75, 50);
 	private Rectangle court = new Rectangle(0, 0, 1280, 150);
-	private Rectangle freeThrow = new Rectangle(800, 0, 50, 800);
+	private Rectangle freeThrow = new Rectangle(700, 0, 50, 800);
 	private ArrayList<Rectangle> previousBalls = new ArrayList<Rectangle>();
 
 	// -------------------
@@ -54,15 +53,19 @@ public class TossMicroGame extends MicroGame {
 	@Override
 	public void updateRunning(float deltaTime) {
 		// Checks for time-based win.
-		 if (lostTimeBased(deltaTime)){
-		 Assets.playSound(Assets.hitSound);
-		 return;
-		 }
-		 if (collision(ball, hoop)){
-		 Assets.playSound(Assets.highJumpSound);
-		 microGameState = MicroGameState.Won;
-		 return;
-		 }
+		if (lostTimeBased(deltaTime)) {
+			Assets.playSound(Assets.hitSound);
+			return;
+		}
+		if (collision(ball, hoop)) {
+			basketCount++;
+			if (basketCount == requiredBasketCount[level - 1]) {
+				Assets.playSound(Assets.highJumpSound);
+				microGameState = MicroGameState.Won;
+			}
+			ball.lowerLeft.set(ballStartX, ballStartY);
+			return;
+		}
 
 		// Gets all TouchEvents and stores them in a list.
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
@@ -120,7 +123,11 @@ public class TossMicroGame extends MicroGame {
 	@Override
 	public void reset() {
 		super.reset();
-
+		velocityX = 0;
+		velocityY = 0;
+		ball.lowerLeft.set(ballStartX, ballStartY);
+		touch = false;
+		basketCount = 0;
 	}
 
 	public void ballDirection(Rectangle current, List<Rectangle> previous,
@@ -134,11 +141,12 @@ public class TossMicroGame extends MicroGame {
 			}
 		directionX /= 5;
 		directionY /= 5;
-		velocityX = directionX * .5f;
+		velocityX = directionX * .5f * animationScalar[speed-1];
 		velocityY = directionY * .5f;
 	}
 
 	public void moveBall() {
+
 		if (velocityX > 0)
 			velocityX -= .05f;
 		if (velocityX < 0)
@@ -151,7 +159,6 @@ public class TossMicroGame extends MicroGame {
 			ball.lowerLeft.x += velocityX;
 		else {
 			ball.lowerLeft.set(ballStartX, ballStartY);
-			velocityX = 0;
 		}
 
 		velocityY -= gravity;
@@ -162,7 +169,6 @@ public class TossMicroGame extends MicroGame {
 		}
 		if (!collision(ball, court))
 			ball.lowerLeft.y += velocityY;
-
 	}
 
 	// Checks for collision.
@@ -191,7 +197,7 @@ public class TossMicroGame extends MicroGame {
 		drawRunningBackground();
 		drawRunningObjects();
 		batcher.endBatch();
-		//drawRunningBounds();
+		// drawRunningBounds();
 		drawInstruction("Toss!");
 		super.presentRunning();
 	}
