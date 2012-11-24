@@ -123,6 +123,10 @@ public class Assets {
     public static TextureRegion dirtBikeRegion;
     public static TextureRegion gasPedalRegion;
     
+    public static Texture toss;
+    public static TextureRegion tossBallRegion;
+    public static TextureRegion tossBackgroundRegion;
+    
     // ------------------------
   	// --- Sound Assets -----
   	// ------------------------
@@ -246,7 +250,6 @@ public class Assets {
         circuitVerticalGapAnim =  new Animation(0, circuitVerticalGapOffRegion, circuitVerticalGapOnRegion);
         circuitSparkAnim = new Animation(0.2f, circuitSparkState1Region, circuitSparkState2Region);
         
-        
         lazerBackground = new Texture(game, "lazerBackground.png");
         lazerBackgroundRegion = new TextureRegion(lazerBackground, 0, 0, 1280, 800);
         lazer = new Texture(game, "lazerItems.png");
@@ -273,6 +276,10 @@ public class Assets {
         dirtBikeBackgroundRegion = new TextureRegion(dirtBikeBackground,0,0,1300,700);
         dirtBikeRegion = new TextureRegion(dirtBikeBackground, 1400,1,256,256);
         gasPedalRegion = new TextureRegion(dirtBikeBackground,1440,300,160,160);
+        
+        toss = new Texture(game,"toss.png");
+        tossBallRegion = new TextureRegion(toss, 0,800,80,80);
+        tossBackgroundRegion = new TextureRegion(toss,0,0,1280,800);
         
         // *** Initialize Testing Assets. ***
         boundOverlay = new Texture(game, "boundoverlay.png");
@@ -360,6 +367,7 @@ public class Assets {
         lazer.reload();
         circuitBackground.reload();
         circuit.reload();
+        toss.reload();
         // *** Reload Testing Assets. ***
         boundOverlay.reload();
         items.reload();

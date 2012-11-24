@@ -6,6 +6,7 @@ import javax.microedition.khronos.opengles.GL10;
 import com.dbz.framework.Screen;
 import com.dbz.framework.impl.GLGame;
 import com.dbz.verge.menus.MainMenu;
+import com.dbz.verge.microgames.TossMicroGame;
 
 public class VergeGame extends GLGame {
     boolean firstTimeCreate = true;
