@@ -12,7 +12,6 @@ import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
 // TODO: Add comments.
-// TODO: Fix jerky back board collision detection.
 
 public class TossMicroGame extends MicroGame {
 
@@ -87,7 +86,7 @@ public class TossMicroGame extends MicroGame {
 			if (touch)
 				if (targetTouchUp(event, touchPoint, ball)
 						|| event.type == TouchEvent.TOUCH_UP) {
-					ballDirection(ball, previousBalls, deltaTime);
+					ballDirection(ball, previousBalls);
 					previousBalls.clear();
 					touch = false;
 				}
@@ -130,8 +129,7 @@ public class TossMicroGame extends MicroGame {
 		basketCount = 0;
 	}
 
-	public void ballDirection(Rectangle current, List<Rectangle> previous,
-			float deltaTime) {
+	public void ballDirection(Rectangle current, List<Rectangle> previous) {
 		float directionX = 0;
 		float directionY = 0;
 		if (previous.size() >= 5)
@@ -152,8 +150,11 @@ public class TossMicroGame extends MicroGame {
 		if (velocityX < 0)
 			velocityX += .05f;
 
-		if (collision(ball, backBoard))
+		if (collision(ball, backBoard)){
+			// corrects buggy effect if ball is dropped on top of back board collision box
+			ball.lowerLeft.x = backBoard.width + backBoard.lowerLeft.x;
 			velocityX = -velocityX;
+		}
 
 		if (ball.lowerLeft.x < 1280 && ball.lowerLeft.x > -80)
 			ball.lowerLeft.x += velocityX;
@@ -197,7 +198,7 @@ public class TossMicroGame extends MicroGame {
 		drawRunningBackground();
 		drawRunningObjects();
 		batcher.endBatch();
-		// drawRunningBounds();
+//		drawRunningBounds();
 		drawInstruction("Toss!");
 		super.presentRunning();
 	}
