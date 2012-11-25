@@ -18,9 +18,9 @@ public class PlayMenu extends Menu {
 	// --------------
     
     // Bounding Boxes.
-    private Rectangle gameGridBounds = new Rectangle(350, 510, 580, 100);
-    private Rectangle survivalBounds = new Rectangle(350, 350, 580, 100);
-    private Rectangle timeAttackBounds = new Rectangle(350, 190, 580, 100);
+    private Rectangle survivalBounds = new Rectangle(350, 510, 580, 100);
+    private Rectangle timeAttackBounds = new Rectangle(350, 350, 580, 100);
+    private Rectangle gameGridBounds = new Rectangle(350, 190, 580, 100);
     private Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
 
     // -------------------
@@ -54,14 +54,7 @@ public class PlayMenu extends Menu {
                 // Sends the vector to the OpenGL Camera for handling.
                 guiCam.touchToWorld(touchPoint);
                 
-                // Game Grid Button Bounds Check.
-                if(OverlapTester.pointInRectangle(gameGridBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
-                    game.setScreen(new GameGridMenu(game));
-                    return;
-                }
-                
-                // Survival Button Bounds Check.
+                // Survival Button Bounds Check.   
                 if(OverlapTester.pointInRectangle(survivalBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
                     game.setScreen(new SurvivalMode(game));
@@ -72,6 +65,13 @@ public class PlayMenu extends Menu {
                 if(OverlapTester.pointInRectangle(timeAttackBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
                     game.setScreen(new TimeAttackMode(game));
+                    return;
+                }
+                
+                // Game Grid Button Bounds Check.
+                if(OverlapTester.pointInRectangle(gameGridBounds, touchPoint)) {
+                    Assets.playSound(Assets.clickSound);
+                    game.setScreen(new GameGridMenu(game));
                     return;
                 }
                 
@@ -114,9 +114,9 @@ public class PlayMenu extends Menu {
     
     public void drawBounds() {
       batcher.beginBatch(Assets.boundOverlay);     
+      batcher.drawSprite(survivalBounds, Assets.boundOverlayRegion); 	// Survival Button Bounding Box
+      batcher.drawSprite(timeAttackBounds, Assets.boundOverlayRegion);  // Time Attack Bounding Box
       batcher.drawSprite(gameGridBounds, Assets.boundOverlayRegion); 	// Game Grid Button Bounding Box
-      batcher.drawSprite(survivalBounds, Assets.boundOverlayRegion);  	// Survival Button Bounding Box
-      batcher.drawSprite(timeAttackBounds, Assets.boundOverlayRegion); 	// Time Attack Bounding Box
       batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); 	// Back Arrow Bounding Box
       super.drawBounds();
       batcher.endBatch();
