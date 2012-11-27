@@ -158,8 +158,11 @@ public class Assets {
     public static TextureRegion bobHit;
     public static Animation squirrelFly;
     public static TextureRegion platform;
-    public static Animation brakingPlatform;    
+    public static Animation brakingPlatform;
     public static Font font;
+    
+    public static Texture vergeFont;
+    public static Font terminalFont;
     
     public static Music music;
     public static Sound jumpSound;
@@ -324,7 +327,11 @@ public class Assets {
                                      new TextureRegion(items, 64, 192, 64, 16),
                                      new TextureRegion(items, 64, 208, 64, 16));
         
+        
         font = new Font(items, 224, 0, 16, 16, 20);
+        
+        vergeFont = new Texture(game, "verge_font.png");
+        terminalFont = new Font(vergeFont, 0, 0, 15, 17, 32);
         
         soundManager = SoundManager.getInstance(); //instance of soundManger-- needed for sound objects
         
@@ -371,6 +378,7 @@ public class Assets {
         // *** Reload Testing Assets. ***
         boundOverlay.reload();
         items.reload();
+        vergeFont.reload();
         if(Settings.soundEnabled)
             music.play();
     }

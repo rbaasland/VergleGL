@@ -572,8 +572,8 @@ public abstract class MicroGame extends GLScreen {
 //			batcher.endBatch();
 //		}
 		// ...or could just dedicate screen space for it for the entire MicroGame.
-		batcher.beginBatch(Assets.items);
-		Assets.font.drawText(batcher, string, 600, 700);
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, string, 640, 700, 1.5f);
 		batcher.endBatch();
 	}
 	
