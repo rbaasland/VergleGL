@@ -43,6 +43,9 @@ public class TossMicroGame extends MicroGame {
 
 	public TossMicroGame(Game game) {
 		super(game);
+		
+		// Extend allowed time for testing.
+		totalMicroGameTime = new float[]{10.0f, 8.5f, 7.0f};
 	}
 
 	// ---------------------
