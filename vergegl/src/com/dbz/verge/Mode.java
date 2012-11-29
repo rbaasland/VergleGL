@@ -419,13 +419,13 @@ public abstract class Mode extends GLScreen {
 	    fpsCounter.logFrame();
 	}
 	
-	public void presentReady() {
-		// Temporary ready message.
-		batcher.beginBatch(Assets.items);
-		batcher.drawSprite(600, 500, 192, 32, Assets.ready);
+	public void presentReady() {		
+		// Draws Ready Message.
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, "Ready?", 640, 500, 1.75f);
 		batcher.endBatch();
 		
-	    // Back arrow drawn.
+	    // Draws Back Arrow.
         batcher.beginBatch(Assets.backArrow);
         batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
         batcher.endBatch();
@@ -443,9 +443,9 @@ public abstract class Mode extends GLScreen {
 	}
 	
 	public void presentPaused() {
-		// Temporary pause message, need rest of menu.
-		batcher.beginBatch(Assets.items);
-		Assets.font.drawText(batcher, "- PAUSED -", 600, 500);
+		// Draws Paused Message.
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, "- PAUSED -", 640, 500, 1.75f);
 		batcher.endBatch();
 		
 		// Draw unpause symbol.
@@ -453,7 +453,7 @@ public abstract class Mode extends GLScreen {
 		batcher.drawSprite(pauseToggleBounds, Assets.unpauseRegion);
 		batcher.endBatch();
 		
-	    // Back arrow drawn.
+	    // Draws Back Arrow.
         batcher.beginBatch(Assets.backArrow);
         batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
         batcher.endBatch();
@@ -491,8 +491,8 @@ public abstract class Mode extends GLScreen {
 	
 	public void presentWon() {
 		// Draws the win message.
-		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, "You Win The Game!", 600, 650);
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, "A Winner is You!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// Draws the end game status report.
@@ -510,9 +510,9 @@ public abstract class Mode extends GLScreen {
 	}
 	
 	public void presentLost() {
-		// Draws the lose message.
-		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, "You Lost The Game!", 600, 650);
+		// Draws the lose message.	
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, "You Lost The Game!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// Draws the end game status report.

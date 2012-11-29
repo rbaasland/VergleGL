@@ -432,10 +432,10 @@ public abstract class MicroGame extends GLScreen {
 	    fpsCounter.logFrame();
 	}
 	
-	public void presentReady() {
+	public void presentReady() {		
 		// Draws Ready Message.
-		batcher.beginBatch(Assets.items);
-		batcher.drawSprite(600, 500, 192, 32, Assets.ready);
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, "Ready?", 640, 500, 1.75f);
 		batcher.endBatch();
 		
 		if (backArrowEnabled) {
@@ -461,10 +461,10 @@ public abstract class MicroGame extends GLScreen {
 	// TODO: Handle This Exception.
 	//		 Exception: If the Android State Management System calls pause().
 	public void presentPaused() {
-		// Draws the Pause Message.
-		batcher.beginBatch(Assets.items);
-		Assets.font.drawText(batcher, "- PAUSED -", 600, 500);
-		batcher.endBatch();		
+		// Draws Paused Message.
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, "- PAUSED -", 640, 500, 1.75f);
+		batcher.endBatch();
 		
 		// If Pause is enabled...
 		if (pauseEnabled) {
@@ -495,9 +495,9 @@ public abstract class MicroGame extends GLScreen {
 	}
 	
 	public void presentRunning() {
-		// Draw the Timer.
-		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, String.format("%.2f", totalMicroGameTime[speed-1]-totalRunningTime), 600, 100);
+		// Draw the Timer.		
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, String.format("%.2f", totalMicroGameTime[speed-1]-totalRunningTime), 640, 15, 1.5f);
 		batcher.endBatch();
 	    
 		// If Pause is enabled...
@@ -515,9 +515,9 @@ public abstract class MicroGame extends GLScreen {
 	}
 	
 	public void presentWon() {
-		// Draws the Win message.
-		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, "You Win!", 600, 500);
+		// Draws the Win message.	
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, "You Win!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// If Back Arrow is enabled...
@@ -535,9 +535,9 @@ public abstract class MicroGame extends GLScreen {
 	}
 	
 	public void presentLost() {
-		// Draws the Lose message.
-		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, "You Lose!", 600, 500);
+		// Draws the Lose message.		
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, "You Lose!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// If Back Arrow is enabled...

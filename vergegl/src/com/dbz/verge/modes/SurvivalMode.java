@@ -108,13 +108,12 @@ public class SurvivalMode extends Mode {
 	// ----------------------------
 
 	@Override
-	// TODO: Change Current Round to Rounds Completed, Maybe just for End Game Report. (???)
-	public void presentStatusReport() {
-		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, "Level: " + String.valueOf(level), 500, 550);
-	    Assets.font.drawText(batcher, "Speed: " + String.valueOf(speed), 500, 500);
-	    Assets.font.drawText(batcher, "Lives: " + String.valueOf(lives), 500, 450);
-	    Assets.font.drawText(batcher, "Rounds Survived: " + String.valueOf(currentRound-1) + " / OVER 9000", 500, 350);
+	public void presentStatusReport() {		
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, "Level: " + String.valueOf(level), 640, 450, 1.5f);
+		Assets.terminalFont.drawTextCentered(batcher, "Speed: " + String.valueOf(speed), 640, 400, 1.5f);
+		Assets.terminalFont.drawTextCentered(batcher, "Lives: " + String.valueOf(lives), 640, 350, 1.5f);
+		Assets.terminalFont.drawTextCentered(batcher, "Rounds Survived: " + String.valueOf(currentRound-1) + " / OVER 9000", 640, 300, 1.5f);
 		batcher.endBatch();
 	}
 	

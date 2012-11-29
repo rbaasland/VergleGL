@@ -64,10 +64,10 @@ public class TimeAttackMode extends Mode {
 
 	@Override
 	public void presentStatusReport() {
-		batcher.beginBatch(Assets.items);
-	    Assets.font.drawText(batcher, "Level: " + String.valueOf(level), 600, 550);
-	    Assets.font.drawText(batcher, "Speed: " + String.valueOf(speed), 600, 500);
-	    Assets.font.drawText(batcher, "Wins: " + String.valueOf(currentRound-1) + " / " + String.valueOf(winsRequired), 600, 400);
+		batcher.beginBatch(Assets.vergeFont);
+		Assets.terminalFont.drawTextCentered(batcher, "Level: " + String.valueOf(level), 640, 450, 1.5f);
+		Assets.terminalFont.drawTextCentered(batcher, "Speed: " + String.valueOf(speed), 640, 400, 1.5f);
+		Assets.terminalFont.drawTextCentered(batcher, "Wins: " + String.valueOf(currentRound-1) + " / " + String.valueOf(winsRequired), 640, 350, 1.5f);
 		batcher.endBatch();
 	}
 	

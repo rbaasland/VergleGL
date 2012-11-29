@@ -38,11 +38,10 @@ public class Font {
         }
     }
     
-    // Alternate Version of drawText(). Draws the text centered at provided x, and y.
+    // Alternate Version of drawText(). Draws the text centered at provided x. (Center Bottom Point)
     public void drawTextCentered(SpriteBatcher batcher, String text, float x, float y) {
     	int len = text.length();
         float charsToShift = len / 2;
- 
         
         if ((len % 2) == 1)
         	charsToShift += 0.5f;
