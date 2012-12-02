@@ -21,29 +21,36 @@ public class LazerBallMicroGame extends MicroGame  {
 
 	// Array used to store the different required counts of the 3 difficulty levels.
 	private int requiredLazerChargeCount[] = { 10, 20, 30 };
+	private float lazerChargeRate[] = {53.6f, 26.8f, 13.4f}; //rate at which lazer will increase.. (maxsize - minsize) / requiredLazerChargeCount
 	private int chargeCount = 0;
+	
+	//height and width constands
+	private int lazerMinSize = 64;   
+	private int lazerMaxSize = 600;
 
 	//growth rates for each level (one rate per animation)
 	private int growthStage = 0;
-	int[] level1GrowthRate = {2, 4, 6, 8 ,10};
-	int[] level2GrowthRate = {4, 8, 12, 16, 20};
-	int[] level3GrowthRate = {6, 12, 18, 24, 30};
+	//int[] level1GrowthRate = {2, 4, 6, 8 ,10};  //touches will be used by requiredLazerChargeCount
+	//int[] level2GrowthRate = {4, 8, 12, 16, 20};
+	//int[] level3GrowthRate = {6, 12, 18, 24, 30};
 	
 	// Animation scalar based on speed variable.
 	private float animationScalar[] = {1.0f, 1.5f, 2.0f};
 
 	//used to store appropriate growth rate based on level. uses isFirstRun bool in updateRunning()
 	int[] currentLevelGrowthRate;
-	boolean isFirstRun = true;
+	boolean isFirstRun = true; //TODO remove this garbage
 
 	//used to track state of laser
-	private boolean readyToFire = false;
+	private boolean readyToFire = false; //TODO might not need anymore 
 	private boolean lazerFired = false;
 
 	// Bounds for touch detection.
-	private Rectangle lazerBallBounds = new Rectangle(150, 40, 600, 600);
-	private Rectangle fireButtonBounds = new Rectangle(0, 240, 100, 250);
-	private Rectangle targetBounds = new Rectangle(1100, 240, 250, 200); 
+	private Rectangle lazerBallBounds = new Rectangle(450, 340, lazerMinSize, lazerMinSize);//new Rectangle(150, 40, 600, 600);
+	//private Rectangle originalBallBounds = new Rectangle(150, 40, 600, 600);
+	
+	private Rectangle fireButtonBounds = new Rectangle(0, 240, 100, 250);  //TODO: will remove
+	private Rectangle targetBounds = new Rectangle(1100, 240, 250, 200);   //will keep, but remove bob texture
 
 	// -------------------
 	// --- Constructor ---
@@ -62,22 +69,6 @@ public class LazerBallMicroGame extends MicroGame  {
 			Assets.playSound(Assets.hitSound);
 			resetLazerSize();
 			return;
-		}
-
-		if(isFirstRun){//TODO: Code SMELL
-
-			switch(level){
-			case 1:
-				currentLevelGrowthRate = level1GrowthRate;
-				break;
-			case 2:
-				currentLevelGrowthRate = level2GrowthRate;
-				break;
-			case 3:
-				currentLevelGrowthRate = level3GrowthRate;
-				break;
-			}
-			isFirstRun = false;
 		}
 
 		//if lazer has been fired, keep lazer moving & check for target collision
@@ -100,30 +91,30 @@ public class LazerBallMicroGame extends MicroGame  {
 			guiCam.touchToWorld(touchPoint);
 
 			// Tests if lazer is touched.
-			if (targetTouchDown(event, touchPoint, lazerBallBounds)) {
+			if (targetTouchDownCenterCoords(event, touchPoint, lazerBallBounds)) {
 
-				if(!readyToFire){
+				if(!readyToFire){ //can probably remove this. because it will trigger autofire sequence instead. 
 					chargeCount++;
-					if(chargeCount == currentLevelGrowthRate[growthStage])
-						increaseGrowthStage();
+					increaseGrowthStage();
 				}
 
 				if (chargeCount == requiredLazerChargeCount[level-1]) {
 					readyToFire = true;
-					fireButtonReady();
+					firelazer();
+					//fireButtonReady(); //removing fire button
 
 				}
 				else if (chargeCount < requiredLazerChargeCount[level-1])
-					Assets.playSound(Assets.coinSound);
+					Assets.playSound(Assets.coinSound); //need charging sound asset here
 				return;
 			}
 
 			//Tests if fire button is touched
-			if(targetTouchDown(event, touchPoint, fireButtonBounds))
-				if(readyToFire){
-					firelazer();
-					return;
-				}	
+			//if(targetTouchDown(event, touchPoint, fireButtonBounds))
+				//if(readyToFire){
+					//firelazer();
+					//return;
+				//}	
 
 
 			// Tests for non-unique touch events, which is currently pause only.
@@ -154,8 +145,11 @@ public class LazerBallMicroGame extends MicroGame  {
 
 	//Increments lazer's growth stage, changes lazer animation
 	private void increaseGrowthStage() {
-		growthStage++;
-		Assets.lazerState1Region = Assets.lazerChargingAnim.getKeyFrame(growthStage); //overrides first texture w/ next anim
+		//TODO implement size of lazer
+		lazerBallBounds.width +=  lazerChargeRate[level-1];
+		lazerBallBounds.height +=  lazerChargeRate[level-1];
+		//growthStage++;
+		//Assets.lazerState1Region = Assets.lazerChargingAnim.getKeyFrame(growthStage); //overrides first texture w/ next anim
 	}
 
 	private void fireButtonReady() {
@@ -197,7 +191,7 @@ public class LazerBallMicroGame extends MicroGame  {
 	public void presentRunning() {
 		drawRunningBackground();
 		drawRunningObjects();
-		// drawRunningBounds();
+		 //drawRunningBounds();
 
 		if (readyToFire || lazerFired)
 			drawInstruction("FIRE YA LAZERRR!!!!");
@@ -221,9 +215,9 @@ public class LazerBallMicroGame extends MicroGame  {
 	public void drawRunningObjects() {
 		// Draw Brofist.
 		batcher.beginBatch(Assets.lazer);
-		batcher.drawSprite(lazerBallBounds, Assets.lazerState1Region);
-		batcher.drawSprite(fireButtonBounds, Assets.lazerFireButtonInitialRegion);
-		batcher.drawSprite(targetBounds, Assets.lazerTargetRegion);
+		batcher.drawSpriteCenterCoords(lazerBallBounds, Assets.lazerState5Region);
+		//batcher.drawSprite(fireButtonBounds, Assets.lazerFireButtonInitialRegion);
+		//batcher.drawSprite(targetBounds, Assets.lazerTargetRegion);
 		batcher.endBatch();
 	}
 
@@ -231,9 +225,10 @@ public class LazerBallMicroGame extends MicroGame  {
 	public void drawRunningBounds() {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
-		batcher.drawSprite(lazerBallBounds, Assets.boundOverlayRegion);  // LazerBall Bounding Box
-		batcher.drawSprite(fireButtonBounds, Assets.boundOverlayRegion); // FireButton Bounding Box 
-		batcher.drawSprite(targetBounds, Assets.boundOverlayRegion);	 // Target Bounding Box
+		batcher.drawSpriteCenterCoords(lazerBallBounds, Assets.boundOverlayRegion);  // LazerBall Bounding Box
+		//batcher.drawSprite(originalBallBounds, Assets.boundOverlayRegion);
+		//batcher.drawSprite(fireButtonBounds, Assets.boundOverlayRegion); // FireButton Bounding Box 
+		//batcher.drawSprite(targetBounds, Assets.boundOverlayRegion);	 // Target Bounding Box
 		batcher.endBatch();
 	}
 

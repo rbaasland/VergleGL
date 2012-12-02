@@ -18,6 +18,7 @@ import com.dbz.framework.FileIO;
 import com.dbz.framework.Game;
 import com.dbz.framework.Input;
 import com.dbz.framework.Screen;
+import com.dbz.verge.Assets;
 
 public abstract class GLGame extends Activity implements Game, Renderer {
 	enum GLGameState {
@@ -172,6 +173,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 
 	@Override  //used for hardware back button
 	public void onBackPressed() {
+    	Assets.playSound(Assets.clickSound);
 		screen.onBackPressed(); //lil strategy pattern-esk - each instance of screen implements its own onBackPressed to define behavior.
 		
 	}

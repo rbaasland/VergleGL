@@ -393,7 +393,8 @@ public class GameGridMenu extends Menu {
     
     @Override
     public void onBackPressed(){
-    	game.setScreen(new PlayMenu(game));
-    	
+    	if (overlayPresent){
+    		game.setScreen(new GameGridMenu(game));
+    	} else game.setScreen(new PlayMenu(game));	
     }
 }

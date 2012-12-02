@@ -158,4 +158,38 @@ public class SpriteBatcher {
         
         numSprites++;
     }
+    
+    //Added drawSprite to draw from center, when resizing a Rectangle/Texture, drawing the height/width from the lowerleft 
+    //is bothersome. - JT
+    public void drawSpriteCenterCoords(Rectangle rectangle, TextureRegion region) {
+        float halfWidth = rectangle.width / 2;
+        float halfHeight = rectangle.height / 2;
+        float x1 = rectangle.lowerLeft.x - halfWidth;
+        float y1 = rectangle.lowerLeft.y - halfHeight;
+        float x2 = rectangle.lowerLeft.x + halfWidth;
+        float y2 = rectangle.lowerLeft.y + halfHeight;
+        
+        verticesBuffer[bufferIndex++] = x1;
+        verticesBuffer[bufferIndex++] = y1;
+        verticesBuffer[bufferIndex++] = region.u1;
+        verticesBuffer[bufferIndex++] = region.v2;
+        
+        verticesBuffer[bufferIndex++] = x2;
+        verticesBuffer[bufferIndex++] = y1;
+        verticesBuffer[bufferIndex++] = region.u2;
+        verticesBuffer[bufferIndex++] = region.v2;
+        
+        verticesBuffer[bufferIndex++] = x2;
+        verticesBuffer[bufferIndex++] = y2;
+        verticesBuffer[bufferIndex++] = region.u2;
+        verticesBuffer[bufferIndex++] = region.v1;
+        
+        verticesBuffer[bufferIndex++] = x1;
+        verticesBuffer[bufferIndex++] = y2;
+        verticesBuffer[bufferIndex++] = region.u1;
+        verticesBuffer[bufferIndex++] = region.v1;
+        
+        numSprites++;
+    }
+    
 }

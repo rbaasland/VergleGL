@@ -332,6 +332,16 @@ public abstract class MicroGame extends GLScreen {
 		return false;
 	}
 	
+	// Checks if a TOUCH_DOWN event is in targetBounds.
+	public boolean targetTouchDownCenterCoords(TouchEvent event, Vector2 touchPoint, Rectangle targetBounds) {
+		// Test for single-touch inside target bounds.
+		if (event.type == TouchEvent.TOUCH_DOWN)
+	    	if(OverlapTester.pointInRectangleCenterCoords(targetBounds, touchPoint))
+		        return true; 
+	
+		return false;
+	}
+	
 	// Checks if a TOUCH_DOWN or TOUCH_DRAGGED event is in targetBounds.
 	public boolean targetTouchDragged(TouchEvent event, Vector2 touchPoint, Rectangle targetBounds) {
 		// Test for single-touch inside target bounds.

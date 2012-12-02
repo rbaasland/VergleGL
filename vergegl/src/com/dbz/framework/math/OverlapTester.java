@@ -55,4 +55,17 @@ public class OverlapTester {
         return r.lowerLeft.x <= x && r.lowerLeft.x + r.width >= x &&
                r.lowerLeft.y <= y && r.lowerLeft.y + r.height >= y;
     }
+    
+    //added to support touches on rectangles drawn from center vector - JT
+    public static boolean pointInRectangleCenterCoords(Rectangle r, Vector2 p){
+        float halfWidth = r.width / 2;
+        float halfHeight = r.height / 2;
+        float x1 = r.lowerLeft.x - halfWidth;
+        float y1 = r.lowerLeft.y - halfHeight;
+        float x2 = r.lowerLeft.x + halfWidth;
+        float y2 = r.lowerLeft.y + halfHeight;
+               
+        return x1 <= p.x && x2 >= p.x &&
+                y1 <= p.y && y2 >= p.y;      
+    }
 }
