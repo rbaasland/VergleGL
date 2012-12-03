@@ -7,7 +7,6 @@ import com.dbz.verge.Mode;
 // TODO: Display total time accumulated on status report.
 // TODO: Currently, if you lose round on the round before level/speed up will occur...
 //		 ...you will be forced to replay the game you lost at a higher speed and level than originally.
-
 public class TimeAttackMode extends Mode {
 
 	// --------------
@@ -53,6 +52,13 @@ public class TimeAttackMode extends Mode {
 	public void updateMicroGameLost() {
 		totalTime += microGames[microGameIndex].totalMicroGameTime[speed-1];
 		modeState = ModeState.Transition;
+
+		// TODO: Might want to take a better approach to this.
+		//		 Currently decrementing to counter the increment that would still occur on loss.
+		if (currentRound % roundsToLevelUp == 0)
+			level--;
+		if (currentRound % roundsToSpeedUp == 0)
+			speed--;	
 	}
 	
 	// ------------------------------
@@ -63,7 +69,7 @@ public class TimeAttackMode extends Mode {
 	// Goes through MicroGames sequentially.
 	public void setupNextMicroGame() {
 		microGameIndex = (currentRound-1) % microGames.length;
-		super.setupNextMicroGame();		
+		super.setupNextMicroGame();
 	}
 	
 	// ----------------------------
@@ -71,7 +77,6 @@ public class TimeAttackMode extends Mode {
 	// ----------------------------
 
 	@Override
-	// TODO: Time format needs fixing. In example: 1:05.52 -> 1: 5.52 
 	public void presentStatusReport() {
 		totalMinutes = (int)(totalTime / 60);
 		totalSeconds = totalTime % 60.0f;

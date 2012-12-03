@@ -234,10 +234,11 @@ public abstract class Mode extends GLScreen {
 
 		// After the time limit has past, switch to running state.
 		if (totalTransitionTime >= transitionTimeLimit) {
+			
 			totalTransitionTime = 0;
 			modeState = ModeState.Running;
 			previousModeState = modeState; //TODO: seems counter intuitive, but it tells game how to handle pause
-			setupNextMicroGame();
+			setupNextMicroGame();	// TODO: Setup MicroGame for running during transition instead of at the end.
 			return;
 		}
 		
@@ -360,12 +361,12 @@ public abstract class Mode extends GLScreen {
 
 	public void setupNextMicroGame() {
 		// Increases difficulty level based on rounds completed.
-		if (currentRound % roundsToLevelUp == 0 && currentRound != 1)
+		if ((currentRound-1) % roundsToLevelUp == 0 && currentRound != 1)
 			if (level != 3)
 				level++;
 
 		// Increases speed level based on rounds completed.
-		if (currentRound % roundsToSpeedUp == 0 && currentRound != 1)
+		if ((currentRound-1) % roundsToSpeedUp == 0 && currentRound != 1)
 			if (speed != 3)
 				speed++;
 
@@ -419,7 +420,7 @@ public abstract class Mode extends GLScreen {
 	    fpsCounter.logFrame();
 	}
 	
-	public void presentReady() {		
+	public void presentReady() {
 		// Draws Ready Message.
 		batcher.beginBatch(Assets.vergeFont);
 		Assets.terminalFont.drawTextCentered(batcher, "Ready?", 640, 500, 1.75f);
