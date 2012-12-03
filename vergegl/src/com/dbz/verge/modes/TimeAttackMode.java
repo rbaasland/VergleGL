@@ -17,6 +17,9 @@ public class TimeAttackMode extends Mode {
 	// Tracks required MicroGame wins to win the TimeAttack.
 	// * Initialized in Constructor. *
     public int winsRequired;
+    
+    // Tracks total time accumulated.
+    public float totalTime;
 	
 	// -------------------
 	// --- Constructor ---
@@ -35,7 +38,9 @@ public class TimeAttackMode extends Mode {
 	
 	@Override
 	public void updateMicroGameWon() {
+		totalTime += microGames[microGameIndex].totalRunningTime;
 		currentRound++;
+		
 		if (currentRound > winsRequired)
 			modeState = ModeState.Won;
 		else
@@ -44,6 +49,7 @@ public class TimeAttackMode extends Mode {
 	
 	@Override
 	public void updateMicroGameLost() {
+		totalTime += microGames[microGameIndex].totalMicroGameTime[speed-1];
 		modeState = ModeState.Transition;
 	}
 	
@@ -63,11 +69,13 @@ public class TimeAttackMode extends Mode {
 	// ----------------------------
 
 	@Override
+	// TODO: Time format needs fixing. In example: 1:05.52 -> 1: 5.52 
 	public void presentStatusReport() {
 		batcher.beginBatch(Assets.vergeFont);
 		Assets.terminalFont.drawTextCentered(batcher, "Level: " + String.valueOf(level), 640, 450, 1.5f);
 		Assets.terminalFont.drawTextCentered(batcher, "Speed: " + String.valueOf(speed), 640, 400, 1.5f);
 		Assets.terminalFont.drawTextCentered(batcher, "Wins: " + String.valueOf(currentRound-1) + " / " + String.valueOf(winsRequired), 640, 350, 1.5f);
+		Assets.terminalFont.drawTextCentered(batcher, "Total Time: " + String.valueOf((int)(totalTime / 60)) + ":" + String.format("%.2f", totalTime % 60), 640, 300, 1.5f);
 		batcher.endBatch();
 	}
 	
