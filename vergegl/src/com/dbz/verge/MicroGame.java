@@ -243,12 +243,12 @@ public abstract class MicroGame extends GLScreen {
 		        	if(game.getCurrentScreen() instanceof Mode){ //TODO fix issue w/ microgame inside a mode so we don't use code smell
 		        		Assets.playSound(Assets.clickSound);
 			            game.setScreen(new com.dbz.verge.menus.PlayMenu(game));
-			            return;
-		        	}	
-		        	
-		            Assets.playSound(Assets.clickSound);
-		            game.setScreen(new GameGridMenu(game));
-		            return;     
+			            
+		        	} else {	
+		        		Assets.playSound(Assets.clickSound);
+		        		game.setScreen(new GameGridMenu(game));
+		        		return;    
+		        	}
 		        }
 	        }
 	    }
@@ -286,8 +286,7 @@ public abstract class MicroGame extends GLScreen {
 		        		Assets.playSound(Assets.clickSound);
 		        		game.setScreen(new GameGridMenu(game));
 		        		return;    
-		        	}
-		            
+		        	}  
 		        }
 	        }
 	    }

@@ -240,16 +240,6 @@ public class Assets {
         lazer = new Texture(game, "lazerItems.png");
         lazerBall= new TextureRegion(lazer, 0, 0, 192, 192);
         lazerFace = new TextureRegion(lazer, 256, 0, 224, 320);
-        //lazerState3Region = new TextureRegion(lazer, 512, 0, 256, 256);
-        //lazerState4Region = new TextureRegion(lazer, 768, 0, 256, 256);
-        //lazerState5Region = new TextureRegion(lazer, 0, 256, 256, 256);
-        //lazerState6Region = new TextureRegion(lazer, 256, 256, 256, 256);        
-        //lazerFireButtonInitialRegion = new TextureRegion(lazer, 512, 256, 128, 256);
-        //lazerFireButtonReadyRegion = new TextureRegion(lazer, 640, 256, 128, 256);
-        //lazerTargetRegion = new TextureRegion(lazer, 896, 256, 128, 128);
-        //lazerChargingAnim = new Animation(0, lazerState1Region, lazerState2Region, 
-        								//lazerState3Region, lazerState4Region, lazerState5Region, lazerState6Region);
-        //lazerFireButtonAnim = new Animation(0, lazerFireButtonInitialRegion, lazerFireButtonReadyRegion);
         
         aquariumBackround=new Texture(game,"aquariumBackground.png");
         aquariumBackroundRegion=new TextureRegion(aquariumBackround,0,0,1280,800);
