@@ -1,17 +1,14 @@
 package com.dbz.verge.microgames;
 
 import java.util.List;
+
 import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
-// TODO: Comment code. Try to match the standard that is created with other MicroGame comments.
-// TODO: The lazerBallBounds need to accurately reflect the lazer ball's size.
-// TODO: Explosion Art, better laser art, something better than bob as target, Good "Firin Mah Lazer" sound byte
-// TODO: Needs to reset when called from GameGrid and Survival
-// TODO: Currently the fire button starts red in Time Attack.
+// TODO: Explosion Art, better laser art, something better than bob as target. (See todo's below)
 
 public class LazerBallMicroGame extends MicroGame  {
 
@@ -21,42 +18,34 @@ public class LazerBallMicroGame extends MicroGame  {
 
 	// Array used to store the different required counts of the 3 difficulty levels.
 	private int requiredLazerChargeCount[] = { 10, 20, 30 };
-	private float lazerChargeRate[] = {53.6f, 26.8f, 13.4f}; //rate at which lazer will increase.. (maxsize - minsize) / requiredLazerChargeCount
+	// Charge rate = (max size - min size) / requiredLazerChargeCount[x]
+	private float lazerChargeRate[] = {40.4f, 20.2f, 13.467f};
 	private int chargeCount = 0;
-	
-	//height and width constands
-	private int lazerMinSize = 64;   
-	private int lazerMaxSize = 600;
-
-	//growth rates for each level (one rate per animation)
-	private int growthStage = 0;
-	//int[] level1GrowthRate = {2, 4, 6, 8 ,10};  //touches will be used by requiredLazerChargeCount
-	//int[] level2GrowthRate = {4, 8, 12, 16, 20};
-	//int[] level3GrowthRate = {6, 12, 18, 24, 30};
 	
 	// Animation scalar based on speed variable.
 	private float animationScalar[] = {1.0f, 1.5f, 2.0f};
-
-	//used to store appropriate growth rate based on level. uses isFirstRun bool in updateRunning()
-	int[] currentLevelGrowthRate;
-	boolean isFirstRun = true; //TODO remove this garbage
-
-	//used to track state of laser
-	private boolean readyToFire = false; //TODO might not need anymore 
-	private boolean lazerFired = false;
-
-	// Bounds for touch detection.
-	private Rectangle lazerBallBounds = new Rectangle(450, 340, lazerMinSize, lazerMinSize);//new Rectangle(150, 40, 600, 600);
-	//private Rectangle originalBallBounds = new Rectangle(150, 40, 600, 600);
+	//Handle game animation pause (sleep time) based on firinMahLazer.ogg length
+	private int animationPauseTime[] = {2650, 1767, 1325}; //2.65 / 1.5 * 1000 = 1767 ms
 	
-	private Rectangle fireButtonBounds = new Rectangle(0, 240, 100, 250);  //TODO: will remove
-	private Rectangle targetBounds = new Rectangle(1100, 240, 250, 200);   //will keep, but remove bob texture
+	// height and width constants
+	private int lazerMinSize = 96;   
+	// private int lazerMaxSize = 500; //usually used in non-programatic calculations -- don't delete this line
+	
+	// Used to track state of laser
+	private boolean lazerCharged = false;
+	boolean lazerSoundPlayed = false;
+
+	// Bounds for touch detection. 					//450, 340
+	private Rectangle lazerBallBounds = new Rectangle(325, 340, lazerMinSize, lazerMinSize);															
+	private Rectangle lazerFaceBounds = new Rectangle(325, 400, 632, 728); //width = max + 32, height = max + 128
+	private Rectangle targetBounds = new Rectangle(1100, 240, 250, 200); //TODO Need to replace with... something. Maybe Random asset from game?
 
 	// -------------------
 	// --- Constructor ---
 	// -------------------   
 	public LazerBallMicroGame(Game game) {
 		super(game);
+		//totalMicroGameTime = new float[]{10.0f, 8.5f, 7.0f}; //leaving at default time for now
 	}
 
 	// ---------------------
@@ -64,61 +53,61 @@ public class LazerBallMicroGame extends MicroGame  {
 	// ---------------------   
 	@Override
 	public void updateRunning(float deltaTime) {
-		// Checks for time-based loss.
-		if (lostTimeBased(deltaTime)) {
-			Assets.playSound(Assets.hitSound);
-			resetLazerSize();
-			return;
-		}
 
-		//if lazer has been fired, keep lazer moving & check for target collision
-		if(lazerFired){
-			movelazer();
-
-			if(collision(lazerBallBounds, targetBounds)){
-				Assets.playSound(Assets.highJumpSound);
-				microGameState = MicroGameState.Won;
-				resetLazerSize();
+		// stop game clock when lazer is charged
+		if(!lazerCharged){ 
+			if (lostTimeBased(deltaTime)) {
+				Assets.playSound(Assets.hitSound);
+				return;
+			} 
+		} else { // lazer fired
+			
+			if(!lazerSoundPlayed){ // if win sound hasn't played, pause bg music, start sound prep for animation.
+				Assets.music.pause();
+				Assets.playSound(Assets.firinMahLazer, animationScalar[speed-1]); //playspeed based on anim scalar
+						
+				try { // sleep for sound to play
+					Thread.sleep(animationPauseTime[speed-1]);
+				} catch (InterruptedException e) {e.printStackTrace();}
+				
+				lazerSoundPlayed = true;
+				return;
+					
+				}else {
+					movelazer(); // fire lazer
+				
+					if(collision(lazerBallBounds, targetBounds)){
+						if(com.dbz.verge.Settings.soundEnabled) //TODO add implementation in Assets.java??
+							Assets.music.play();
+						
+						Assets.playSound(Assets.highJumpSound);
+						microGameState = MicroGameState.Won;
+				}
+					return;
+				}
 			}
-			return;
-		}
-
+	
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
-		int len = touchEvents.size();
-		for(int i = 0; i < len; i++) {
-			TouchEvent event = touchEvents.get(i);
-			touchPoint.set(event.x, event.y);
+		for(TouchEvent touchEvent : touchEvents) {
+			touchPoint.set(touchEvent.x, touchEvent.y);
 			guiCam.touchToWorld(touchPoint);
 
-			// Tests if lazer is touched.
-			if (targetTouchDownCenterCoords(event, touchPoint, lazerBallBounds)) {
+			
+			if (targetTouchDownCenterCoords(touchEvent, touchPoint, lazerBallBounds)) {
 
-				if(!readyToFire){ //can probably remove this. because it will trigger autofire sequence instead. 
 					chargeCount++;
-					increaseGrowthStage();
-				}
+					increaseLazerSize();
 
 				if (chargeCount == requiredLazerChargeCount[level-1]) {
-					readyToFire = true;
-					firelazer();
-					//fireButtonReady(); //removing fire button
-
+					lazerCharged = true;
 				}
 				else if (chargeCount < requiredLazerChargeCount[level-1])
-					Assets.playSound(Assets.coinSound); //need charging sound asset here
+					Assets.playSound(Assets.coinSound); //TODO need charging sound asset here
 				return;
 			}
 
-			//Tests if fire button is touched
-			//if(targetTouchDown(event, touchPoint, fireButtonBounds))
-				//if(readyToFire){
-					//firelazer();
-					//return;
-				//}	
-
-
 			// Tests for non-unique touch events, which is currently pause only.
-			if (event.type == TouchEvent.TOUCH_UP)
+			if (touchEvent.type == TouchEvent.TOUCH_UP)
 				super.updateRunning(touchPoint);
 		}   
 	}
@@ -130,51 +119,22 @@ public class LazerBallMicroGame extends MicroGame  {
 	@Override
 	public void reset() {
 		super.reset();
-		//reset members
-		isFirstRun = true;
+		// reset members
 		chargeCount = 0;
-		readyToFire = false;
-		lazerFired = false;
-		lazerBallBounds.lowerLeft.set(150, 40); //reset lazer to original bounds
-		growthStage = 0;
-		Assets.lazerState1Region = Assets.lazerChargingAnim.getKeyFrame(growthStage);
-		// * Won't need to reset width/height if we never change the bounds. *
-		//lazerBallBounds.width = 600;
-		//lazerBallBounds.height = 600;
+		lazerCharged = false;
+		lazerBallBounds.lowerLeft.set(325, 340); // reset lazer to original bounds
+		lazerBallBounds.width = lazerMinSize;
+		lazerBallBounds.height = lazerMinSize;
 	}
 
-	//Increments lazer's growth stage, changes lazer animation
-	private void increaseGrowthStage() {
-		//TODO implement size of lazer
+	private void increaseLazerSize() {
 		lazerBallBounds.width +=  lazerChargeRate[level-1];
 		lazerBallBounds.height +=  lazerChargeRate[level-1];
-		//growthStage++;
-		//Assets.lazerState1Region = Assets.lazerChargingAnim.getKeyFrame(growthStage); //overrides first texture w/ next anim
-	}
-
-	private void fireButtonReady() {
-		Assets.lazerFireButtonInitialRegion = Assets.lazerFireButtonAnim.getKeyFrame(1);
-	}
-
-	private void resetFireButton() {
-		Assets.lazerFireButtonInitialRegion = Assets.lazerFireButtonAnim.getKeyFrame(0);
-	}
-	
-		//resets growth stage and lazer animation.
-	
-	private void resetLazerSize() {
-		Assets.lazerState1Region = Assets.lazerChargingAnim.getKeyFrame(0);
-	}
-
-	private void firelazer() {
-		movelazer();
-		lazerFired = true;
-		readyToFire = false;
-		resetFireButton();
 	}
 
 	private void movelazer() {
-		lazerBallBounds.lowerLeft.x += 128 * animationScalar[speed-1];
+		lazerBallBounds.lowerLeft.x += 64 * animationScalar[speed-1];
+		lazerBallBounds.width += 128 * animationScalar[speed-1];	
 	}
 
 	public boolean collision(Rectangle lazer, Rectangle target) {
@@ -191,10 +151,10 @@ public class LazerBallMicroGame extends MicroGame  {
 	public void presentRunning() {
 		drawRunningBackground();
 		drawRunningObjects();
-		 //drawRunningBounds();
+		//drawRunningBounds();
 
-		if (readyToFire || lazerFired)
-			drawInstruction("FIRE YA LAZERRR!!!!");
+		if (lazerCharged)
+			drawInstruction("FIRIN' MAH LAZER!!!!");
 		else drawInstruction("Tap the lazer ball!");
 		super.presentRunning();
 	}
@@ -213,10 +173,12 @@ public class LazerBallMicroGame extends MicroGame  {
 
 	@Override
 	public void drawRunningObjects() {
-		// Draw Brofist.
+		// Draw Lazer Assets
 		batcher.beginBatch(Assets.lazer);
-		batcher.drawSpriteCenterCoords(lazerBallBounds, Assets.lazerState5Region);
-		//batcher.drawSprite(fireButtonBounds, Assets.lazerFireButtonInitialRegion);
+		
+		if(lazerCharged)
+			batcher.drawSpriteCenterCoords(lazerFaceBounds, Assets.lazerFace);
+		batcher.drawSpriteCenterCoords(lazerBallBounds, Assets.lazerBall);
 		//batcher.drawSprite(targetBounds, Assets.lazerTargetRegion);
 		batcher.endBatch();
 	}
@@ -226,9 +188,7 @@ public class LazerBallMicroGame extends MicroGame  {
 		// Bounding Boxes
 		batcher.beginBatch(Assets.boundOverlay);
 		batcher.drawSpriteCenterCoords(lazerBallBounds, Assets.boundOverlayRegion);  // LazerBall Bounding Box
-		//batcher.drawSprite(originalBallBounds, Assets.boundOverlayRegion);
-		//batcher.drawSprite(fireButtonBounds, Assets.boundOverlayRegion); // FireButton Bounding Box 
-		//batcher.drawSprite(targetBounds, Assets.boundOverlayRegion);	 // Target Bounding Box
+		batcher.drawSprite(targetBounds, Assets.boundOverlayRegion);	 // Target Bounding Box
 		batcher.endBatch();
 	}
 

@@ -103,8 +103,8 @@ public class Assets {
     public static Texture lazerBackground;
     public static TextureRegion lazerBackgroundRegion;
     public static Texture lazer;
-    public static TextureRegion lazerState1Region;
-    public static TextureRegion lazerState2Region;
+    public static TextureRegion lazerBall;
+    public static TextureRegion lazerFace;
     public static TextureRegion lazerState3Region;
     public static TextureRegion lazerState4Region;
     public static TextureRegion lazerState5Region;
@@ -148,6 +148,7 @@ public class Assets {
     public static Sound hitSound;
     public static Sound coinSound;
     public static Sound clickSound;
+    public static Sound firinMahLazer;
     
     public static void load(GLGame game) {
     	// *** Initialize Menu Assets. ***
@@ -237,18 +238,18 @@ public class Assets {
         lazerBackground = new Texture(game, "lazerBackground.png");
         lazerBackgroundRegion = new TextureRegion(lazerBackground, 0, 0, 1280, 800);
         lazer = new Texture(game, "lazerItems.png");
-        lazerState1Region= new TextureRegion(lazer, 0, 0, 256, 256);
-        lazerState2Region = new TextureRegion(lazer, 256, 0, 256, 256);
-        lazerState3Region = new TextureRegion(lazer, 512, 0, 256, 256);
-        lazerState4Region = new TextureRegion(lazer, 768, 0, 256, 256);
-        lazerState5Region = new TextureRegion(lazer, 0, 256, 256, 256);
-        lazerState6Region = new TextureRegion(lazer, 256, 256, 256, 256);        
-        lazerFireButtonInitialRegion = new TextureRegion(lazer, 512, 256, 128, 256);
-        lazerFireButtonReadyRegion = new TextureRegion(lazer, 640, 256, 128, 256);
-        lazerTargetRegion = new TextureRegion(lazer, 896, 256, 128, 128);
-        lazerChargingAnim = new Animation(0, lazerState1Region, lazerState2Region, 
-        								lazerState3Region, lazerState4Region, lazerState5Region, lazerState6Region);
-        lazerFireButtonAnim = new Animation(0, lazerFireButtonInitialRegion, lazerFireButtonReadyRegion);
+        lazerBall= new TextureRegion(lazer, 0, 0, 192, 192);
+        lazerFace = new TextureRegion(lazer, 256, 0, 224, 320);
+        //lazerState3Region = new TextureRegion(lazer, 512, 0, 256, 256);
+        //lazerState4Region = new TextureRegion(lazer, 768, 0, 256, 256);
+        //lazerState5Region = new TextureRegion(lazer, 0, 256, 256, 256);
+        //lazerState6Region = new TextureRegion(lazer, 256, 256, 256, 256);        
+        //lazerFireButtonInitialRegion = new TextureRegion(lazer, 512, 256, 128, 256);
+        //lazerFireButtonReadyRegion = new TextureRegion(lazer, 640, 256, 128, 256);
+        //lazerTargetRegion = new TextureRegion(lazer, 896, 256, 128, 128);
+        //lazerChargingAnim = new Animation(0, lazerState1Region, lazerState2Region, 
+        								//lazerState3Region, lazerState4Region, lazerState5Region, lazerState6Region);
+        //lazerFireButtonAnim = new Animation(0, lazerFireButtonInitialRegion, lazerFireButtonReadyRegion);
         
         aquariumBackround=new Texture(game,"aquariumBackground.png");
         aquariumBackroundRegion=new TextureRegion(aquariumBackround,0,0,1280,800);
@@ -281,7 +282,8 @@ public class Assets {
         highJumpSound = game.getAudio().newSound(R.raw.highjump);
         hitSound = game.getAudio().newSound(R.raw.hit);
         coinSound = game.getAudio().newSound(R.raw.coin);
-        clickSound = game.getAudio().newSound(R.raw.click);
+        clickSound = game.getAudio().newSound(R.raw.click);   
+        firinMahLazer = game.getAudio().newSound(R.raw.firin_mah_lazer);
         
     }      
     
@@ -323,5 +325,12 @@ public class Assets {
     public static void playSound(Sound sound) {
         if(Settings.soundEnabled)
             sound.play(100);
+    }
+    
+    public static void playSound(Sound sound, float playbackSpeed) {
+        if(Settings.soundEnabled){
+        	sound.setPlaySpeedMultiplier(playbackSpeed);
+            sound.play(100);
+        }
     }
 }

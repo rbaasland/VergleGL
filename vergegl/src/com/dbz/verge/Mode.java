@@ -282,14 +282,14 @@ public abstract class Mode extends GLScreen {
 			totalTimeOver += deltaTime;
 			if (totalTimeOver >= timeOverLimit) {
 				totalTimeOver = 0;
-				updateMicroGameWon();
+				updateMicroGameWon(); //TODO Use better technique to solve back button issue See updateLost()/updateWon() in microgame for quick fix.
 			}
 		}
 		else if (microGames[microGameIndex].microGameState == MicroGameState.Lost) {
 			totalTimeOver += deltaTime;
 			if (totalTimeOver >= timeOverLimit) {
 				totalTimeOver = 0;
-				updateMicroGameLost();
+				updateMicroGameLost(); //TODO Use better technique to solve back button issue See updateLost()/updateWon() in microgame for quick fix.
 			}
 		}
 	}

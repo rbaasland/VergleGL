@@ -239,6 +239,13 @@ public abstract class MicroGame extends GLScreen {
 	        if (backArrowEnabled) { 
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
+		        	
+		        	if(game.getCurrentScreen() instanceof Mode){ //TODO fix issue w/ microgame inside a mode so we don't use code smell
+		        		Assets.playSound(Assets.clickSound);
+			            game.setScreen(new com.dbz.verge.menus.PlayMenu(game));
+			            return;
+		        	}	
+		        	
 		            Assets.playSound(Assets.clickSound);
 		            game.setScreen(new GameGridMenu(game));
 		            return;     
@@ -270,9 +277,17 @@ public abstract class MicroGame extends GLScreen {
 	        if (backArrowEnabled) { 
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
-		            Assets.playSound(Assets.clickSound);
-		            game.setScreen(new GameGridMenu(game));
-		            return;     
+		        	
+		        	if(game.getCurrentScreen() instanceof Mode){ //TODO fix issue w/ microgame inside a mode so we don't use code smell
+		        		Assets.playSound(Assets.clickSound);
+			            game.setScreen(new com.dbz.verge.menus.PlayMenu(game));
+			            
+		        	} else {	
+		        		Assets.playSound(Assets.clickSound);
+		        		game.setScreen(new GameGridMenu(game));
+		        		return;    
+		        	}
+		            
 		        }
 	        }
 	    }
@@ -395,6 +410,14 @@ public abstract class MicroGame extends GLScreen {
 			 return true;
 		 
 		 return false;	
+	}
+	
+	/**
+	 * Checks to see if two rectangles are overlapped
+	 * @return true - if rectangles overlap
+	 */
+	public boolean rectangleCollision(Rectangle r1, Rectangle r2){
+		return OverlapTester.overlapRectangles(r1, r2);
 	}
 
 	
