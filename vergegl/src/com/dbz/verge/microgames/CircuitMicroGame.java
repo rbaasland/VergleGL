@@ -24,12 +24,12 @@ public class CircuitMicroGame extends MicroGame {
 	//used to store the different number of required gaps in a difficulty level
 	//private int[] requiredGapCount = {2, 3, 4};
 	
-	
-	// Animation scalar based on speed variable.
-	private float animationScalar[] = { 1.0f, 1.1f, 1.2f };
 	// Used to determine win Condition (Number of direction changes per level)
 	private int directionPointsInLevel[] = {12, 16, 19}; 
 
+	// Animation scalar based on speed variable.
+	//private float animationScalar[] = { 1.0f, 1.1f, 1.2f };
+	
 	//Circuit Arrays
 
 	// Bounding rectangle for each circuit piece
@@ -70,57 +70,8 @@ public class CircuitMicroGame extends MicroGame {
 
 	// 1-1 Correspondence to circuit nodes - maintains list of whether or not its touched
 	private boolean[] isCircuitNodeTouched = {false, false, false, false, false, false}; 
-	private float animationScalar[] = { 1.0f, 1.1f, 1.2f };
-	
-	//Circuit Arrays
-
-	// Bounding rectangle for each circuit piece
-	private Rectangle[] circuitPieces = {new Rectangle(190, 800-94, 405, 195), new Rectangle(240, 800-478, 328, 383), 
-			new Rectangle(508, 800-612, 325, 122), new Rectangle(1022, 800-287, 557, 480)};
-
-	// Corresponding textures for circuit piece
-	private TextureRegion[] circuitTextures = {Assets.circuitLine1, Assets.circuitLine2, Assets.circuitLine3, Assets.circuitLine4}; //temp? put in assets?
 
 
-	//Spark Direction Vectors
-
-	//Direction points for each change in direction in the circuit.
-	private Vector2[] directionPoints = 
-			// Circuit one
-		{new Vector2(24-16, 800-32), new Vector2(128-16, 800-178), new Vector2(350-16, 800-181), new Vector2(382-16, 800-127), 
-			// Circuit two
-			new Vector2(382,800-382), new Vector2(274,800-397), new Vector2(204,800-296), new Vector2(91,800-296), new Vector2(94,800-491),new Vector2(195,800-573),new Vector2(195,800-612), new Vector2(127,800-643),
-			// Circuit three
-			new Vector2(362,800-640), new Vector2(403,800-612), new Vector2(611,800-611), new Vector2(640,800-568),
-			// Circuit four
-			new Vector2(894+32,800-511) ,new Vector2(895+32,800-126), new Vector2(1272,800-126)};
-
-	// 1-1 Correspondence to direction points - used to check if DirectionPoint starts a gap.
-	private boolean doesDirectionPointStartCircuitGap[] = 
-		{false, false, false, true,
-			false, false, false, false, false, false, false, true,
-			false, false, false, true,
-			false, false, false}; 
-
-	//Touch Specific
-
-	// End nodes for touch points
-	private Rectangle[] circuitNodes = 
-		{new Rectangle(382-16, 800-127, 190,190),  new Rectangle(382,800-382, 190,190),    //gap 1
-			new Rectangle(127,800-643, 190,190), new Rectangle(362, 800-640, 190,190),     //gap 2
-			new Rectangle(640,800-568, 190,190), new Rectangle(894+32,800-511, 190,190)};  //gap 3
-
-
-	//General
-	public int sparkSpeed = 10; 	   // moved outside of spark class for easy changin'
-	private int directionIndex = 0;    // index for direction vector array
-	private int circuitNodesIndex = 0; // index tracks the current pair of nodes for touch detection
-	private boolean circuitCompleted = false; // if multi-touch connects circuit
-
-	// Vector pathway calculation
-	private float rateOfChange = 0; 
-	private float distance = 0;
-	private float r = 0;
 	//General
 	public int sparkSpeed = 10; 	   // moved outside of spark class for easy changin'
 	private int directionIndex = 0;    // index for direction vector array
@@ -133,7 +84,7 @@ public class CircuitMicroGame extends MicroGame {
 	private float r = 0;
 
 	Spark spark = new Spark(24-16, 800-32); //spark start location
-	
+
 
 	// -------------------
 	// --- Constructor ---
@@ -142,8 +93,11 @@ public class CircuitMicroGame extends MicroGame {
 	public CircuitMicroGame(Game game) {
 		super(game);
 
-		// Extend allowed time for testing.
-		baseMicroGameTime = 10.0f;
+		//totalMicroGameTime = 10; //note, time based loss/win doesn't apply to this game.
+		speedScalar = new float[] { 1.0f, 1.1f, 1.2f }; //TODO adjust sparkSpeed to work w/ Microgame.speedScalar
+		// Calculate rate of change for first two vectors
+		calculateRateofChange(); //TODO bug, spark starts slow because level isn't updated until after constructor call. In general, needs to be fixed.
+								//IDEA, add level as a param to microgame constructor, then call super.updateLevel so we don't have to rework a bunch of code.
 	}
 
 	// ---------------------
@@ -223,7 +177,6 @@ public class CircuitMicroGame extends MicroGame {
 		}
 
 		//spark.update(deltaTime);//used to update animation.
-		//spark.update(deltaTime);//used to update animation.
 	} 
 
 	/*
@@ -242,26 +195,7 @@ public class CircuitMicroGame extends MicroGame {
 	 */
 	private void calculateRateofChange(){
 		distance = directionPoints[directionIndex].dist(directionPoints[directionIndex+1]);
-		rateOfChange = ((sparkSpeed *= animationScalar[speed-1])/distance);
-	} 
-
-	/*
-	 * Formula for calculation set of points between two vectors.
-	 * p = (1-r)u + (r)v -- p is a vector between r and v, calculated by constant r.
-	 * Note: When r = 0, p = u, when r = 1, p = v
-	 * TODO Very powerful formulation, should extract to Vector2.java
-	 */
-	private Vector2 getPathVector(float r, Vector2 vSource, Vector2 vDestination){
-		return vSource.cpy().mul(1 - r).add(vDestination.cpy().mul(r));
-	}
-
-
-	/*
-	 * Calculates the rate at which the vector should move from one vector to the next
-	 */
-	private void calculateRateofChange(){
-		distance = directionPoints[directionIndex].dist(directionPoints[directionIndex+1]);
-		rateOfChange = ((sparkSpeed *= animationScalar[speed-1])/distance);
+		rateOfChange = ((sparkSpeed *= speedScalar[speed-1])/distance);
 	}
 
 	// -----------------------------
@@ -375,7 +309,8 @@ public class CircuitMicroGame extends MicroGame {
 
 		}
 
-		//used to prevent array out of bounds. One MUST know how many textures in the spark animation
+		// Used to prevent array out of bounds when iterating through animation.
+		// One MUST know how many textures in the spark animation.
 		private void updateAnimationIndex() {
 
 			if(animationDelayCounter == 0){
@@ -389,4 +324,3 @@ public class CircuitMicroGame extends MicroGame {
 		}
 	}
 }
-

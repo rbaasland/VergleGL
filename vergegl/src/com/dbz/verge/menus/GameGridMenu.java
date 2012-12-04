@@ -298,7 +298,7 @@ public class GameGridMenu extends Menu {
 	    		batcher.beginBatch(Assets.gameGridIconsPageOne);
 	        	batcher.drawSprite(0, 0, 1024, 800, Assets.gameGridIconsPageOneRegion);
 	        	batcher.endBatch();
-	    	} else if (currentPage == 2) {
+	    	} else if (CURRENT_PAGE == 2) {
 	    		batcher.beginBatch(Assets.gameGridIconsPageTwo);
 	    		batcher.drawSprite(0, 0, 1024, 800, Assets.gameGridIconsPageTwoRegion);
 	    		batcher.endBatch();
