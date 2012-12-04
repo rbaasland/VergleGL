@@ -39,9 +39,6 @@ public class TrafficMicroGame extends MicroGame {
 
 	private int totalCars[] = { 2, 3, 4 };
 
-	// Animation scalar based on speed variable.
-	private float animationScalar[] = { 1.0f, 1.5f, 2.0f };
-
 	// Bounds for touch detection.
 	private Rectangle obstacleOneBounds = new Rectangle(0, -171, 80, 170);
 	private Rectangle obstacleTwoBounds = new Rectangle(0, -171, 80, 170);
@@ -157,7 +154,7 @@ public class TrafficMicroGame extends MicroGame {
 			obstacleX = lanes.remove();
 		}
 
-		obstacleY -= obstacleOneSpeedY * animationScalar[speed - 1];
+		obstacleY -= obstacleOneSpeedY * speedScalar[speed-1];
 		obstacleOneBounds.lowerLeft.set(obstacleX, obstacleY);
 
 		// Move Obstacle #2.
@@ -171,7 +168,7 @@ public class TrafficMicroGame extends MicroGame {
 			obstacleX = lanes.remove();
 		}
 
-		obstacleY -= obstacleTwoSpeedY * animationScalar[speed - 1];
+		obstacleY -= obstacleTwoSpeedY * speedScalar[speed - 1];
 		obstacleTwoBounds.lowerLeft.set(obstacleX, obstacleY);
 
 		// Move Obstacle #3.
@@ -187,7 +184,7 @@ public class TrafficMicroGame extends MicroGame {
 				obstacleX = lanes.remove();
 			}
 
-			obstacleY -= obstacleThreeSpeedY * animationScalar[speed - 1];
+			obstacleY -= obstacleThreeSpeedY * speedScalar[speed - 1];
 			obstacleThreeBounds.lowerLeft.set(obstacleX, obstacleY);
 		}
 
@@ -204,7 +201,7 @@ public class TrafficMicroGame extends MicroGame {
 				obstacleX = lanes.remove();
 			}
 
-			obstacleY -= obstacleFourSpeedY * animationScalar[speed - 1];
+			obstacleY -= obstacleFourSpeedY * speedScalar[speed - 1];
 			obstacleFourBounds.lowerLeft.set(obstacleX, obstacleY);
 		}
 	}

@@ -371,10 +371,10 @@ public abstract class Mode extends GLScreen {
 				speed++;
 
 		// Resets the MicroGame, and sets its state to Running to skip the Ready state.
-		microGames[microGameIndex].reset();
-		microGames[microGameIndex].microGameState = MicroGameState.Running;
 		microGames[microGameIndex].level = level;
 		microGames[microGameIndex].speed = speed;
+		microGames[microGameIndex].reset();
+		microGames[microGameIndex].microGameState = MicroGameState.Running;
 		//here... reference to current screen
 	}
 

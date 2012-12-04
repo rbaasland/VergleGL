@@ -43,8 +43,8 @@ public class TossMicroGame extends MicroGame {
 	public TossMicroGame(Game game) {
 		super(game);
 
-		// Extend allowed time for testing.
-		totalMicroGameTime = new float[] { 10.0f, 8.5f, 7.0f };
+		// Extend allowed time.
+		baseMicroGameTime = 10.0f;
 	}
 
 	// ---------------------
@@ -156,7 +156,7 @@ public class TossMicroGame extends MicroGame {
 		directionY /= 5;
 		// sets velocity for X and Y based on slope
 		// the speed of game alters the speed of ball
-		velocityX = directionX * .5f * animationScalar[speed - 1];
+		velocityX = directionX * .5f * speedScalar[speed - 1];
 		velocityY = directionY * .5f;
 	}
 

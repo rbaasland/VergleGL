@@ -25,9 +25,6 @@ public class FlyMicroGame extends MicroGame {
 	private float speedX = 10; 
 	private float speedY = 0;
 	
-	// Animation scalar based on speed variable.
-	private float animationScalar[] = {1.0f, 1.5f, 2.0f};
-	
 	// Bounds for touch detection.
 	private Rectangle flyBounds = new Rectangle(600, 60, 80, 60);
 	
@@ -139,8 +136,8 @@ public class FlyMicroGame extends MicroGame {
 //			else 
 //				speedY = 5.0f;
 //		}
-		x += speedX * animationScalar[speed-1];
-		y += speedY * animationScalar[speed-1];
+		x += speedX * speedScalar[speed-1];
+		y += speedY * speedScalar[speed-1];
 		
 		flyBounds.lowerLeft.set(x, y);
 	}

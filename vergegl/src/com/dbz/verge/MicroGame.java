@@ -49,17 +49,21 @@ public abstract class MicroGame extends GLScreen {
     public Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
     public Rectangle soundToggleBounds = new Rectangle(1135, 5, 140, 140);
     
-    // *Possible Difficulty Level Implementation.*
-    // *Could also try to use a class, struct or enum.*
+    // Difficulty level variable.
     public int level = 1;
     
-    // *Possible Speed Implementation.*
-    // *Could also try to use a class, struct or enum.*
+    // Speed level variable and scalar used to increase animation/sound speed.
     public int speed = 1;
+    public float speedScalar[] = { 1.0f, 1.25f, 1.5f }; 
     
-    // Tracks running time for the game's timer.
+    // Timer variables.
+    public String timerString;
+    public float baseMicroGameTime = 5.0f;
+    // TODO: totalMicroGameTime calculates multiple times, and doesn't need to. 
+    //		 Need to figure out a way to calculate once for new games and resets.
+    public float totalMicroGameTime = 5.0f; 
     public float totalRunningTime = 0;
-    public float totalMicroGameTime[] = new float[] {5.0f, 4.25f, 3.5f};
+
     
     // Booleans used to enable UI components (Used when launched from GameGrid)
     public boolean pauseEnabled = true;
@@ -69,7 +73,7 @@ public abstract class MicroGame extends GLScreen {
 	// --- Constructor ---
     // -------------------
 	public MicroGame(Game game) {
-		super(game);    
+		super(game);
 	}
 
 	// ----------------------
@@ -301,12 +305,14 @@ public abstract class MicroGame extends GLScreen {
 	public void reset() {
 		totalRunningTime = 0;
 	}
+
 	
 	// Checks for time-based loss.
 	public boolean lostTimeBased(float deltaTime) {
 		totalRunningTime += deltaTime;
+		totalMicroGameTime = baseMicroGameTime / speedScalar[speed-1];
 		
-		if (totalRunningTime > totalMicroGameTime[speed-1]) {
+		if (totalRunningTime > totalMicroGameTime) {
 			microGameState = MicroGameState.Lost;
 			return true;
 		}
@@ -317,8 +323,9 @@ public abstract class MicroGame extends GLScreen {
 	// Checks for time-based win.
 	public boolean wonTimeBased(float deltaTime) {
 		totalRunningTime += deltaTime;
+		totalMicroGameTime = baseMicroGameTime / speedScalar[speed-1];
 		
-		if (totalRunningTime > totalMicroGameTime[speed-1]) {
+		if (totalRunningTime > totalMicroGameTime) {
 			microGameState = MicroGameState.Won;
 			return true;
 		}
@@ -527,9 +534,11 @@ public abstract class MicroGame extends GLScreen {
 	}
 	
 	public void presentRunning() {
-		// Draw the Timer.		
+		// Draw the Timer.
+		totalMicroGameTime = (baseMicroGameTime / speedScalar[speed-1]);
+		timerString = String.format("%.2f", totalMicroGameTime - totalRunningTime);
 		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, String.format("%.2f", totalMicroGameTime[speed-1]-totalRunningTime), 640, 15, 1.5f);
+		Assets.terminalFont.drawTextCentered(batcher, timerString, 640, 15, 1.5f);
 		batcher.endBatch();
 	    
 		// If Pause is enabled...

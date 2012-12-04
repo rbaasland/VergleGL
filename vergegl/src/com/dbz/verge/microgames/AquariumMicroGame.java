@@ -11,9 +11,6 @@ import com.dbz.verge.MicroGame;
 
 
 public class AquariumMicroGame extends MicroGame{
-
-	// Animation scalar based on speed variable.
-	private float animationScalar[] = { 1.0f, 1.5f, 2.0f };
 	
 	// Array used to store the crack appearance times for the 3 difficulty levels.
 	public float crackTimes[] = { 4.0f, 2.5f, 1.0f };
@@ -34,8 +31,8 @@ public class AquariumMicroGame extends MicroGame{
 	public AquariumMicroGame(Game game) {
 		super(game);
 
-		// Extend allowed time for testing.
-		totalMicroGameTime = new float []{10.0f, 8.5f, 7.0f};
+		// Extend allowed time.
+		baseMicroGameTime = 10.0f;
 	}
 
 	// ---------------------
@@ -135,7 +132,7 @@ public class AquariumMicroGame extends MicroGame{
 	}
 	
 	public void decreaseWaterLevel(Crack crack) {
-		waterLevel -= (crack.leakRate * animationScalar[speed-1]);
+		waterLevel -= (crack.leakRate * speedScalar[speed-1]);
 	}
 	
 	// -------------------

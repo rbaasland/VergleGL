@@ -50,7 +50,7 @@ public class TimeAttackMode extends Mode {
 	
 	@Override
 	public void updateMicroGameLost() {
-		totalTime += microGames[microGameIndex].totalMicroGameTime[speed-1];
+		totalTime += microGames[microGameIndex].totalMicroGameTime;
 		modeState = ModeState.Transition;
 
 		// TODO: Might want to take a better approach to this.

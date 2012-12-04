@@ -20,9 +20,6 @@ public class CircuitMicroGame extends MicroGame {
 	//used to store the different number of required gaps in a difficulty level
 	//private int[] requiredGapCount = {2, 3, 4};
 	
-	// Animation scalar based on speed variable.
-	private float animationScalar[] = { 1.0f, 1.5f, 2.0f };
-	
 	// Bounds for touch detection.
 	// Noted: Added 40 pixels to each y value to move the circuit lines up
 	private Rectangle gapOneBounds = new Rectangle(512, 567, 128, 35); //first horizontal gap
@@ -71,7 +68,7 @@ public class CircuitMicroGame extends MicroGame {
 		super(game);
 
 		// Extend allowed time for testing.
-		totalMicroGameTime = new float[]{10.0f, 8.5f, 7.0f};
+		baseMicroGameTime = 10.0f;
 	}
 
 	// ---------------------
@@ -416,19 +413,19 @@ public class CircuitMicroGame extends MicroGame {
 		}
 
 		private void moveSparkRight() {
-			bounds.lowerLeft.x += sparkSpeed * animationScalar[speed-1];
+			bounds.lowerLeft.x += sparkSpeed * speedScalar[speed-1];
 		}
 
 		private void moveSparkLeft() {
-			bounds.lowerLeft.x -= sparkSpeed * animationScalar[speed-1];
+			bounds.lowerLeft.x -= sparkSpeed * speedScalar[speed-1];
 		}
 
 		private void moveSparkDown() {
-			bounds.lowerLeft.y -= sparkSpeed * animationScalar[speed-1];
+			bounds.lowerLeft.y -= sparkSpeed * speedScalar[speed-1];
 		}
 
 		private void moveSparkUp(){
-			bounds.lowerLeft.y += sparkSpeed * animationScalar[speed-1];
+			bounds.lowerLeft.y += sparkSpeed * speedScalar[speed-1];
 		}
 
 		//used to prevent array out of bounds. One MUST know how many textures in the spark animation

@@ -70,7 +70,6 @@ public class GameGridMenu extends Menu {
     private Rectangle checkMarkAreaBounds = new Rectangle(900, 300, 200, 200);
     private Rectangle checkMarkBounds = new Rectangle(920, 320, 160, 160);
     
-    
     // -------------------
  	// --- Constructor ---
     // -------------------
@@ -140,27 +139,30 @@ public class GameGridMenu extends Menu {
                 // Fourth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(fourthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	if (currentPage == 1)
+                	if (currentPage == 1) {
                 		selectedMicroGame = new TrafficMicroGame(game);
-                	overlayPresent = true;
+                		overlayPresent = true;
+                	}
                 	return;
                 }
                 
                 // Fifth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(fifthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	if (currentPage == 1)
+                	if (currentPage == 1) {
                 		selectedMicroGame = new CircuitMicroGame(game);
-                	overlayPresent = true;
+                		overlayPresent = true;
+                	}
                 	return;
                 }
                 
                 // Sixth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(sixthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	if (currentPage == 1)
+                	if (currentPage == 1) {
                 		selectedMicroGame = new LazerBallMicroGame(game);
-                	overlayPresent = true;
+                		overlayPresent = true;
+                	}
                 	return;
                 }
                 
