@@ -11,25 +11,32 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
-// TODO: Make cars randomly generated.
-//		 Make left two lanes oncoming, make right two ongoing.
+// TODO: Make left two lanes oncoming, make right two ongoing.
 //		 Make all lanes oncoming for hardest difficulty.
-//		 Remove the ability to go off screen.
+
 public class TrafficMicroGame extends MicroGame {
 
 	// --------------
 	// --- Fields ---
 	// --------------
 
+	// Queue for lane selection
 	private Queue<Float> lanes = new LinkedList<Float>();
+
+	// Random to shuffle lanes
 	private Random rand = new Random();
+
+	// Car start position
 	private int carStartPosition = 480;
+
 	// Lane variables
 	private float laneOne = 225;
 	private float laneTwo = 465;
 	private float laneThree = 700;
 	private float laneFour = 975;
-	private float lanePosition[] = { laneOne, laneTwo, laneThree, laneFour };
+	private float lanePosition[] = { laneOne, laneTwo, laneThree, laneFour,
+			laneOne + 80, laneTwo + 80, laneThree + 80, laneFour + 80,
+			laneOne - 80, laneTwo - 80, laneThree - 80, laneFour - 80 };
 
 	// Variable needed for obstacle movement.
 	private int obstacleOneSpeedY = 12;
@@ -37,6 +44,7 @@ public class TrafficMicroGame extends MicroGame {
 	private int obstacleThreeSpeedY = 15;
 	private int obstacleFourSpeedY = 5;
 
+	// Number of cars based on level
 	private int totalCars[] = { 2, 3, 4 };
 
 	// Bounds for touch detection.
@@ -132,12 +140,13 @@ public class TrafficMicroGame extends MicroGame {
 	@Override
 	public void reset() {
 		super.reset();
-		obstacleOneBounds.lowerLeft.set(laneOne, 800);
-		obstacleTwoBounds.lowerLeft.set(laneTwo, 800);
-		obstacleThreeBounds.lowerLeft.set(laneThree, 800);
-		obstacleFourBounds.lowerLeft.set(laneFour, 800);
+		obstacleOneBounds.lowerLeft.set(0, -171);
+		obstacleTwoBounds.lowerLeft.set(0, -171);
+		obstacleThreeBounds.lowerLeft.set(0, -171);
+		obstacleFourBounds.lowerLeft.set(0, -171);
 		carBounds.lowerLeft.set(carStartPosition, 0);
 		lanes.clear();
+		randomizeCarsLanes();
 	}
 
 	// Moves obstacles at the rate of obstacleSpeedY.
@@ -154,7 +163,7 @@ public class TrafficMicroGame extends MicroGame {
 			obstacleX = lanes.remove();
 		}
 
-		obstacleY -= obstacleOneSpeedY * speedScalar[speed-1];
+		obstacleY -= obstacleOneSpeedY * speedScalar[speed - 1];
 		obstacleOneBounds.lowerLeft.set(obstacleX, obstacleY);
 
 		// Move Obstacle #2.
@@ -208,7 +217,9 @@ public class TrafficMicroGame extends MicroGame {
 
 	// Moves car at the rate of the Accelerometer's Y axis.
 	public void moveCar() {
-		carBounds.lowerLeft.x += (int) game.getInput().getAccelY();
+		// Bounds checking so car doesn't fly off screen
+		if (carBounds.lowerLeft.x >= 150 && carBounds.lowerLeft.x <= 1025)
+			carBounds.lowerLeft.x += (int) game.getInput().getAccelY();
 	}
 
 	// Checks for collision-based loss.
@@ -227,17 +238,16 @@ public class TrafficMicroGame extends MicroGame {
 		return false;
 	}
 
+	// Shuffle car lanes and put in queue
 	public void randomizeCarsLanes() {
-		for (int i = 0; i < 4; i++) {
-			int randTemp = rand.nextInt(3);
+		for (int i = 0; i < lanePosition.length; i++) {
+			int randTemp = rand.nextInt(lanePosition.length - 1);
 			float temp = lanePosition[i];
 			lanePosition[i] = lanePosition[randTemp];
 			lanePosition[randTemp] = temp;
 		}
-		lanes.add(lanePosition[0]);
-		lanes.add(lanePosition[1]);
-		lanes.add(lanePosition[2]);
-		lanes.add(lanePosition[3]);
+		for (int i = 0; i < lanePosition.length; i++)
+			lanes.add(lanePosition[i]);
 	}
 
 	// -------------------
