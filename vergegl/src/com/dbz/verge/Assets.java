@@ -39,8 +39,11 @@ public class Assets {
     public static TextureRegion levelTwoRegion;
     public static TextureRegion levelThreeRegion;   
     
-    public static Texture gameGridIcons;
-    public static TextureRegion gameGridIconsRegion;
+    public static Texture gameGridIconsPageOne;
+    public static TextureRegion gameGridIconsPageTwoRegion;
+    
+    public static Texture gameGridIconsPageTwo;
+    public static TextureRegion gameGridIconsPageOneRegion;
     
     public static Texture soundToggle;
     public static TextureRegion soundOnRegion;
@@ -176,8 +179,10 @@ public class Assets {
         levelTwoRegion = new TextureRegion(gameGrid, 1200, 800, 300, 200);
         levelThreeRegion = new TextureRegion(gameGrid, 1500, 800, 300, 200);      
         
-        gameGridIcons = new Texture(game, "gamegridicons.png");
-        gameGridIconsRegion = new TextureRegion(gameGridIcons, 0, 0, 1024, 800);
+        gameGridIconsPageOne = new Texture(game, "gamegridicons1.png");
+        gameGridIconsPageOneRegion = new TextureRegion(gameGridIconsPageOne, 0, 0, 1024, 800);
+        gameGridIconsPageTwo = new Texture(game, "gamegridicons2.png");
+        gameGridIconsPageTwoRegion = new TextureRegion(gameGridIconsPageTwo, 0, 0, 1024, 800);
         
         soundToggle = new Texture(game, "volumetoggle.png");
         soundOnRegion = new TextureRegion(soundToggle, 0, 0, 140, 140);
@@ -283,7 +288,8 @@ public class Assets {
         mainMenuButtons.reload();
         playMenuButtons.reload();
         gameGrid.reload();
-        gameGridIcons.reload();
+        gameGridIconsPageOne.reload();
+        gameGridIconsPageTwo.reload();
         soundToggle.reload();
         backArrow.reload();
         pauseToggle.reload();

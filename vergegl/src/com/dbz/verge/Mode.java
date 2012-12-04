@@ -15,9 +15,12 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.MicroGame.MicroGameState;
 import com.dbz.verge.menus.PlayMenu;
+import com.dbz.verge.microgames.AquariumMicroGame;
 import com.dbz.verge.microgames.BroFistMicroGame;
+import com.dbz.verge.microgames.DirtBikeMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
+import com.dbz.verge.microgames.TossMicroGame;
 import com.dbz.verge.microgames.TrafficMicroGame;
 import com.dbz.verge.microgames.CircuitMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
@@ -92,7 +95,8 @@ public abstract class Mode extends GLScreen {
 		
 		// Initialize MicroGame set.
 		microGames = new MicroGame[] { new BroFistMicroGame(game), new FlyMicroGame(game), new FireMicroGame(game),
-									   new TrafficMicroGame(game), new CircuitMicroGame(game), new LazerBallMicroGame(game) };
+									   new TrafficMicroGame(game), new CircuitMicroGame(game), new LazerBallMicroGame(game),
+									   new AquariumMicroGame(game), new DirtBikeMicroGame(game), new TossMicroGame(game) };
 
 		// Disables BackArrow and Pause UI elements for all MicroGames in the set.
 //		for (int i = 0; i < microGames.length; i++) {

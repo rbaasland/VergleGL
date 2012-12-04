@@ -296,9 +296,13 @@ public class GameGridMenu extends Menu {
 		else {
 	        // Draws MicroGame Icons.
 	    	if (currentPage == 1) {
-	    		batcher.beginBatch(Assets.gameGridIcons);
-	        	batcher.drawSprite(0, 0, 1024, 800, Assets.gameGridIconsRegion);
+	    		batcher.beginBatch(Assets.gameGridIconsPageOne);
+	        	batcher.drawSprite(0, 0, 1024, 800, Assets.gameGridIconsPageOneRegion);
 	        	batcher.endBatch();
+	    	} else if (currentPage == 2) {
+	    		batcher.beginBatch(Assets.gameGridIconsPageTwo);
+	    		batcher.drawSprite(0, 0, 1024, 800, Assets.gameGridIconsPageTwoRegion);
+	    		batcher.endBatch();
 	    	}
 	        
 	    	// Draw Page Arrows.
