@@ -220,6 +220,8 @@ public class TrafficMicroGame extends MicroGame {
 		// Bounds checking so car doesn't fly off screen
 		if (carBounds.lowerLeft.x >= 150 && carBounds.lowerLeft.x <= 1025)
 			carBounds.lowerLeft.x += (int) game.getInput().getAccelY();
+		else
+			carBounds.lowerLeft.x -= (int) game.getInput().getAccelY();
 	}
 
 	// Checks for collision-based loss.
