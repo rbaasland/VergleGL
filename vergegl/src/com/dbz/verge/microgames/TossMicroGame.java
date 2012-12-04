@@ -3,15 +3,11 @@ package com.dbz.verge.microgames;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-
 import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
-
-// TODO: Add comments.
 
 public class TossMicroGame extends MicroGame {
 
@@ -19,11 +15,14 @@ public class TossMicroGame extends MicroGame {
 	// --- Fields ---
 	// --------------
 
+	// Physics variables
 	final private int gravity = 1;
 	private float velocityX = 0;
 	private float velocityY = 0;
 	private int ballStartX = 1050;
 	private int ballStartY = 150;
+
+	// Logic control of touching the ball
 	private boolean touch = false;
 
 	// Animation scalar based on speed variable.
@@ -34,7 +33,7 @@ public class TossMicroGame extends MicroGame {
 	private Rectangle backBoard = new Rectangle(200, 325, 25, 215);
 	private Rectangle hoop = new Rectangle(250, 325, 75, 50);
 	private Rectangle court = new Rectangle(0, 0, 1280, 150);
-	private Rectangle freeThrow = new Rectangle(700, 0, 50, 800);
+	private Rectangle freeThrow = new Rectangle(500, 0, 50, 800);
 	private ArrayList<Rectangle> previousBalls = new ArrayList<Rectangle>();
 
 	// -------------------
@@ -43,9 +42,9 @@ public class TossMicroGame extends MicroGame {
 
 	public TossMicroGame(Game game) {
 		super(game);
-		
+
 		// Extend allowed time for testing.
-		totalMicroGameTime = new float[]{10.0f, 8.5f, 7.0f};
+		totalMicroGameTime = new float[] { 10.0f, 8.5f, 7.0f };
 	}
 
 	// ---------------------
@@ -54,11 +53,13 @@ public class TossMicroGame extends MicroGame {
 
 	@Override
 	public void updateRunning(float deltaTime) {
-		// Checks for time-based win.
+		// Checks for loss based on time.
 		if (lostTimeBased(deltaTime)) {
 			Assets.playSound(Assets.hitSound);
 			return;
 		}
+		// Checks for collision based win
+		// If the ball touches the hoop
 		if (collision(ball, hoop)) {
 			basketCount++;
 			if (basketCount == requiredBasketCount[level - 1]) {
@@ -81,11 +82,14 @@ public class TossMicroGame extends MicroGame {
 			touchPoint.set(event.x, event.y);
 			// Sends the vector to the OpenGL Camera for handling.
 			guiCam.touchToWorld(touchPoint);
+			// Checks if the ball was touched
 			if (targetTouchDown(event, touchPoint, ball)) {
 				velocityX = 0;
 				velocityY = 0;
 				touch = true;
 			}
+			// Checks if the ball has stopped being touched
+			// Finds ball's direction
 			if (touch)
 				if (targetTouchUp(event, touchPoint, ball)
 						|| event.type == TouchEvent.TOUCH_UP) {
@@ -93,7 +97,9 @@ public class TossMicroGame extends MicroGame {
 					previousBalls.clear();
 					touch = false;
 				}
-			// Touching and dragging your balls
+			// Checks for the ball being dragged
+			// Stores position of ball while being dragged used to calculate
+			// direction
 			if (touch)
 				if (targetTouchDragged(event, touchPoint, ball)
 						|| event.type == TouchEvent.TOUCH_DRAGGED) {
@@ -102,6 +108,7 @@ public class TossMicroGame extends MicroGame {
 							ball.height));
 					ball.lowerLeft.x = touchPoint.x - ball.width / 2;
 					ball.lowerLeft.y = touchPoint.y - ball.height / 2;
+					// Stops the ball from being dragged into the hoop
 					if (collision(ball, freeThrow)) {
 						touch = false;
 						ball.lowerLeft.set(ballStartX, ballStartY);
@@ -111,8 +118,8 @@ public class TossMicroGame extends MicroGame {
 			if (event.type == TouchEvent.TOUCH_UP) {
 				super.updateRunning(touchPoint);
 			}
-			Log.d("touch", String.valueOf(event.type));
 		}
+		// moves ball while not being touched
 		if (!touch) {
 			moveBall();
 		}
@@ -132,47 +139,65 @@ public class TossMicroGame extends MicroGame {
 		basketCount = 0;
 	}
 
+	// Calculates the direction the ball has been thrown by finding the slope as
+	// the ball is dragged
+	// Also sets velocity based on the slope
 	public void ballDirection(Rectangle current, List<Rectangle> previous) {
 		float directionX = 0;
 		float directionY = 0;
+		// Adds some of the last points dragged
 		if (previous.size() >= 5)
 			for (int i = previous.size() - 5; i < previous.size(); i++) {
 				directionX += current.lowerLeft.x - previous.get(i).lowerLeft.x;
 				directionY += current.lowerLeft.y - previous.get(i).lowerLeft.y;
 			}
+		// Averages dragged points
 		directionX /= 5;
 		directionY /= 5;
-		velocityX = directionX * .5f * animationScalar[speed-1];
+		// sets velocity for X and Y based on slope
+		// the speed of game alters the speed of ball
+		velocityX = directionX * .5f * animationScalar[speed - 1];
 		velocityY = directionY * .5f;
 	}
 
 	public void moveBall() {
-
+		// Slows down ball's X velocity
 		if (velocityX > 0)
 			velocityX -= .05f;
 		if (velocityX < 0)
 			velocityX += .05f;
 
-		if (collision(ball, backBoard)){
-			// corrects buggy effect if ball is dropped on top of back board collision box
+		// Reverses X direction if the ball collides with backboard
+		if (collision(ball, backBoard)) {
+			// corrects buggy effect if ball is dropped on top of back board
+			// collision box
 			ball.lowerLeft.x = backBoard.width + backBoard.lowerLeft.x;
 			velocityX = -velocityX;
 		}
-
+		// Moves ball's X direction based on velocity
+		// Resets ball to spawn position if ball is out of the bounds of the
+		// screen
 		if (ball.lowerLeft.x < 1280 && ball.lowerLeft.x > -80)
 			ball.lowerLeft.x += velocityX;
 		else {
 			ball.lowerLeft.set(ballStartX, ballStartY);
 		}
 
+		// Applies a gravity effect to ball
 		velocityY -= gravity;
 
+		// Resets ball to spawn position if it collides with the court
 		if (collision(ball, court)) {
 			ball.lowerLeft.set(ballStartX, ballStartY);
 			return;
 		}
+		// Moves ball Y's direction based on velocity
 		if (!collision(ball, court))
 			ball.lowerLeft.y += velocityY;
+		
+		// Resets ball if thrown out of bounds
+		if(ball.lowerLeft.y < 0)
+			ball.lowerLeft.set(ballStartX, ballStartY);
 	}
 
 	// Checks for collision.
@@ -201,7 +226,7 @@ public class TossMicroGame extends MicroGame {
 		drawRunningBackground();
 		drawRunningObjects();
 		batcher.endBatch();
-//		drawRunningBounds();
+		// drawRunningBounds();
 		drawInstruction("Toss!");
 		super.presentRunning();
 	}
