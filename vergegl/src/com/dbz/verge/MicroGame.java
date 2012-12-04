@@ -372,51 +372,6 @@ public abstract class MicroGame extends GLScreen {
 	
 		return false;
 	}
-
-	/**
-	 * Accepts list of TouchEvents and a variable number of rectangles to check for a touch in each rectangle.
-	 * @return true if touches occur in all rectangles 
-	 */
-	//TODO:
-	//Making more efficient
-			//pass size of list
-			//pass the number of rectangles
-			//pass boolean array to limit runtime allocation of size(# of rectangles)
-	public boolean targetsMultiTouched(List<TouchEvent> touchEvents, Rectangle ... targetBounds){
-		
-		int totalScreenTouches = touchEvents.size();
-		int numTargets = targetBounds.length;
-		int targetTouchCount = 0; //counter for each rectangle touched
-		
-		//mark rectangles that have been touched.
-		boolean[] targetMarked = new boolean[numTargets];
-		Arrays.fill(targetMarked, false);
-		
-		//current touch reference from TouchEvent list
-		TouchEvent currTouchEvent;
-		int currTouchPointer;
-		
-		//Iterate though touch events, parse out touchpoint from each touch event
-		 for(int i = 0; i < totalScreenTouches; i++) {
-			 currTouchEvent =  touchEvents.get(i);
-			 currTouchPointer = currTouchEvent.pointer;
-			 touchPoint.set(currTouchEvent.x, currTouchEvent.y);
-			 guiCam.touchToWorld(touchPoint);
-			 
-			 //check touchpoint for overlap in each rectangle -- mark each rectangle that has been touched
-			 if(game.getInput().isTouchDown(currTouchPointer))//make sure touch is touchDown, not up
-				 for (int j = 0; j < numTargets; j++)
-					 if(!targetMarked[j] && OverlapTester.pointInRectangle(targetBounds[j], touchPoint)){ 
-						 targetMarked[j] = true;
-						 targetTouchCount++;
-					 }
-		 }
-		
-		 if(targetTouchCount == numTargets)
-			 return true;
-		 
-		 return false;	
-	}
 	
 	/**
 	 * Checks to see if two rectangles are overlapped

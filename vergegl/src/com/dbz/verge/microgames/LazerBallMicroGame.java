@@ -120,6 +120,7 @@ public class LazerBallMicroGame extends MicroGame  {
 		// reset members
 		chargeCount = 0;
 		lazerCharged = false;
+		lazerSoundPlayed = false;
 		lazerBallBounds.lowerLeft.set(325, 340); // reset lazer to original bounds
 		lazerBallBounds.width = lazerMinSize;
 		lazerBallBounds.height = lazerMinSize;

@@ -69,10 +69,8 @@ public class AquariumMicroGame extends MicroGame{
 			for (int i = 0; i < level+1; i++){
 				if(crackList[i].onScreen == true) {
 					
-					if(targetTouchDragged(touchEvent, touchPoint, crackList[i].bounds)) {
+					if(targetTouchDragged(touchEvent, touchPoint, crackList[i].bounds))
 						crackList[i].isLeaking = false;
-						Assets.playSound(Assets.hitSound);
-					}
 					
 					if(touchEvent.type == TouchEvent.TOUCH_UP)
 						crackList[i].isLeaking = true;

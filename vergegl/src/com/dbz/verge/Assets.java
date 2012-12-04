@@ -87,17 +87,14 @@ public class Assets {
     public static Texture circuit;
     public static TextureRegion circuitLinesRegion; //height 768 width 1280
     
-    public static TextureRegion circuitVerticalGapOnRegion;
-    public static TextureRegion circuitVerticalGapOffRegion;
-    
-    public static TextureRegion circuitHorizontalGapOnRegion;
-    public static TextureRegion circuitHorizontalGapOffRegion;
+    public static TextureRegion circuitLine1;
+    public static TextureRegion circuitLine2;
+    public static TextureRegion circuitLine3;
+    public static TextureRegion circuitLine4;
     
     public static TextureRegion circuitSparkState1Region;
     public static TextureRegion circuitSparkState2Region;
     
-    public static TextureRegion circuitLightOnRegion;
-    public static TextureRegion circuitLightOffRegion;
     
     public static Animation circuitHorizontalGapAnim;
     public static Animation circuitVerticalGapAnim;
@@ -222,24 +219,15 @@ public class Assets {
         circuitBackgroundRegion = new TextureRegion(circuitBackground, 0, 0, 1280, 800);
           
         circuit = new Texture(game, "circuit_items.png");
-        circuitLinesRegion = new TextureRegion(circuit, 0, 0, 1280, 800);
-        
-        circuitSparkState1Region = new TextureRegion(circuit, 1536, 0, 128, 128);
-        circuitSparkState2Region = new TextureRegion(circuit, 1664, 0, 128, 128);
-        
-        circuitHorizontalGapOffRegion = new TextureRegion(circuit, 1792, 0, 128, 32);
-        circuitHorizontalGapOnRegion  = new TextureRegion(circuit, 1792, 32, 128, 32);
-       
-        circuitVerticalGapOnRegion = new TextureRegion(circuit, 1952, 0, 32, 128);
-        circuitVerticalGapOffRegion  = new TextureRegion(circuit, 1984, 0, 32, 128);
-
-        circuitLightOnRegion = new TextureRegion(circuit, 1536, 128, 256, 128);
-        circuitLightOffRegion  = new TextureRegion(circuit, 1792, 128, 256, 128);
-        
-        circuitHorizontalGapAnim =  new Animation(0, circuitHorizontalGapOffRegion, circuitHorizontalGapOnRegion);
-        circuitVerticalGapAnim =  new Animation(0, circuitVerticalGapOffRegion, circuitVerticalGapOnRegion);
+        circuitSparkState1Region = new TextureRegion(circuit, 0,896,128,128);
+        circuitSparkState2Region = new TextureRegion(circuit, 128,896,128,128);
         circuitSparkAnim = new Animation(0.2f, circuitSparkState1Region, circuitSparkState2Region);
-        
+        //Circuit parts TODO draw lines based on vectors instead of images
+        circuitLine1 = new TextureRegion(circuit, 0, 0, 405, 195);
+        circuitLine2 = new TextureRegion(circuit, 0, 256, 328, 383);
+        circuitLine3 = new TextureRegion(circuit, 416, 512, 325, 122);
+        circuitLine4 = new TextureRegion(circuit, 436,10, 557, 480);
+
         lazerBackground = new Texture(game, "lazerBackground.png");
         lazerBackgroundRegion = new TextureRegion(lazerBackground, 0, 0, 1280, 800);
         lazer = new Texture(game, "lazerItems.png");

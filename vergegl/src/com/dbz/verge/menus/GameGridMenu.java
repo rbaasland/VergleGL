@@ -33,8 +33,8 @@ public class GameGridMenu extends Menu {
 	// --------------
 	
 	// Page Variables.
-    private int currentPage = 1;
-    private int numOfPages = 2;
+    private static int CURRENT_PAGE = 1;
+    private static final int NUM_OF_PAGES = 2;
     
     // Bounding Boxes.
     private Rectangle firstMicroGameBounds = new Rectangle(315, 435, 170, 170);
@@ -69,6 +69,7 @@ public class GameGridMenu extends Menu {
     
     private Rectangle checkMarkAreaBounds = new Rectangle(900, 300, 200, 200);
     private Rectangle checkMarkBounds = new Rectangle(920, 320, 160, 160);
+    
     
     // -------------------
  	// --- Constructor ---
@@ -106,9 +107,9 @@ public class GameGridMenu extends Menu {
                 // First MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(firstMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	if (currentPage == 1)
+                	if (CURRENT_PAGE == 1)
                 		selectedMicroGame = new BroFistMicroGame(game);
-                	else if (currentPage == 2)
+                	else if (CURRENT_PAGE == 2)
                 		selectedMicroGame = new AquariumMicroGame(game); // Replace with new MicroGame.
                 	overlayPresent = true;
                 	return;
@@ -117,9 +118,9 @@ public class GameGridMenu extends Menu {
                 // Second MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(secondMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	if (currentPage == 1)
+                	if (CURRENT_PAGE == 1)
                 		selectedMicroGame = new FlyMicroGame(game);
-                	else if (currentPage == 2)
+                	else if (CURRENT_PAGE == 2)
                 		selectedMicroGame = new DirtBikeMicroGame(game); // Replace with new MicroGame.
                 	overlayPresent = true;
                 	return;
@@ -128,9 +129,9 @@ public class GameGridMenu extends Menu {
                 // Third MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(thirdMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	if (currentPage == 1)
+                	if (CURRENT_PAGE == 1)
                 		selectedMicroGame = new FireMicroGame(game);
-                	else if (currentPage == 2)
+                	else if (CURRENT_PAGE == 2)
                 		selectedMicroGame = new TossMicroGame(game);
                 	overlayPresent = true;
                 	return;
@@ -139,36 +140,34 @@ public class GameGridMenu extends Menu {
                 // Fourth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(fourthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	if (currentPage == 1) {
+                	if (CURRENT_PAGE == 1)
                 		selectedMicroGame = new TrafficMicroGame(game);
-                		overlayPresent = true;
-                	}
+                	overlayPresent = true;
                 	return;
                 }
                 
                 // Fifth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(fifthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	if (currentPage == 1) {
+                	if (CURRENT_PAGE == 1)
                 		selectedMicroGame = new CircuitMicroGame(game);
-                		overlayPresent = true;
-                	}
+                	overlayPresent = true;
                 	return;
                 }
                 
                 // Sixth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(sixthMicroGameBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
-                	if (currentPage == 1) {
+                	if (CURRENT_PAGE == 1)
                 		selectedMicroGame = new LazerBallMicroGame(game);
                 		overlayPresent = true;
-                	}
                 	return;
                 }
                 
                 // Back Arrow Bounds Check.
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
                     Assets.playSound(Assets.clickSound);
+                    CURRENT_PAGE = 1;
                     game.setScreen(new PlayMenu(game));
                     return;
                 }
@@ -177,10 +176,10 @@ public class GameGridMenu extends Menu {
                 if (OverlapTester.pointInRectangle(prevPageBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
                 	// Decrement Page.
-                	if (currentPage-1 < 1)
-                		currentPage = numOfPages;
+                	if (CURRENT_PAGE-1 < 1)
+                		CURRENT_PAGE = NUM_OF_PAGES;
                 	else
-                		currentPage--;
+                		CURRENT_PAGE--;
                 	return;
                 }
                 
@@ -188,10 +187,10 @@ public class GameGridMenu extends Menu {
                 if (OverlapTester.pointInRectangle(nextPageBounds, touchPoint)) {
                 	Assets.playSound(Assets.clickSound);
                 	// Increment Page.
-                	if (currentPage+1 > numOfPages)
-                		currentPage = 1;
+                	if (CURRENT_PAGE+1 > NUM_OF_PAGES)
+                		CURRENT_PAGE = 1;
                 	else
-                		currentPage++;
+                		CURRENT_PAGE++;
                 	return;
                 }
                                
@@ -295,7 +294,7 @@ public class GameGridMenu extends Menu {
 			drawOverlayObjects();
 		else {
 	        // Draws MicroGame Icons.
-	    	if (currentPage == 1) {
+	    	if (CURRENT_PAGE == 1) {
 	    		batcher.beginBatch(Assets.gameGridIconsPageOne);
 	        	batcher.drawSprite(0, 0, 1024, 800, Assets.gameGridIconsPageOneRegion);
 	        	batcher.endBatch();
@@ -317,7 +316,7 @@ public class GameGridMenu extends Menu {
 //			batcher.endBatch();
 			
 			batcher.beginBatch(Assets.vergeFont);
-			Assets.terminalFont.drawTextCentered(batcher, String.valueOf(currentPage), 640, 10, 2.5f);
+			Assets.terminalFont.drawTextCentered(batcher, String.valueOf(CURRENT_PAGE), 640, 10, 2.5f);
 			batcher.endBatch();
 		}
 		
@@ -399,6 +398,7 @@ public class GameGridMenu extends Menu {
     
     @Override
     public void onBackPressed(){
+    	CURRENT_PAGE = 1;
     	if (overlayPresent){
     		game.setScreen(new GameGridMenu(game));
     	} else game.setScreen(new PlayMenu(game));	
