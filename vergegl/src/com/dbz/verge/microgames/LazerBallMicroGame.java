@@ -21,9 +21,7 @@ public class LazerBallMicroGame extends MicroGame  {
 	// Charge rate = (max size - min size) / requiredLazerChargeCount[x]
 	private float lazerChargeRate[] = {40.4f, 20.2f, 13.467f};
 	private int chargeCount = 0;
-	
-	// Animation scalar based on speed variable.
-	private float animationScalar[] = {1.0f, 1.5f, 2.0f};
+
 	//Handle game animation pause (sleep time) based on firinMahLazer.ogg length
 	private int animationPauseTime[] = {2650, 1767, 1325}; //2.65 / 1.5 * 1000 = 1767 ms
 	
@@ -64,7 +62,7 @@ public class LazerBallMicroGame extends MicroGame  {
 			
 			if(!lazerSoundPlayed){ // if win sound hasn't played, pause bg music, start sound prep for animation.
 				Assets.music.pause();
-				Assets.playSound(Assets.firinMahLazer, animationScalar[speed-1]); //playspeed based on anim scalar
+				Assets.playSound(Assets.firinMahLazer, speedScalar[speed-1]); //playspeed based on anim scalar
 						
 				try { // sleep for sound to play
 					Thread.sleep(animationPauseTime[speed-1]);
@@ -133,8 +131,8 @@ public class LazerBallMicroGame extends MicroGame  {
 	}
 
 	private void movelazer() {
-		lazerBallBounds.lowerLeft.x += 64 * animationScalar[speed-1];
-		lazerBallBounds.width += 128 * animationScalar[speed-1];	
+		lazerBallBounds.lowerLeft.x += 64 * speedScalar[speed-1];
+		lazerBallBounds.width += 128 * speedScalar[speed-1];	
 	}
 
 	public boolean collision(Rectangle lazer, Rectangle target) {

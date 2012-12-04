@@ -15,7 +15,7 @@ public class DirtBikeMicroGame extends MicroGame {
 	// --------------
 	
 	//number of obstacles per level
-	private int[] levelObstacles = {0, 1, 2};
+	private int[] levelObstacles = { 0, 1, 2 };
 	
 	//bike movement y-range
 	private final int GROUND_LEVEL = 225;
@@ -23,9 +23,6 @@ public class DirtBikeMicroGame extends MicroGame {
 	
 	//drop rate (in pixels) per frame
 	private float gravity = 12; 
-	
-	// Animation scalar based on speed variable.
-	private float animationScalar[] = {1.0f, 1.5f, 2.0f};
 
 	//Bounds for obstacles
 	private Rectangle obstaclesBounds = new Rectangle(660,225,200,150);
@@ -135,7 +132,7 @@ public class DirtBikeMicroGame extends MicroGame {
 	}
 	
 	public void moveDirtBike() {
-		dirtBikeBounds.lowerLeft.x += 16 * animationScalar[level-1] ;
+		dirtBikeBounds.lowerLeft.x += 16 * speedScalar[level-1] ;
 	}
 
 	

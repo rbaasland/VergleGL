@@ -26,8 +26,6 @@ public class TossMicroGame extends MicroGame {
 	private int ballStartY = 150;
 	private boolean touch = false;
 
-	// Animation scalar based on speed variable.
-	private float animationScalar[] = { 1.0f, 2.0f, 3.0f };
 	private int requiredBasketCount[] = { 1, 2, 3 };
 	private int basketCount = 0;
 	private Rectangle ball = new Rectangle(ballStartX, ballStartY, 80, 80);
@@ -44,8 +42,8 @@ public class TossMicroGame extends MicroGame {
 	public TossMicroGame(Game game) {
 		super(game);
 		
-		// Extend allowed time for testing.
-		totalMicroGameTime = new float[]{10.0f, 8.5f, 7.0f};
+		// Extend allowed time.
+		baseMicroGameTime = 10.0f;
 	}
 
 	// ---------------------
@@ -142,7 +140,7 @@ public class TossMicroGame extends MicroGame {
 			}
 		directionX /= 5;
 		directionY /= 5;
-		velocityX = directionX * .5f * animationScalar[speed-1];
+		velocityX = directionX * .5f * speedScalar[speed-1];
 		velocityY = directionY * .5f;
 	}
 

@@ -70,7 +70,6 @@ public class GameGridMenu extends Menu {
     private Rectangle checkMarkAreaBounds = new Rectangle(900, 300, 200, 200);
     private Rectangle checkMarkBounds = new Rectangle(920, 320, 160, 160);
     
-    
     // -------------------
  	// --- Constructor ---
     // -------------------

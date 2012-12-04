@@ -23,9 +23,6 @@ public class TrafficMicroGame extends MicroGame {
 	private int obstacleTwoSpeedY = 8;
 	private int obstacleThreeSpeedY = 15;
 	
-	// Animation scalar based on speed variable.
-	private float animationScalar[] = {1.0f, 1.5f, 2.0f};
-	
 	// Bounds for touch detection.
 	private Rectangle obstacleOneBounds = new Rectangle(250, 800, 80, 170);
 	private Rectangle obstacleTwoBounds = new Rectangle(450, 800, 80, 170);
@@ -125,7 +122,7 @@ public class TrafficMicroGame extends MicroGame {
 		if (obstacleY < -170)
 			obstacleY = 800;
  
-		obstacleY -= obstacleOneSpeedY * animationScalar[speed-1];
+		obstacleY -= obstacleOneSpeedY * speedScalar[speed-1];
 		obstacleOneBounds.lowerLeft.set(obstacleX, obstacleY);
 		
 		// Move Obstacle #2.
@@ -135,7 +132,7 @@ public class TrafficMicroGame extends MicroGame {
 		if (obstacleY < -170)
 			obstacleY = 800;
 		 
-		obstacleY -= obstacleTwoSpeedY * animationScalar[speed-1];
+		obstacleY -= obstacleTwoSpeedY * speedScalar[speed-1];
 		obstacleTwoBounds.lowerLeft.set(obstacleX, obstacleY);
 		
 		// Move Obstacle #3.
@@ -145,7 +142,7 @@ public class TrafficMicroGame extends MicroGame {
 		if (obstacleY < -170)
 			obstacleY = 800;
 		
-		obstacleY -= obstacleThreeSpeedY * animationScalar[speed-1];
+		obstacleY -= obstacleThreeSpeedY * speedScalar[speed-1];
 		obstacleThreeBounds.lowerLeft.set(obstacleX, obstacleY);
 	}
 	
