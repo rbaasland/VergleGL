@@ -63,7 +63,7 @@ public class StoryMode extends Mode {
 	
 	@Override
 	// Randomly generates next MicroGame, Shuffle-style (Dependent).
-	public void setupNextMicroGame() {
+	public void loadNextMicroGame() {
 		// Checks the indexHistory for fullness
 		if (!checkIndex(-1))
 			clearIndexHistory();
@@ -78,7 +78,7 @@ public class StoryMode extends Mode {
 		for(int i = 0; i < indexHistory.length; i++)
 			Log.d("indexHistory", "Index History = " + indexHistory[i]);
 		
-		super.setupNextMicroGame();
+		super.loadNextMicroGame();
 	}
 	
 	// * Used for Shuffle-style random implementation. *

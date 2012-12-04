@@ -40,12 +40,15 @@ public class SurvivalMode extends Mode {
 	
 	@Override
 	public void updateMicroGameWon() {
-		currentRound++;
+		super.updateMicroGameWon();
+		
 		modeState = ModeState.Transition;
 	}
 	
 	@Override
 	public void updateMicroGameLost() {
+		super.updateMicroGameLost();
+		
 		lives--;
 		if (lives <= 0)
 			modeState = ModeState.Lost;
@@ -61,7 +64,7 @@ public class SurvivalMode extends Mode {
 	
 	@Override
 	// Randomly generates next MicroGame, Shuffle-style (Dependent).
-	public void setupNextMicroGame() {
+	public void loadNextMicroGame() {
 		// Checks the indexHistory for fullness
 		if (!checkIndex(-1))
 			clearIndexHistory();
@@ -76,7 +79,7 @@ public class SurvivalMode extends Mode {
 		for(int i = 0; i < indexHistory.length; i++)
 			Log.d("indexHistory", "Index History = " + indexHistory[i]);
 		
-		super.setupNextMicroGame();
+		super.loadNextMicroGame();
 	}
 	
 	// * Used for Shuffle-style random implementation. *

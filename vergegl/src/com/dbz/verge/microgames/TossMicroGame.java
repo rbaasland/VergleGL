@@ -25,8 +25,6 @@ public class TossMicroGame extends MicroGame {
 	// Logic control of touching the ball
 	private boolean touch = false;
 
-	// Animation scalar based on speed variable.
-	private float animationScalar[] = { 1.0f, 2.0f, 3.0f };
 	private int requiredBasketCount[] = { 1, 2, 3 };
 	private int basketCount = 0;
 	private Rectangle ball = new Rectangle(ballStartX, ballStartY, 80, 80);

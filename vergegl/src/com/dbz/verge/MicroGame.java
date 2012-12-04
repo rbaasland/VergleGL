@@ -1,6 +1,5 @@
 package com.dbz.verge;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;

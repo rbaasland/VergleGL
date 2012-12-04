@@ -15,9 +15,7 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.MicroGame.MicroGameState;
 import com.dbz.verge.menus.PlayMenu;
-import com.dbz.verge.microgames.AquariumMicroGame;
 import com.dbz.verge.microgames.BroFistMicroGame;
-import com.dbz.verge.microgames.DirtBikeMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
 import com.dbz.verge.microgames.TossMicroGame;
@@ -26,7 +24,6 @@ import com.dbz.verge.microgames.CircuitMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
 
 // TODO: Make game speed level affect the transition and MicroGame win/loss state time.
-//		 Enable Pausing during the individual MicroGames to resolve issue regarding Android State Managment.
 //		 Extract Bounding Boxes draw calls (in each present()) to their own method.
 //		 ^^^ Note: Doing this in MicroGame as well, should be the same. ^^^ 
 public abstract class Mode extends GLScreen {
@@ -87,6 +84,8 @@ public abstract class Mode extends GLScreen {
     // Index for the current MicroGame.
     public int microGameIndex = 0;
     
+    public boolean loadComplete = false;
+    
     // -------------------
 	// --- Constructor ---
     // -------------------
@@ -96,7 +95,7 @@ public abstract class Mode extends GLScreen {
 		// Initialize MicroGame set.
 		microGames = new MicroGame[] { new BroFistMicroGame(game), new FlyMicroGame(game), new FireMicroGame(game),
 									   new TrafficMicroGame(game), new CircuitMicroGame(game), new LazerBallMicroGame(game),
-									   new AquariumMicroGame(game), new DirtBikeMicroGame(game), new TossMicroGame(game) };
+									   new TossMicroGame(game) };
 
 		// Disables BackArrow and Pause UI elements for all MicroGames in the set.
 //		for (int i = 0; i < microGames.length; i++) {
@@ -236,13 +235,13 @@ public abstract class Mode extends GLScreen {
 		// Collects total time spent in Transition state.
 		totalTransitionTime += deltaTime;
 
-		// After the time limit has past, switch to running state.
-		if (totalTransitionTime >= transitionTimeLimit) {
-			
+		if (!loadComplete)
+			loadNextMicroGame();
+		// After the time limit has past and load has completed, switch to running state.
+		else if (totalTransitionTime >= transitionTimeLimit) {
 			totalTransitionTime = 0;
 			modeState = ModeState.Running;
-			previousModeState = modeState; //TODO: seems counter intuitive, but it tells game how to handle pause
-			setupNextMicroGame();	// TODO: Setup MicroGame for running during transition instead of at the end.
+			previousModeState = modeState; // TODO: seems counter intuitive, but it tells game how to handle pause
 			return;
 		}
 		
@@ -299,9 +298,14 @@ public abstract class Mode extends GLScreen {
 		}
 	}
 	
-	public abstract void updateMicroGameWon();
+	public void updateMicroGameWon() {
+		loadComplete = false;
+		currentRound++;
+	}
 	
-	public abstract void updateMicroGameLost();
+	public void updateMicroGameLost() {
+		loadComplete = false;
+	}
 	
 	public void updateWon() {
 		// Gets all TouchEvents and stores them in a list.
@@ -363,7 +367,7 @@ public abstract class Mode extends GLScreen {
 	// --- Utility Update Methods ---
 	// ------------------------------
 
-	public void setupNextMicroGame() {
+	public void loadNextMicroGame() {
 		// Increases difficulty level based on rounds completed.
 		if ((currentRound-1) % roundsToLevelUp == 0 && currentRound != 1)
 			if (level != 3)
@@ -373,13 +377,15 @@ public abstract class Mode extends GLScreen {
 		if ((currentRound-1) % roundsToSpeedUp == 0 && currentRound != 1)
 			if (speed != 3)
 				speed++;
-
+		
 		// Resets the MicroGame, and sets its state to Running to skip the Ready state.
 		microGames[microGameIndex].level = level;
 		microGames[microGameIndex].speed = speed;
 		microGames[microGameIndex].reset();
 		microGames[microGameIndex].microGameState = MicroGameState.Running;
 		//here... reference to current screen
+		
+		loadComplete = true;
 	}
 
 	// --------------------
