@@ -85,19 +85,12 @@ public class Assets {
     public static Texture circuitBackground;
     public static TextureRegion circuitBackgroundRegion;
     public static Texture circuit;
-    public static TextureRegion circuitLinesRegion; //height 768 width 1280
-    
     public static TextureRegion circuitLine1;
     public static TextureRegion circuitLine2;
     public static TextureRegion circuitLine3;
     public static TextureRegion circuitLine4;
-    
     public static TextureRegion circuitSparkState1Region;
     public static TextureRegion circuitSparkState2Region;
-    
-    
-    public static Animation circuitHorizontalGapAnim;
-    public static Animation circuitVerticalGapAnim;
     public static Animation circuitSparkAnim;
 
     public static Texture lazerBackground;
@@ -105,15 +98,6 @@ public class Assets {
     public static Texture lazer;
     public static TextureRegion lazerBall;
     public static TextureRegion lazerFace;
-    public static TextureRegion lazerState3Region;
-    public static TextureRegion lazerState4Region;
-    public static TextureRegion lazerState5Region;
-    public static TextureRegion lazerState6Region;
-    public static TextureRegion lazerFireButtonInitialRegion;
-    public static TextureRegion lazerFireButtonReadyRegion;
-    public static TextureRegion lazerTargetRegion;
-    public static Animation lazerChargingAnim;
-    public static Animation lazerFireButtonAnim;
     
     public static Texture aquariumBackround;
     public static Texture aquariumTank;

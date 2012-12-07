@@ -21,17 +21,11 @@ public class CircuitMicroGame extends MicroGame {
 	// --------------
 	// --- Fields ---
 	// --------------
-	//used to store the different number of required gaps in a difficulty level
-	//private int[] requiredGapCount = {2, 3, 4};
-	
 	// Used to determine win Condition (Number of direction changes per level)
-	private int directionPointsInLevel[] = {12, 16, 19}; 
-
-	// Animation scalar based on speed variable.
-	//private float animationScalar[] = { 1.0f, 1.1f, 1.2f };
+	private int directionPointsInLevel[] = {12, 16, 19};
 	
 	//Circuit Arrays
-
+	
 	// Bounding rectangle for each circuit piece
 	private Rectangle[] circuitPieces = {new Rectangle(190, 800-94, 405, 195), new Rectangle(240, 800-478, 328, 383), 
 			new Rectangle(508, 800-612, 325, 122), new Rectangle(1022, 800-287, 557, 480)};
@@ -311,6 +305,7 @@ public class CircuitMicroGame extends MicroGame {
 
 		// Used to prevent array out of bounds when iterating through animation.
 		// One MUST know how many textures in the spark animation.
+		//TODO figure out how to use the animation class to handle animation
 		private void updateAnimationIndex() {
 
 			if(animationDelayCounter == 0){
