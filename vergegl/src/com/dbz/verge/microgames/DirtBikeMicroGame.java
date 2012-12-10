@@ -18,19 +18,23 @@ public class DirtBikeMicroGame extends MicroGame {
 	private int[] levelObstacles = { 0, 1, 2 };
 	
 	//bike movement y-range
-	private final int GROUND_LEVEL = 225;
+	private final int GROUND_LEVEL = 275;
 	private final int MAX_JUMP_HEIGHT = 600;
 	
 	//drop rate (in pixels) per frame
 	private float gravity = 12; 
+	private float rotation = 0;
 
 	//Bounds for obstacles
-	private Rectangle obstaclesBounds = new Rectangle(660,225,200,150);
+	private Rectangle obstaclesBounds = new Rectangle(660,225,200,160);
 	private Rectangle obstacles2Bounds = new Rectangle(275,225,50,200);
 	private Rectangle[] obstacles = {obstaclesBounds, obstacles2Bounds};
 	
 	// Bounds for dirt bike.
-	private Rectangle dirtBikeBounds = new Rectangle(0,225,256,256);
+	//private Rectangle dirtBikeBounds = new Rectangle(0,225,256,256);
+	private Rectangle dirtBikeRWheelBounds = new Rectangle(40,275,100,100);
+	private Rectangle dirtBikeFWheelBounds = new Rectangle(235,275,100,100);
+	private Rectangle dirtBikeFrameBounds = new Rectangle(0,260,250,220);
 	private Rectangle gasBounds = new Rectangle(1050,20,160,160);
 	private Rectangle jumpBounds = new Rectangle(0,20,160,160);
 	
@@ -57,7 +61,7 @@ public class DirtBikeMicroGame extends MicroGame {
 			Assets.playSound(Assets.hitSound);
 			return;
 		}
-  		if (dirtBikeBounds.lowerLeft.x > 1200) {
+  		if (dirtBikeRWheelBounds.lowerLeft.x > 1200) {
 			Assets.playSound(Assets.highJumpSound);
 			microGameState = MicroGameState.Won;
 			return;
@@ -65,13 +69,12 @@ public class DirtBikeMicroGame extends MicroGame {
   		
   		
         for(int j=0; j < levelObstacles[level-1]; j++){
-        	
-            if(collision(dirtBikeBounds, obstacles[j])){
+            if(collision(dirtBikeRWheelBounds, obstacles[j]) || collision(dirtBikeFWheelBounds, obstacles[j])){
             	microGameState = MicroGameState.Lost;
             	Assets.playSound(Assets.hitSound);
             	return;
-            	
             }
+
         }
 
 		// Gets all TouchEvents and stores them in a list.
@@ -117,32 +120,38 @@ public class DirtBikeMicroGame extends MicroGame {
         }
         
         if(hasJumped){
-        	if(dirtBikeBounds.lowerLeft.y <= MAX_JUMP_HEIGHT)
+        	if(dirtBikeFrameBounds.lowerLeft.y <= MAX_JUMP_HEIGHT)
         		jump();
         	else hasJumped = false; 
         }
         
-        if (!hasJumped && dirtBikeBounds.lowerLeft.y >= GROUND_LEVEL)
+        if (!hasJumped && dirtBikeFWheelBounds.lowerLeft.y >= GROUND_LEVEL)
         	applyGravity();
         
-        if(dirtBikeBounds.lowerLeft.y <= GROUND_LEVEL){
+        if(dirtBikeFWheelBounds.lowerLeft.y <= GROUND_LEVEL){
         	disableJumpButton = false;
         }
         
 	}
 	
 	public void moveDirtBike() {
-		dirtBikeBounds.lowerLeft.x += 16 * speedScalar[level-1] ;
+		dirtBikeFrameBounds.lowerLeft.x += 16 * speedScalar[level-1];
+		dirtBikeFWheelBounds.lowerLeft.x += 16 * speedScalar[level-1];
+		dirtBikeRWheelBounds.lowerLeft.x += 16 * speedScalar[level-1];
+		rotation -= 80;
 	}
 
-	
 	public void applyGravity(){
-		dirtBikeBounds.lowerLeft.y -= gravity;
+		dirtBikeFrameBounds.lowerLeft.y -= gravity;
+		dirtBikeFWheelBounds.lowerLeft.y -= gravity;
+		dirtBikeRWheelBounds.lowerLeft.y -= gravity;
 		
 	}
 	
 	public void jump(){
-		dirtBikeBounds.lowerLeft.y += 24;
+		dirtBikeFrameBounds.lowerLeft.y += 24;
+		dirtBikeFWheelBounds.lowerLeft.y += 24;
+		dirtBikeRWheelBounds.lowerLeft.y += 24;
 	}
 	
     // Checks for collision-based loss.
@@ -199,11 +208,15 @@ public class DirtBikeMicroGame extends MicroGame {
 	public void drawRunningObjects() {
 		// dirt bike and gas
 		batcher.beginBatch(Assets.dirtBikeBackground);
-		batcher.drawSprite(dirtBikeBounds, Assets.dirtBikeRegion);
-		batcher.drawSprite(gasBounds, Assets.gasPedalRegion);
-		batcher.drawSprite(jumpBounds, Assets.gasPedalRegion);
-		batcher.endBatch();
-		
+		//batcher.drawSprite(dirtBikeBounds, Assets.dirtBikeRegion);
+		batcher.drawSprite(dirtBikeFrameBounds, Assets.dirtBikeFrameRegion);
+		//batcher.drawSprite(dirtBikeRWheelBounds,10, Assets.dirtBikeWheelRegion);
+		batcher.drawSprite(dirtBikeRWheelBounds.lowerLeft.x,dirtBikeRWheelBounds.lowerLeft.y,dirtBikeRWheelBounds.width,dirtBikeRWheelBounds.height,rotation,Assets.dirtBikeWheelRegion);
+		//batcher.drawSprite(dirtBikeFWheelBounds, Assets.dirtBikeWheelRegion);
+		batcher.drawSprite(dirtBikeFWheelBounds.lowerLeft.x,dirtBikeFWheelBounds.lowerLeft.y,dirtBikeFWheelBounds.width,dirtBikeFWheelBounds.height,rotation,Assets.dirtBikeWheelRegion);
+		batcher.drawSprite(gasBounds, Assets.dirtBikeGasPedalRegion);
+		batcher.drawSprite(jumpBounds, Assets.dirtBikeJumpButtonRegion);
+		batcher.endBatch();	
 	}
 	
 	@Override
@@ -211,13 +224,10 @@ public class DirtBikeMicroGame extends MicroGame {
 		// Bounding Boxes
 		if(levelObstacles[level-1] != 0){
 			batcher.beginBatch(Assets.boundOverlay);
-		
-		for(int j=0; j < levelObstacles[level-1]; j++){
-			batcher.drawSprite(obstacles[j], Assets.boundOverlayRegion);
-		}
-		
-		batcher.endBatch();
+			    for(int j=0; j < levelObstacles[level-1]; j++){
+			        batcher.drawSprite(obstacles[j], Assets.boundOverlayRegion);
+		        }
+		    batcher.endBatch();
 		}
 	}
-	
 }
