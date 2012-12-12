@@ -16,7 +16,7 @@ public class AquariumMicroGame extends MicroGame{
 	public float crackTimes[] = { 4.0f, 2.5f, 1.0f };
 	
 	// Original aquarium water level.
-	float waterLevel = 800;
+	float waterLevel = 0;
 	
 	// Array of all possible cracks.
 	Crack[] crackList = { new Crack(new Rectangle(0,0,128,128)), 
@@ -48,7 +48,7 @@ public class AquariumMicroGame extends MicroGame{
 		}
 		
 		// Checks for water level based loss.
-		if(waterLevel <= 0) {
+		if(waterLevel >= 800) {
 			Assets.playSound(Assets.hitSound);
 			microGameState = MicroGameState.Lost;
 			return;
@@ -136,7 +136,7 @@ public class AquariumMicroGame extends MicroGame{
 	}
 	
 	public void decreaseWaterLevel(Crack crack) {
-		waterLevel -= (crack.leakRate * speedScalar[speed-1]);
+		waterLevel += (crack.leakRate * speedScalar[speed-1]);
 	}
 	
 	// -------------------
