@@ -112,6 +112,8 @@ public class Assets {
     public static TextureRegion dirtBikeJumpButtonRegion;
     public static TextureRegion dirtBikeFrameRegion;
     public static TextureRegion dirtBikeWheelRegion;
+    public static TextureRegion dirtBikeObstacleOneRegion;
+    public static TextureRegion dirtBikeObstacleTwoRegion;
     
     public static Texture toss;
     public static TextureRegion tossBallRegion;
@@ -235,6 +237,8 @@ public class Assets {
         dirtBikeJumpButtonRegion = new TextureRegion(dirtBikeBackground,1440,460,160,160);
         dirtBikeFrameRegion = new TextureRegion(dirtBikeBackground,0,720,250,220);
         dirtBikeWheelRegion = new TextureRegion(dirtBikeBackground,270,720,100,100);
+        dirtBikeObstacleOneRegion = new TextureRegion(dirtBikeBackground,400,720,200,160);
+        dirtBikeObstacleTwoRegion = new TextureRegion(dirtBikeBackground,630,730,50,200);
         
         toss = new Texture(game,"toss.png");
         tossBallRegion = new TextureRegion(toss, 0,800,80,80);

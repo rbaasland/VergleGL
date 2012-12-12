@@ -27,7 +27,7 @@ public class DirtBikeMicroGame extends MicroGame {
 
 	//Bounds for obstacles
 	private Rectangle obstaclesBounds = new Rectangle(660,225,200,160);
-	private Rectangle obstacles2Bounds = new Rectangle(275,225,50,200);
+	private Rectangle obstacles2Bounds = new Rectangle(290,225,50,200);
 	private Rectangle[] obstacles = {obstaclesBounds, obstacles2Bounds};
 	
 	// Bounds for dirt bike.
@@ -69,7 +69,9 @@ public class DirtBikeMicroGame extends MicroGame {
   		
   		
         for(int j=0; j < levelObstacles[level-1]; j++){
-            if(collision(dirtBikeRWheelBounds, obstacles[j]) || collision(dirtBikeFWheelBounds, obstacles[j])){
+        	Rectangle tempFWheel = new Rectangle ((dirtBikeFWheelBounds.lowerLeft.x - dirtBikeFWheelBounds.width/2),(dirtBikeFWheelBounds.lowerLeft.y - dirtBikeFWheelBounds.height/2),(dirtBikeFWheelBounds.width),(dirtBikeFWheelBounds.height));
+        	Rectangle tempRWheel = new Rectangle ((dirtBikeRWheelBounds.lowerLeft.x - dirtBikeRWheelBounds.width/2),(dirtBikeRWheelBounds.lowerLeft.y - dirtBikeRWheelBounds.height/2),(dirtBikeRWheelBounds.width),(dirtBikeRWheelBounds.height));
+            if(collision(tempRWheel, obstacles[j]) || collision(tempFWheel, obstacles[j])){
             	microGameState = MicroGameState.Lost;
             	Assets.playSound(Assets.hitSound);
             	return;
@@ -155,20 +157,20 @@ public class DirtBikeMicroGame extends MicroGame {
 	}
 	
     // Checks for collision-based loss.
-   	public boolean collision(Rectangle bike, Rectangle obstacle) {
-   		float obstacleX = obstacle.lowerLeft.x;
-   		float obstacleY = obstacle.lowerLeft.y;
-   		float carX = bike.lowerLeft.x;
-   		float carY = bike.lowerLeft.y;
-   		
-   		if (obstacleY <= bike.height)
-   			if (obstacleY + obstacle.height >= carY)
-   				if (obstacleX <= carX + bike.width)
-   					if (obstacleX + obstacle.width >= carX)
-   						return true;
-   		
-   		return false;
-   	}
+	public boolean collision(Rectangle ball, Rectangle obstacle) {
+		float obstacleX = obstacle.lowerLeft.x;
+		float obstacleY = obstacle.lowerLeft.y;
+		float ballX = ball.lowerLeft.x;
+		float ballY = ball.lowerLeft.y;
+
+		if (obstacleY <= ballY + ball.height)
+			if (obstacleY + obstacle.height >= ballY)
+				if (obstacleX <= ballX + ball.width)
+					if (obstacleX + obstacle.width >= ballX)
+						return true;
+
+		return false;
+	}
        
 	// -----------------------------
 	// --- Utility Update Method ---
@@ -208,26 +210,18 @@ public class DirtBikeMicroGame extends MicroGame {
 	public void drawRunningObjects() {
 		// dirt bike and gas
 		batcher.beginBatch(Assets.dirtBikeBackground);
-		//batcher.drawSprite(dirtBikeBounds, Assets.dirtBikeRegion);
 		batcher.drawSprite(dirtBikeFrameBounds, Assets.dirtBikeFrameRegion);
-		//batcher.drawSprite(dirtBikeRWheelBounds,10, Assets.dirtBikeWheelRegion);
 		batcher.drawSprite(dirtBikeRWheelBounds.lowerLeft.x,dirtBikeRWheelBounds.lowerLeft.y,dirtBikeRWheelBounds.width,dirtBikeRWheelBounds.height,rotation,Assets.dirtBikeWheelRegion);
-		//batcher.drawSprite(dirtBikeFWheelBounds, Assets.dirtBikeWheelRegion);
 		batcher.drawSprite(dirtBikeFWheelBounds.lowerLeft.x,dirtBikeFWheelBounds.lowerLeft.y,dirtBikeFWheelBounds.width,dirtBikeFWheelBounds.height,rotation,Assets.dirtBikeWheelRegion);
 		batcher.drawSprite(gasBounds, Assets.dirtBikeGasPedalRegion);
 		batcher.drawSprite(jumpBounds, Assets.dirtBikeJumpButtonRegion);
+		if(levelObstacles[level-1] != 0)
+			batcher.drawSprite(obstaclesBounds, Assets.dirtBikeObstacleOneRegion);
+		if(levelObstacles[level-1] == 2)
+			batcher.drawSprite(obstacles2Bounds, Assets.dirtBikeObstacleTwoRegion);
 		batcher.endBatch();	
 	}
 	
 	@Override
-	public void drawRunningBounds() {
-		// Bounding Boxes
-		if(levelObstacles[level-1] != 0){
-			batcher.beginBatch(Assets.boundOverlay);
-			    for(int j=0; j < levelObstacles[level-1]; j++){
-			        batcher.drawSprite(obstacles[j], Assets.boundOverlayRegion);
-		        }
-		    batcher.endBatch();
-		}
-	}
+	public void drawRunningBounds() {}
 }
