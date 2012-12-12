@@ -136,6 +136,7 @@ public class Assets {
     public static Sound coinSound;
     public static Sound clickSound;
     public static Sound firinMahLazer;
+    public static Sound	pop;
     
     public static void load(GLGame game) {
     	// *** Initialize Menu Assets. ***
@@ -257,7 +258,7 @@ public class Assets {
         coinSound = game.getAudio().newSound(R.raw.coin);
         clickSound = game.getAudio().newSound(R.raw.click);   
         firinMahLazer = game.getAudio().newSound(R.raw.firin_mah_lazer);
-        
+        pop=game.getAudio().newSound(R.raw.pop);
     }      
     
     public static void reload() {

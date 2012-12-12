@@ -68,12 +68,18 @@ public class AquariumMicroGame extends MicroGame{
 			// Sets isClosed to true if gap is touched. 
 			for (int i = 0; i < level+1; i++){
 				if(crackList[i].onScreen == true) {
-					
+					if(touchEvent.type == TouchEvent.TOUCH_DOWN)
+					{
+						Assets.playSound(Assets.pop);
+					}
 					if(targetTouchDragged(touchEvent, touchPoint, crackList[i].bounds))
 						crackList[i].isLeaking = false;
 					
 					if(touchEvent.type == TouchEvent.TOUCH_UP)
+					{
+						Assets.playSound(Assets.pop);
 						crackList[i].isLeaking = true;
+					}
 				}
 			}
 
