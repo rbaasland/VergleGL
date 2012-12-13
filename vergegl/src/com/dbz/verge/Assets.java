@@ -41,9 +41,18 @@ public class Assets {
     
     public static Texture gameGridIconsPageOne;
     public static TextureRegion gameGridIconsPageTwoRegion;
+    public static TextureRegion broFistIconRegion;
+    public static TextureRegion flyIconRegion;
+    public static TextureRegion fireIconRegion;
+    public static TextureRegion trafficIconRegion;
+    public static TextureRegion circuitIconRegion;
+    public static TextureRegion lazerBallIconRegion;
     
     public static Texture gameGridIconsPageTwo;
     public static TextureRegion gameGridIconsPageOneRegion;
+    public static TextureRegion aquariumIconRegion;
+    public static TextureRegion dirtBikeIconRegion;
+    public static TextureRegion tossIconRegion;
     
     public static Texture soundToggle;
     public static TextureRegion soundOnRegion;
@@ -168,8 +177,18 @@ public class Assets {
         
         gameGridIconsPageOne = new Texture(game, "gamegridicons1.png");
         gameGridIconsPageOneRegion = new TextureRegion(gameGridIconsPageOne, 0, 0, 1024, 800);
+        broFistIconRegion = new TextureRegion(gameGridIconsPageOne, 280, 180, 240, 220);
+        flyIconRegion = new TextureRegion(gameGridIconsPageOne, 520, 180, 240, 220);
+        fireIconRegion = new TextureRegion(gameGridIconsPageOne, 760, 180, 240, 220);
+        trafficIconRegion = new TextureRegion(gameGridIconsPageOne, 280, 410, 240, 220);
+        circuitIconRegion = new TextureRegion(gameGridIconsPageOne, 520, 410, 240, 220);
+        lazerBallIconRegion = new TextureRegion(gameGridIconsPageOne, 760, 410, 240, 220);
+        
         gameGridIconsPageTwo = new Texture(game, "gamegridicons2.png");
         gameGridIconsPageTwoRegion = new TextureRegion(gameGridIconsPageTwo, 0, 0, 1024, 800);
+        aquariumIconRegion = new TextureRegion(gameGridIconsPageTwo, 280, 180, 240, 220);
+        dirtBikeIconRegion = new TextureRegion(gameGridIconsPageTwo, 520, 180, 240, 220);
+        tossIconRegion = new TextureRegion(gameGridIconsPageTwo, 760, 180, 240, 220);
         
         soundToggle = new Texture(game, "volumetoggle.png");
         soundOnRegion = new TextureRegion(soundToggle, 0, 0, 140, 140);
