@@ -9,6 +9,7 @@ import com.dbz.verge.Assets;
 import com.dbz.verge.Mode;
 
 // TODO: Implement better random number generation?
+//		...Add all MicroGames to this and TimeAttack
 public class SurvivalMode extends Mode {
 
 	// --------------

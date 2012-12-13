@@ -90,7 +90,7 @@ public class FlyMicroGame extends MicroGame {
         			microGameState = MicroGameState.Won;
         		}
         		else if (flySwatCount < requiredSwatCount[level-1])
-        			Assets.playSound(Assets.coinSound);
+        			Assets.playSound(Assets.punchSound);
         		return;
         	}
 	        
