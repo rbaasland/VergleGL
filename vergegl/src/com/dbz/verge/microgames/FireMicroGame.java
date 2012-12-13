@@ -18,7 +18,7 @@ public class FireMicroGame extends MicroGame {
 	// --------------
 	
 	// Array used to store the different required counts of the 3 difficulty levels.
-	private int requiredBroFistCount[] = { 10, 20, 30 };
+	private int requiredWaterCount[] = { 10, 20, 30 };
 	private int fireOneCount = 0; 
 	private int fireTwoCount = 0;
 	private int fireThreeCount = 0;
@@ -32,6 +32,11 @@ public class FireMicroGame extends MicroGame {
 	private Rectangle fireOneBounds = new Rectangle(220, 280, 180, 260);
 	private Rectangle fireTwoBounds = new Rectangle(550, 280, 180, 260);
 	private Rectangle fireThreeBounds = new Rectangle(880, 280, 180, 260);
+	
+	// TODO: Extract boolean setup to Sound class.
+	private boolean ambiencePlaying = false;
+	
+	private float soundCooldown = 0.0f;
 	
 	// -------------------
 	// --- Constructor ---
@@ -47,15 +52,25 @@ public class FireMicroGame extends MicroGame {
     
 	@Override
 	public void updateRunning(float deltaTime) {
+		soundCooldown += deltaTime;
+		
+		// TODO: Add ambience.
+//		if (!ambiencePlaying) {
+//			Assets.playSound(Assets.burningSound);
+//			ambiencePlaying = true;
+//		}
+		
 		// Checks for time-based loss.
 		if (lostTimeBased(deltaTime)) {
 			Assets.playSound(Assets.hitSound);
+//			Assets.burningSound.stop();	// TODO: Use same format as Asset.playSound(), i.e. Assets.stopSound().
 			return;
 		}
 		
 		// Tests for Multi-Area win.
 		if (clearedFireOne && clearedFireTwo && clearedFireThree) {
 			Assets.playSound(Assets.highJumpSound);
+//			Assets.burningSound.stop();	// TODO: Use same format as Asset.playSound(), i.e. Assets.stopSound().
 			microGameState = MicroGameState.Won;
     		return;	
 		}
@@ -77,30 +92,42 @@ public class FireMicroGame extends MicroGame {
 	        // Fire One Bounds (TOUCH_DOWN/TOUCH_DRAGGED) Check.
 	        if (targetTouchDragged(event, touchPoint, fireOneBounds)) {
         		fireOneCount++;
-        		if (fireOneCount == requiredBroFistCount[level-1])
+        		if (fireOneCount == requiredWaterCount[level-1])
         			clearedFireOne = true;
-        		if (fireOneCount <= requiredBroFistCount[level-1])
-        			Assets.playSound(Assets.coinSound);
+        		if (soundCooldown > 0.075f) {
+	        		if (fireOneCount <= requiredWaterCount[level-1]) {
+	        			Assets.playSound(Assets.splashSound);
+	        			soundCooldown = 0;
+	        		}
+        		}
         		return;
         	}
         	
 	        // Fire Two Bounds (TOUCH_DOWN/TOUCH_DRAGGED) Check.
 	        if (targetTouchDragged(event, touchPoint, fireTwoBounds)) {
         		fireTwoCount++;
-        		if (fireTwoCount == requiredBroFistCount[level-1])
+        		if (fireTwoCount == requiredWaterCount[level-1])
         			clearedFireTwo = true;
-        		if (fireTwoCount <= requiredBroFistCount[level-1])
-        			Assets.playSound(Assets.coinSound);
+        		if (soundCooldown > 0.075f) {
+	        		if (fireTwoCount <= requiredWaterCount[level-1]) {
+	        			Assets.playSound(Assets.splashSound);
+	        			soundCooldown = 0;
+        			}
+        		}
         		return;
         	}
         	
         	// Fire Three Bounds (TOUCH_DOWN/TOUCH_DRAGGED) Check.
         	if (targetTouchDragged(event, touchPoint, fireThreeBounds)) {
         		fireThreeCount++;
-        		if (fireThreeCount == requiredBroFistCount[level-1])
+        		if (fireThreeCount == requiredWaterCount[level-1])
         			clearedFireThree = true;
-        		if (fireThreeCount <= requiredBroFistCount[level-1])
-        			Assets.playSound(Assets.coinSound);
+        		if (soundCooldown > 0.075f) {
+	        		if (fireThreeCount <= requiredWaterCount[level-1]) {
+	        			Assets.playSound(Assets.splashSound);
+	        			soundCooldown = 0;
+	        		}
+        		}
         		return;
         	}
 	        
@@ -130,7 +157,7 @@ public class FireMicroGame extends MicroGame {
 	// -------------------
 	
 	@Override
-	public void presentRunning() {	
+	public void presentRunning() {
 		batcher.beginBatch(Assets.fire);
 		drawRunningBackground();
 		drawRunningObjects();
@@ -152,19 +179,19 @@ public class FireMicroGame extends MicroGame {
 	@Override
 	public void drawRunningObjects() {
 		// Draw target #1.
-		if (fireOneCount < requiredBroFistCount[level-1]) 
+		if (fireOneCount < requiredWaterCount[level-1]) 
 			batcher.drawSprite(fireOneBounds, Assets.fireWindowRegion);
 		else
 			batcher.drawSprite(fireOneBounds,  Assets.clearWindowRegion);
 		
 		// Draw target #2.
-		if (fireTwoCount < requiredBroFistCount[level-1])
+		if (fireTwoCount < requiredWaterCount[level-1])
 			batcher.drawSprite(fireTwoBounds, Assets.fireWindowRegion);
 		else
 			batcher.drawSprite(fireTwoBounds,  Assets.clearWindowRegion);
 		
 		// Draw target #3.
-		if (fireThreeCount < requiredBroFistCount[level-1]) 
+		if (fireThreeCount < requiredWaterCount[level-1]) 
 			batcher.drawSprite(fireThreeBounds, Assets.fireWindowRegion);
 		else
 			batcher.drawSprite(fireThreeBounds, Assets.clearWindowRegion);

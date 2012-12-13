@@ -28,7 +28,7 @@ public class SoundManager {
 
 	//CONSTANTS
 	/** Default number of concurrent sound streams. Calling init() directly bypasses default value. */
-	public final static int MAX_STREAMS = 8;
+	public final static int MAX_STREAMS = 16;
 
 	/** Constant for a single play through*/
 	public final static int LOOP_1_TIME = 0;

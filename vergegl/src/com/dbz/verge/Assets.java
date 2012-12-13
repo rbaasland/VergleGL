@@ -141,6 +141,16 @@ public class Assets {
     public static TextureRegion boundOverlayRegion;
  
     public static Music music;
+    
+    public static Sound punchSound;
+    public static Sound explosionSound;
+    public static Sound gruntSound;
+    
+    public static Sound flyBuzzSound;
+    
+    public static Sound burningSound;
+    public static Sound splashSound;
+    
     public static Sound jumpSound;
     public static Sound highJumpSound;
     public static Sound hitSound;
@@ -260,8 +270,8 @@ public class Assets {
         dirtBikeObstacleTwoRegion = new TextureRegion(dirtBikeBackground,630,730,50,200);
         
         toss = new Texture(game,"toss.png");
-        tossBallRegion = new TextureRegion(toss, 0,800,80,80);
-        tossBackgroundRegion = new TextureRegion(toss,0,0,1280,800);
+        tossBallRegion = new TextureRegion(toss, 0, 800, 80, 80);
+        tossBackgroundRegion = new TextureRegion(toss, 0, 0, 1280, 800);
         
         // *** Initialize Testing Assets. ***
         boundOverlay = new Texture(game, "boundoverlay.png");
@@ -271,17 +281,32 @@ public class Assets {
         
         music = game.getAudio().newMusic(R.raw.music);
         music.loop();
-        music.setVolume(50);
+        music.setVolume(0);
         if(Settings.soundEnabled)
             music.play();
+        
+        // BroFistMicroGame Sound Assets.
+        punchSound = game.getAudio().newSound(R.raw.punch);
+        punchSound.setVolume(80);
+        explosionSound = game.getAudio().newSound(R.raw.explosion);
+        gruntSound = game.getAudio().newSound(R.raw.grunt);
+        
+        // FlyMicroGame Sound Assets.
+        flyBuzzSound = game.getAudio().newSound(R.raw.flybuzz);
+        flyBuzzSound.loop();
+        
+        // FireMicroGame Sound Assets.
+        burningSound = game.getAudio().newSound(R.raw.burning);
+        splashSound = game.getAudio().newSound(R.raw.splash);
         
         jumpSound = game.getAudio().newSound(R.raw.jump);
         highJumpSound = game.getAudio().newSound(R.raw.highjump);
         hitSound = game.getAudio().newSound(R.raw.hit);
         coinSound = game.getAudio().newSound(R.raw.coin);
-        clickSound = game.getAudio().newSound(R.raw.click);   
+        clickSound = game.getAudio().newSound(R.raw.click);
+        clickSound.setVolume(30);
         firinMahLazer = game.getAudio().newSound(R.raw.firin_mah_lazer);
-        pop=game.getAudio().newSound(R.raw.pop);
+        pop = game.getAudio().newSound(R.raw.pop);
     }      
     
     public static void reload() {
@@ -322,7 +347,7 @@ public class Assets {
     
     public static void playSound(Sound sound) {
         if(Settings.soundEnabled)
-            sound.play(100);
+            sound.play();
     }
     
     public static void playSound(Sound sound, float playbackSpeed) {

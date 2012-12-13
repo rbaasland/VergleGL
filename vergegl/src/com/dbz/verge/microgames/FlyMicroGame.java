@@ -18,7 +18,7 @@ public class FlyMicroGame extends MicroGame {
 	// --------------
 
 	// Array used to store the different required counts of the 3 difficulty levels.
-	private int requiredFlySwatCount[] = { 1, 2, 3 };
+	private int requiredSwatCount[] = { 1, 2, 3 };
 	private int flySwatCount = 0;
 
 	// Speed variables for fly movement.
@@ -27,6 +27,9 @@ public class FlyMicroGame extends MicroGame {
 	
 	// Bounds for touch detection.
 	private Rectangle flyBounds = new Rectangle(600, 60, 80, 60);
+	
+	// TODO: Extract boolean setup to Sound class.
+	private boolean ambiencePlaying = false;
 	
 	// -------------------
 	// --- Constructor ---
@@ -42,9 +45,17 @@ public class FlyMicroGame extends MicroGame {
     
 	@Override
 	public void updateRunning(float deltaTime) {
+		
+		// TODO: Add ambience.
+//		if (!ambiencePlaying) {
+//			Assets.playSound(Assets.flyBuzzSound);
+//			ambiencePlaying = true;
+//		}
+		
 		// Checks for time-based loss.
 		if (lostTimeBased(deltaTime)) {
 			Assets.playSound(Assets.hitSound);
+//			Assets.flyBuzzSound.stop(); // TODO: Use same format as Asset.playSound(), i.e. Assets.stopSound().
 			return;
 		}
 		
@@ -73,11 +84,12 @@ public class FlyMicroGame extends MicroGame {
 	        // Fly Bounds (TOUCH_DOWN) Check.
         	if (targetTouchDown(event, touchPoint, flyBounds)) {
         		flySwatCount++;
-        		if (flySwatCount == requiredFlySwatCount[level-1]) {
+        		if (flySwatCount == requiredSwatCount[level-1]) {
         			Assets.playSound(Assets.highJumpSound);
+//        			Assets.flyBuzzSound.stop(); // TODO: Use same format as Asset.playSound(), i.e. Assets.stopSound().
         			microGameState = MicroGameState.Won;
         		}
-        		else if (flySwatCount < requiredFlySwatCount[level-1])
+        		else if (flySwatCount < requiredSwatCount[level-1])
         			Assets.playSound(Assets.coinSound);
         		return;
         	}

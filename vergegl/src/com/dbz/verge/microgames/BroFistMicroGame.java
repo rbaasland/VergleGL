@@ -39,7 +39,7 @@ public class BroFistMicroGame extends MicroGame {
 	public void updateRunning(float deltaTime) {
 		// Checks for time-based loss.
 		if (lostTimeBased(deltaTime)) {
-			Assets.playSound(Assets.hitSound);
+			Assets.playSound(Assets.gruntSound);
 			return;
 		}
 		
@@ -65,11 +65,11 @@ public class BroFistMicroGame extends MicroGame {
         	if (targetTouchDown(event, touchPoint, broFistBounds)) {
         		broFistCount++;
         		if (broFistCount == requiredBroFistCount[level-1]) {
-        			Assets.playSound(Assets.highJumpSound);
+        			Assets.playSound(Assets.explosionSound);
         			microGameState = MicroGameState.Won;
         		}
         		else if (broFistCount < requiredBroFistCount[level-1])
-        			Assets.playSound(Assets.coinSound);
+        			Assets.playSound(Assets.punchSound);
         		return;
         	}
 	        

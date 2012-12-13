@@ -95,7 +95,6 @@ public class Sound {
 	 * <br>If SoundManager was not manually initialized then the default number of streams is @See ShortSoundManager.MAX_STREAMS
 	 */
 	public void play() {
-
 		mStreamID = mSoundManager.play(mStreamID, mSoundResourceId, mLoopCount, mPlaySpeed, mVolume, playBehavior);
 	}
 	
@@ -107,10 +106,8 @@ public class Sound {
 	 * <br> 100 will playback at user's media volume setting
 	 */
 	public void play(int vol) {
-		
 		setVolume(vol);
 		mStreamID = mSoundManager.play(mStreamID, mSoundResourceId, mLoopCount, mPlaySpeed, mVolume, playBehavior);
-		
 	}
 
 	/**
@@ -164,7 +161,7 @@ public class Sound {
 	/**
 	 * Enable infinite loop
 	 */
-	public synchronized void loop () {
+	public synchronized void loop() {
 		this.mLoopCount = SoundManager.LOOP_INFINITE;
 	}
 
