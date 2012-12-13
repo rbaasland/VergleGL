@@ -8,6 +8,7 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
+// TODO: Scale animation with speed level
 public class DirtBikeMicroGame extends MicroGame {
     
 	// --------------
@@ -35,8 +36,8 @@ public class DirtBikeMicroGame extends MicroGame {
 	private Rectangle dirtBikeRWheelBounds = new Rectangle(40,275,100,100);
 	private Rectangle dirtBikeFWheelBounds = new Rectangle(235,275,100,100);
 	private Rectangle dirtBikeFrameBounds = new Rectangle(0,260,250,220);
-	private Rectangle gasBounds = new Rectangle(1050,20,160,160);
-	private Rectangle jumpBounds = new Rectangle(0,20,160,160);
+	private Rectangle gasBounds = new Rectangle(980,20,160,160);
+	private Rectangle jumpBounds = new Rectangle(140,20,160,160);
 	
 	boolean gasOn=false;
 	boolean hasJumped = false;

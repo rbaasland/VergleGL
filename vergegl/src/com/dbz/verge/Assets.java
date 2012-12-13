@@ -304,7 +304,7 @@ public class Assets {
         hitSound = game.getAudio().newSound(R.raw.hit);
         coinSound = game.getAudio().newSound(R.raw.coin);
         clickSound = game.getAudio().newSound(R.raw.click);
-        clickSound.setVolume(30);
+        clickSound.setVolume(20);
         firinMahLazer = game.getAudio().newSound(R.raw.firin_mah_lazer);
         pop = game.getAudio().newSound(R.raw.pop);
     }      

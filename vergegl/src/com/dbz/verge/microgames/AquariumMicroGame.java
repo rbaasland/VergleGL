@@ -9,7 +9,7 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;
 
-
+// TODO: Stop sound from playing on all touched..
 public class AquariumMicroGame extends MicroGame{
 	
 	// Array used to store the crack appearance times for the 3 difficulty levels.
@@ -19,7 +19,7 @@ public class AquariumMicroGame extends MicroGame{
 	float waterLevel = 0;
 	
 	// Array of all possible cracks.
-	Crack[] crackList = { new Crack(new Rectangle(0,0,128,128)), 
+	Crack[] crackList = { new Crack(new Rectangle(75,200,128,128)), 
 						  new Crack(new Rectangle(600,600,128,128)), 
 						  new Crack(new Rectangle(250,450,128,128)), 
 						  new Crack(new Rectangle(400,100,128,128)) };
