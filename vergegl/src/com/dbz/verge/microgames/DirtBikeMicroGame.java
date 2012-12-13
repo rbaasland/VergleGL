@@ -69,8 +69,8 @@ public class DirtBikeMicroGame extends MicroGame {
   		
   		
         for(int j=0; j < levelObstacles[level-1]; j++){
-        	Rectangle tempFWheel = new Rectangle ((dirtBikeFWheelBounds.lowerLeft.x - dirtBikeFWheelBounds.width/2),(dirtBikeFWheelBounds.lowerLeft.y - dirtBikeFWheelBounds.height/2),(dirtBikeFWheelBounds.width),(dirtBikeFWheelBounds.height));
-        	Rectangle tempRWheel = new Rectangle ((dirtBikeRWheelBounds.lowerLeft.x - dirtBikeRWheelBounds.width/2),(dirtBikeRWheelBounds.lowerLeft.y - dirtBikeRWheelBounds.height/2),(dirtBikeRWheelBounds.width),(dirtBikeRWheelBounds.height));
+        	Rectangle tempFWheel = new Rectangle ((dirtBikeFWheelBounds.lowerLeft.x - (dirtBikeFWheelBounds.width-20)/2),(dirtBikeFWheelBounds.lowerLeft.y - (dirtBikeFWheelBounds.height-20)/2),(dirtBikeFWheelBounds.width-20),(dirtBikeFWheelBounds.height-20));
+        	Rectangle tempRWheel = new Rectangle ((dirtBikeRWheelBounds.lowerLeft.x - (dirtBikeRWheelBounds.width-20)/2),(dirtBikeRWheelBounds.lowerLeft.y - (dirtBikeRWheelBounds.height-20)/2),(dirtBikeRWheelBounds.width-20),(dirtBikeRWheelBounds.height-20));
             if(collision(tempRWheel, obstacles[j]) || collision(tempFWheel, obstacles[j])){
             	microGameState = MicroGameState.Lost;
             	Assets.playSound(Assets.hitSound);
