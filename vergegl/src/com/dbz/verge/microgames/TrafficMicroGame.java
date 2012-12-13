@@ -30,13 +30,17 @@ public class TrafficMicroGame extends MicroGame {
 	private int carStartPosition = 480;
 
 	// Lane variables
-	private float laneOne = 225;
-	private float laneTwo = 465;
-	private float laneThree = 700;
-	private float laneFour = 975;
+	private float laneOne = 150;
+	private float laneTwo = 280;
+	private float laneThree = 400;
+	private float laneFour = 523;
+	private float laneFive = 650;
+	private float laneSix = 777;
+	private float laneSeven = 892;
+	private float laneEight = 1007;
+	
 	private float lanePosition[] = { laneOne, laneTwo, laneThree, laneFour,
-			laneOne + 80, laneTwo + 80, laneThree + 80, laneFour + 80,
-			laneOne - 80, laneTwo - 80, laneThree - 80, laneFour - 80 };
+			laneFive, laneSix, laneSeven, laneEight};
 
 	// Variable needed for obstacle movement.
 	private int obstacleOneSpeedY = 12;
