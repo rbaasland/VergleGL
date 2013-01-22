@@ -1,5 +1,7 @@
 package com.dbz.framework;
 
+import com.dbz.framework.impl.FileIO;
+
 public interface Game {
     public Input getInput();
 

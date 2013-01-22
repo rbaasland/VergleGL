@@ -9,7 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
-import com.dbz.framework.FileIO;
+import com.dbz.framework.impl.FileIO;
 import com.dbz.framework.impl.GLGame;
 import com.dbz.framework.impl.GLGraphics;
 

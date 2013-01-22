@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-import com.dbz.framework.FileIO;
+import com.dbz.framework.impl.FileIO;
 
 public class Settings {
     public static boolean soundEnabled = true;

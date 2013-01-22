@@ -14,7 +14,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.dbz.framework.Audio;
-import com.dbz.framework.FileIO;
 import com.dbz.framework.Game;
 import com.dbz.framework.Input;
 import com.dbz.framework.Screen;
@@ -51,7 +50,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 		setContentView(glView);
 
 		glGraphics = new GLGraphics(glView);
-		fileIO = new AndroidFileIO(this);
+		fileIO = new FileIO(this);
 		audio = new AndroidAudio(this);
 		input = new AndroidInput(this, glView, 1, 1);
 		PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -65,7 +64,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 	}
 
 	@Override
-	public void onSurfaceCreated(GL10 gl, EGLConfig config) {        
+	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		glGraphics.setGL(gl);
 
 		synchronized(stateChanged) {
@@ -78,11 +77,10 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 	}
 
 	@Override
-	public void onSurfaceChanged(GL10 gl, int width, int height) {        
-	}
+	public void onSurfaceChanged(GL10 gl, int width, int height) {}
 
 	@Override
-	public void onDrawFrame(GL10 gl) {                
+	public void onDrawFrame(GL10 gl) {
 		GLGameState state = null;
 
 		synchronized(stateChanged) {
@@ -116,7 +114,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 	}   
 
 	@Override 
-	public void onPause() {        
+	public void onPause() {
 		synchronized(stateChanged) {
 			if(isFinishing())            
 				state = GLGameState.Finished;
