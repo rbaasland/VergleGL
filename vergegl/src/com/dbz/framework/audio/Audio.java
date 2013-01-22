@@ -1,4 +1,4 @@
-package com.dbz.framework;
+package com.dbz.framework.audio;
 
 import android.app.Activity;
 import android.content.Context;

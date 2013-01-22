@@ -1,4 +1,4 @@
-package com.dbz.framework;
+package com.dbz.framework.input;
 
 import java.util.ArrayList;
 import java.util.List;

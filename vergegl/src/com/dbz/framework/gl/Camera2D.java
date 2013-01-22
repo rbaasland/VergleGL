@@ -2,7 +2,6 @@ package com.dbz.framework.gl;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.dbz.framework.GLGraphics;
 import com.dbz.framework.math.Vector2;
 
 public class Camera2D {

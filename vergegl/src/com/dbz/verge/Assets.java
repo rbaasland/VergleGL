@@ -1,9 +1,9 @@
 package com.dbz.verge;
 
 import com.dbz.framework.Game;
-import com.dbz.framework.Music;
-import com.dbz.framework.Sound;
-import com.dbz.framework.SoundManager;
+import com.dbz.framework.audio.Music;
+import com.dbz.framework.audio.Sound;
+import com.dbz.framework.audio.SoundManager;
 import com.dbz.framework.gl.Animation;
 import com.dbz.framework.gl.Font;
 import com.dbz.framework.gl.Texture;

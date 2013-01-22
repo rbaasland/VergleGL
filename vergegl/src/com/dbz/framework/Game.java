@@ -13,7 +13,11 @@ import android.os.PowerManager.WakeLock;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.dbz.framework.Input;
+import com.dbz.framework.audio.Audio;
+import com.dbz.framework.gl.GLGraphics;
+import com.dbz.framework.gl.Screen;
+import com.dbz.framework.input.FileIO;
+import com.dbz.framework.input.Input;
 import com.dbz.verge.Assets;
 
 public abstract class Game extends Activity implements Renderer {

@@ -1,4 +1,4 @@
-package com.dbz.framework;
+package com.dbz.framework.input;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import android.view.View;
 import android.view.View.OnKeyListener;
 
-import com.dbz.framework.Input.KeyEvent;
-import com.dbz.framework.Pool.PoolObjectFactory;
+import com.dbz.framework.input.Input.KeyEvent;
+import com.dbz.framework.input.Pool.PoolObjectFactory;
 
 public class KeyboardHandler implements OnKeyListener {
     boolean[] pressedKeys = new boolean[128];

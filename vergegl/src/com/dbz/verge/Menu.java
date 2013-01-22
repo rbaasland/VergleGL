@@ -3,8 +3,8 @@ package com.dbz.verge;
 import javax.microedition.khronos.opengles.GL10;
 
 import com.dbz.framework.Game;
-import com.dbz.framework.Screen;
 import com.dbz.framework.gl.Camera2D;
+import com.dbz.framework.gl.Screen;
 import com.dbz.framework.gl.SpriteBatcher;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;

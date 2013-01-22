@@ -1,4 +1,4 @@
-package com.dbz.framework;
+package com.dbz.framework.input;
 
 import android.content.Context;
 import android.hardware.Sensor;

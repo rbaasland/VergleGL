@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dbz.framework.Game;
-import com.dbz.framework.Input.TouchEvent;
+import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;

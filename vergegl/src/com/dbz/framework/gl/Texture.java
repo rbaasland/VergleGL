@@ -9,9 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
-import com.dbz.framework.FileIO;
-import com.dbz.framework.GLGraphics;
 import com.dbz.framework.Game;
+import com.dbz.framework.input.FileIO;
 
 public class Texture {
     GLGraphics glGraphics;

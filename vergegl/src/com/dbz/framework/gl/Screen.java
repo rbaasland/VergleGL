@@ -1,4 +1,7 @@
-package com.dbz.framework;
+package com.dbz.framework.gl;
+
+import com.dbz.framework.Game;
+
 
 public abstract class Screen {
     protected final GLGraphics glGraphics;

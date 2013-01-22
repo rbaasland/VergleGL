@@ -1,4 +1,4 @@
-package com.dbz.framework;
+package com.dbz.framework.input;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.dbz.framework.Input.TouchEvent;
-import com.dbz.framework.Pool.PoolObjectFactory;
+import com.dbz.framework.input.Input.TouchEvent;
+import com.dbz.framework.input.Pool.PoolObjectFactory;
 
 public class SingleTouchHandler implements TouchHandler {
     boolean isTouched;

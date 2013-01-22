@@ -1,10 +1,10 @@
-package com.dbz.framework;
+package com.dbz.framework.input;
 
 import java.util.List;
 
 import android.view.View.OnTouchListener;
 
-import com.dbz.framework.Input.TouchEvent;
+import com.dbz.framework.input.Input.TouchEvent;
 
 public interface TouchHandler extends OnTouchListener {
     public boolean isTouchDown(int pointer);
