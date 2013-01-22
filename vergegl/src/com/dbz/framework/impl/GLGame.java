@@ -13,7 +13,6 @@ import android.os.PowerManager.WakeLock;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.dbz.framework.Audio;
 import com.dbz.framework.Game;
 import com.dbz.framework.Input;
 import com.dbz.framework.Screen;
@@ -51,7 +50,7 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 
 		glGraphics = new GLGraphics(glView);
 		fileIO = new FileIO(this);
-		audio = new AndroidAudio(this);
+		audio = new Audio(this);
 		input = new AndroidInput(this, glView, 1, 1);
 		PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "GLGame");        

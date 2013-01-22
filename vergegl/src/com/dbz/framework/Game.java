@@ -1,5 +1,6 @@
 package com.dbz.framework;
 
+import com.dbz.framework.impl.Audio;
 import com.dbz.framework.impl.FileIO;
 
 public interface Game {
