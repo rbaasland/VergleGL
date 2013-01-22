@@ -1,4 +1,4 @@
-package com.dbz.framework.impl;
+package com.dbz.framework;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -49,7 +49,7 @@ public abstract class Game extends Activity implements Renderer {
 		glGraphics = new GLGraphics(glView);
 		fileIO = new FileIO(this);
 		audio = new Audio(this);
-		input = new AndroidInput(this, glView, 1, 1);
+		input = new Input(this, glView, 1, 1);
 		PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Game");        
 	}

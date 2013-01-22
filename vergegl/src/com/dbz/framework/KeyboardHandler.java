@@ -1,4 +1,4 @@
-package com.dbz.framework.impl;
+package com.dbz.framework;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 import android.view.View;
 import android.view.View.OnKeyListener;
 
-import com.dbz.framework.Pool;
 import com.dbz.framework.Input.KeyEvent;
 import com.dbz.framework.Pool.PoolObjectFactory;
 

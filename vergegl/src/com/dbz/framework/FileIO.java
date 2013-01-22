@@ -1,4 +1,4 @@
-package com.dbz.framework.impl;
+package com.dbz.framework;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,4 +1,4 @@
-package com.dbz.framework.impl;
+package com.dbz.framework;
 import java.security.InvalidParameterException;
 import android.content.Context;
 import android.media.AudioManager;

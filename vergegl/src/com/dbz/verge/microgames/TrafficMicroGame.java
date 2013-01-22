@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
+import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
-import com.dbz.framework.impl.Game;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.Assets;
 import com.dbz.verge.MicroGame;

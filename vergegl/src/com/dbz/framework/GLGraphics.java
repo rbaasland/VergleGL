@@ -1,4 +1,4 @@
-package com.dbz.framework.impl;
+package com.dbz.framework;
 
 import javax.microedition.khronos.opengles.GL10;
 

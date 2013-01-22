@@ -1,13 +1,13 @@
 package com.dbz.verge;
 
+import com.dbz.framework.Game;
+import com.dbz.framework.Music;
+import com.dbz.framework.Sound;
+import com.dbz.framework.SoundManager;
 import com.dbz.framework.gl.Animation;
 import com.dbz.framework.gl.Font;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
-import com.dbz.framework.impl.Game;
-import com.dbz.framework.impl.Music;
-import com.dbz.framework.impl.Sound;
-import com.dbz.framework.impl.SoundManager;
 
 public class Assets {
 	

@@ -4,7 +4,7 @@ import java.util.Random;
 
 import android.util.Log;
 
-import com.dbz.framework.impl.Game;
+import com.dbz.framework.Game;
 import com.dbz.verge.Assets;
 import com.dbz.verge.Mode;
 

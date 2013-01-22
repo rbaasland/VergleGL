@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import com.dbz.framework.Game;
+import com.dbz.framework.Screen;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.FPSCounter;
 import com.dbz.framework.gl.SpriteBatcher;
-import com.dbz.framework.impl.Game;
-import com.dbz.framework.impl.Screen;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;

@@ -2,7 +2,12 @@ package com.dbz.framework;
 
 import java.util.List;
 
-public interface Input {
+import android.content.Context;
+import android.os.Build.VERSION;
+import android.view.View;
+
+public class Input {
+
     public static class KeyEvent {
         public static final int KEY_DOWN = 0;
         public static final int KEY_UP = 1;
@@ -49,22 +54,54 @@ public interface Input {
             return builder.toString();
         }
     }
+    
+    AccelerometerHandler accelHandler;
+    KeyboardHandler keyHandler;
+    TouchHandler touchHandler;
 
-    public boolean isKeyPressed(int keyCode);
+    public Input(Context context, View view, float scaleX, float scaleY) {
+        accelHandler = new AccelerometerHandler(context);
+        keyHandler = new KeyboardHandler(view);               
+        if(Integer.parseInt(VERSION.SDK) < 5) 
+            touchHandler = new SingleTouchHandler(view, scaleX, scaleY);
+        else
+            touchHandler = new MultiTouchHandler(view, scaleX, scaleY);        
+    }
 
-    public boolean isTouchDown(int pointer);
+    public boolean isKeyPressed(int keyCode) {
+        return keyHandler.isKeyPressed(keyCode);
+    }
 
-    public int getTouchX(int pointer);
+    public boolean isTouchDown(int pointer) {
+        return touchHandler.isTouchDown(pointer);
+    }
 
-    public int getTouchY(int pointer);
+    public int getTouchX(int pointer) {
+        return touchHandler.getTouchX(pointer);
+    }
 
-    public float getAccelX();
+    public int getTouchY(int pointer) {
+        return touchHandler.getTouchY(pointer);
+    }
 
-    public float getAccelY();
+    public float getAccelX() {
+        return accelHandler.getAccelX();
+    }
 
-    public float getAccelZ();
+    public float getAccelY() {
+        return accelHandler.getAccelY();
+    }
 
-    public List<KeyEvent> getKeyEvents();
+    public float getAccelZ() {
+        return accelHandler.getAccelZ();
+    }
 
-    public List<TouchEvent> getTouchEvents();
+    public List<TouchEvent> getTouchEvents() {
+        return touchHandler.getTouchEvents();
+    }
+    
+    public List<KeyEvent> getKeyEvents() {
+        return keyHandler.getKeyEvents();
+    }
+    
 }

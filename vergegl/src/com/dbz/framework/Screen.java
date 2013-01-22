@@ -1,4 +1,4 @@
-package com.dbz.framework.impl;
+package com.dbz.framework;
 
 public abstract class Screen {
     protected final GLGraphics glGraphics;

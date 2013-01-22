@@ -3,8 +3,8 @@ package com.dbz.verge;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import com.dbz.framework.impl.Game;
-import com.dbz.framework.impl.Screen;
+import com.dbz.framework.Game;
+import com.dbz.framework.Screen;
 import com.dbz.verge.menus.MainMenu;
 
 public class VergeGame extends Game {
