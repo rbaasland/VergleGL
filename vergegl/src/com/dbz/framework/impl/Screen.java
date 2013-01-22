@@ -1,12 +1,14 @@
-package com.dbz.framework;
+package com.dbz.framework.impl;
 
 public abstract class Screen {
+    protected final GLGraphics glGraphics;
     protected final Game game;
-
+    
     public Screen(Game game) {
         this.game = game;
+        glGraphics = ((Game)game).getGLGraphics();
     }
-
+    
     public abstract void update(float deltaTime);
 
     public abstract void present(float deltaTime);
@@ -17,5 +19,8 @@ public abstract class Screen {
 
     public abstract void dispose();
     
-    public abstract void onBackPressed();
+    // Closes game by default onBackPressed.
+    public void onBackPressed(){
+    	game.finish();
+    }
 }

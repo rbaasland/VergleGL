@@ -3,14 +3,13 @@ package com.dbz.verge;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import com.dbz.framework.Screen;
-import com.dbz.framework.impl.GLGame;
+import com.dbz.framework.impl.Game;
+import com.dbz.framework.impl.Screen;
 import com.dbz.verge.menus.MainMenu;
 
-public class VergeGame extends GLGame {
+public class VergeGame extends Game {
     boolean firstTimeCreate = true;
       
-    @Override
     public Screen getStartScreen() {
         return new MainMenu(this);
     }

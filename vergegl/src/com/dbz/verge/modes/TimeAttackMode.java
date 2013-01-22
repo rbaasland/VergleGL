@@ -1,6 +1,6 @@
 package com.dbz.verge.modes;
 
-import com.dbz.framework.Game;
+import com.dbz.framework.impl.Game;
 import com.dbz.verge.Assets;
 import com.dbz.verge.Mode;
 

@@ -13,12 +13,10 @@ import android.os.PowerManager.WakeLock;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.Input;
-import com.dbz.framework.Screen;
 import com.dbz.verge.Assets;
 
-public abstract class GLGame extends Activity implements Game, Renderer {
+public abstract class Game extends Activity implements Renderer {
 	enum GLGameState {
 		Initialized,
 		Running,
@@ -136,22 +134,18 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 		return glGraphics;
 	}  
 
-	@Override
 	public Input getInput() {
 		return input;
 	}
 
-	@Override
 	public FileIO getFileIO() {
 		return fileIO;
 	}
 
-	@Override
 	public Audio getAudio() {
 		return audio;
 	}
 
-	@Override
 	public void setScreen(Screen screen) {
 		if (screen == null)
 			throw new IllegalArgumentException("Screen must not be null");
@@ -163,10 +157,11 @@ public abstract class GLGame extends Activity implements Game, Renderer {
 		this.screen = screen;
 	}
 
-	@Override
 	public Screen getCurrentScreen() {
 		return screen;
-	}   
+	}
+	
+	public abstract Screen getStartScreen();
 
 	@Override  //used for hardware back button
 	public void onBackPressed() {

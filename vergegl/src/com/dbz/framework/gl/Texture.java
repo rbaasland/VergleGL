@@ -10,7 +10,7 @@ import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
 import com.dbz.framework.impl.FileIO;
-import com.dbz.framework.impl.GLGame;
+import com.dbz.framework.impl.Game;
 import com.dbz.framework.impl.GLGraphics;
 
 public class Texture {
@@ -23,7 +23,7 @@ public class Texture {
     public int width;
     public int height;
     
-    public Texture(GLGame glGame, String fileName) {
+    public Texture(Game glGame, String fileName) {
         this.glGraphics = glGame.getGLGraphics();
         this.fileIO = glGame.getFileIO();
         this.fileName = fileName;

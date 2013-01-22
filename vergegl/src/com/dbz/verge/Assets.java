@@ -4,7 +4,7 @@ import com.dbz.framework.gl.Animation;
 import com.dbz.framework.gl.Font;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
-import com.dbz.framework.impl.GLGame;
+import com.dbz.framework.impl.Game;
 import com.dbz.framework.impl.Music;
 import com.dbz.framework.impl.Sound;
 import com.dbz.framework.impl.SoundManager;
@@ -159,7 +159,7 @@ public class Assets {
     public static Sound firinMahLazer;
     public static Sound	pop;
     
-    public static void load(GLGame game) {
+    public static void load(Game game) {
     	// *** Initialize Menu Assets. ***
         background = new Texture(game, "background.png");
         backgroundRegion = new TextureRegion(background, 0, 0, 1280, 800);

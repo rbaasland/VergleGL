@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.FPSCounter;
 import com.dbz.framework.gl.SpriteBatcher;
-import com.dbz.framework.impl.GLScreen;
+import com.dbz.framework.impl.Game;
+import com.dbz.framework.impl.Screen;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
@@ -20,7 +20,7 @@ import com.dbz.verge.menus.GameGridMenu;
 //		 Implement speed and difficulty level in a standard fashion.
 //		 Extract Bounding Boxes draw calls (in each present()) to their own method.	 
 //		 ^^^ Note: Doing this in GameScreen as well, should be the same. ^^^ 
-public abstract class MicroGame extends GLScreen {
+public abstract class MicroGame extends Screen {
 	
 	// --------------
 	// --- Fields ---
@@ -135,7 +135,7 @@ public abstract class MicroGame extends GLScreen {
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		            Assets.playSound(Assets.clickSound);
 		            game.setScreen(new GameGridMenu(game));
-		            return;     
+		            return;
 		        }
 	        }
 	        

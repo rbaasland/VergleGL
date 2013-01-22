@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.Input.TouchEvent;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.FPSCounter;
 import com.dbz.framework.gl.SpriteBatcher;
-import com.dbz.framework.impl.GLScreen;
+import com.dbz.framework.impl.Game;
+import com.dbz.framework.impl.Screen;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
@@ -26,7 +26,7 @@ import com.dbz.verge.microgames.LazerBallMicroGame;
 // TODO: Make game speed level affect the transition and MicroGame win/loss state time.
 //		 Extract Bounding Boxes draw calls (in each present()) to their own method.
 //		 ^^^ Note: Doing this in MicroGame as well, should be the same. ^^^ 
-public abstract class Mode extends GLScreen {
+public abstract class Mode extends Screen {
 	
 	// --------------
 	// --- Fields ---
@@ -567,7 +567,6 @@ public abstract class Mode extends GLScreen {
 	public void onBackPressed(){
 		
 		switch (modeState){
-
 
 		case Transition: //cases to pause
 			modeState = ModeState.Paused;
