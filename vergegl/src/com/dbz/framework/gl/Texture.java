@@ -23,9 +23,9 @@ public class Texture {
     public int width;
     public int height;
     
-    public Texture(Game glGame, String fileName) {
-        this.glGraphics = glGame.getGLGraphics();
-        this.fileIO = glGame.getFileIO();
+    public Texture(Game game, String fileName) {
+        this.glGraphics = game.getGLGraphics();
+        this.fileIO = game.getFileIO();
         this.fileName = fileName;
         load();
     }

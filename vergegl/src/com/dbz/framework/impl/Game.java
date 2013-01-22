@@ -17,7 +17,7 @@ import com.dbz.framework.Input;
 import com.dbz.verge.Assets;
 
 public abstract class Game extends Activity implements Renderer {
-	enum GLGameState {
+	enum GameState {
 		Initialized,
 		Running,
 		Paused,
@@ -31,7 +31,7 @@ public abstract class Game extends Activity implements Renderer {
 	Input input;
 	FileIO fileIO;
 	Screen screen;
-	GLGameState state = GLGameState.Initialized;
+	GameState state = GameState.Initialized;
 	Object stateChanged = new Object();
 	long startTime = System.nanoTime();
 	WakeLock wakeLock;
@@ -51,7 +51,7 @@ public abstract class Game extends Activity implements Renderer {
 		audio = new Audio(this);
 		input = new AndroidInput(this, glView, 1, 1);
 		PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "GLGame");        
+		wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Game");        
 	}
 
 	public void onResume() {
@@ -65,9 +65,9 @@ public abstract class Game extends Activity implements Renderer {
 		glGraphics.setGL(gl);
 
 		synchronized(stateChanged) {
-			if(state == GLGameState.Initialized)
+			if(state == GameState.Initialized)
 				screen = getStartScreen();
-			state = GLGameState.Running;
+			state = GameState.Running;
 			screen.resume();
 			startTime = System.nanoTime();
 		}        
@@ -78,13 +78,13 @@ public abstract class Game extends Activity implements Renderer {
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
-		GLGameState state = null;
+		GameState state = null;
 
 		synchronized(stateChanged) {
 			state = this.state;
 		}
 
-		if(state == GLGameState.Running) {
+		if(state == GameState.Running) {
 			float deltaTime = (System.nanoTime()-startTime) / 1000000000.0f;
 			startTime = System.nanoTime();
 
@@ -92,19 +92,19 @@ public abstract class Game extends Activity implements Renderer {
 			screen.present(deltaTime);
 		}
 
-		if(state == GLGameState.Paused) {
+		if(state == GameState.Paused) {
 			screen.pause();            
 			synchronized(stateChanged) {
-				this.state = GLGameState.Idle;
+				this.state = GameState.Idle;
 				stateChanged.notifyAll();
 			}
 		}
 
-		if(state == GLGameState.Finished) {
+		if(state == GameState.Finished) {
 			screen.pause();
 			screen.dispose();
 			synchronized(stateChanged) {
-				this.state = GLGameState.Idle;
+				this.state = GameState.Idle;
 				stateChanged.notifyAll();
 			}            
 		}
@@ -114,9 +114,9 @@ public abstract class Game extends Activity implements Renderer {
 	public void onPause() {
 		synchronized(stateChanged) {
 			if(isFinishing())            
-				state = GLGameState.Finished;
+				state = GameState.Finished;
 			else
-				state = GLGameState.Paused;
+				state = GameState.Paused;
 			while(true) {
 				try {
 					stateChanged.wait();
