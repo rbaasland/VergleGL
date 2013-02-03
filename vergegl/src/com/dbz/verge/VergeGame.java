@@ -19,10 +19,10 @@ public class VergeGame extends Game {
         super.onSurfaceCreated(gl, config);
         if(firstTimeCreate) {
             Settings.load(getFileIO());
-            Assets.load(this);
+            AssetsManager.load(this);
             firstTimeCreate = false;            
         } else {
-            Assets.reload();
+            AssetsManager.reload();
         }
     }     
     
@@ -30,7 +30,7 @@ public class VergeGame extends Game {
     public void onPause() {
         super.onPause();
         if(Settings.soundEnabled)
-            Assets.music.pause();
+            AssetsManager.music.pause();
     }
 
 }

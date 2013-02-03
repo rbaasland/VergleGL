@@ -43,12 +43,12 @@ public abstract class Menu extends Screen {
     public void update(Vector2 touchPoint) {
         // Sound Toggle Bounds Check.
         if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
-            Assets.playSound(Assets.clickSound);
+            AssetsManager.playSound(AssetsManager.clickSound);
             Settings.soundEnabled = !Settings.soundEnabled;
             if(Settings.soundEnabled) 
-                Assets.music.play();
+                AssetsManager.music.play();
             else
-                Assets.music.pause();
+                AssetsManager.music.pause();
         }
     }
  
@@ -89,13 +89,13 @@ public abstract class Menu extends Screen {
     
     public void drawObjects() {
         // Draws Sound Toggle.
-        batcher.beginBatch(Assets.soundToggle);
-        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
+        batcher.beginBatch(AssetsManager.soundToggle);
+        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
     }
 
     public void drawBounds() {
-    	batcher.drawSprite(soundToggleBounds, Assets.boundOverlayRegion); // SoundToggle Bounding Box
+    	batcher.drawSprite(soundToggleBounds, AssetsManager.boundOverlayRegion); // SoundToggle Bounding Box
     }
     
     // --------------------------------

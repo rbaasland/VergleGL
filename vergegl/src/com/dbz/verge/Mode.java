@@ -1,5 +1,6 @@
 package com.dbz.verge;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -91,12 +92,11 @@ public abstract class Mode extends Screen {
     // -------------------
 	public Mode(Game game) {
 		super(game);
-		
 		// Initialize MicroGame set.
 		microGames = new MicroGame[] { new BroFistMicroGame(game), new FlyMicroGame(game), new FireMicroGame(game),
-									   new TrafficMicroGame(game), new CircuitMicroGame(game), new LazerBallMicroGame(game),
-									   new TossMicroGame(game) };
-
+										   new TrafficMicroGame(game), new CircuitMicroGame(game), new LazerBallMicroGame(game),
+										   new TossMicroGame(game) };
+	
 		// Disables BackArrow and Pause UI elements for all MicroGames in the set.
 //		for (int i = 0; i < microGames.length; i++) {
 //			microGames[i].backArrowEnabled = false;
@@ -156,26 +156,26 @@ public abstract class Mode extends Screen {
 	        
 	        // Ready Bounds Check.
 	        if(OverlapTester.pointInRectangle(readyBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            modeState = ModeState.Transition;
 	            return;     
 	        }
 	        
 	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            game.setScreen(new PlayMenu(game));
 	            return;     
 	        }
 	        
 	        // Sound Toggle Bounds Check.
 	        if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            Settings.soundEnabled = !Settings.soundEnabled;
 	            if(Settings.soundEnabled) 
-	                Assets.music.play();
+	                AssetsManager.music.play();
 	            else
-	                Assets.music.pause();
+	                AssetsManager.music.pause();
 	        }
 	    }
 	}
@@ -201,7 +201,7 @@ public abstract class Mode extends Screen {
 	        
 	        // Pause Toggle Bounds Check.
 	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            if(previousModeState == ModeState.Transition)  //new logic for paused state changes
 	            	modeState = ModeState.Transition;
 	            else if(previousModeState == ModeState.Running)
@@ -213,19 +213,19 @@ public abstract class Mode extends Screen {
 	        
 	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            game.setScreen(new PlayMenu(game));
 	            return;
 	        }
 	        
 	        // Sound Toggle Bounds Check.
 	        if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            Settings.soundEnabled = !Settings.soundEnabled;
 	            if(Settings.soundEnabled) 
-	                Assets.music.play();
+	                AssetsManager.music.play();
 	            else
-	                Assets.music.pause();
+	                AssetsManager.music.pause();
 	        }
 	    }
 	}
@@ -265,7 +265,7 @@ public abstract class Mode extends Screen {
 	        
 	        // Pause Toggle Bounds Check.
 	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            totalTransitionTime = 0;
 	            previousModeState = modeState; //transition
 	            modeState = ModeState.Paused;
@@ -328,7 +328,7 @@ public abstract class Mode extends Screen {
 	        
 	        /// Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            game.setScreen(new PlayMenu(game));
 	            return;     
 	        }
@@ -356,7 +356,7 @@ public abstract class Mode extends Screen {
 	        
 	        /// Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            game.setScreen(new PlayMenu(game));
 	            return;     
 	        }
@@ -432,18 +432,18 @@ public abstract class Mode extends Screen {
 	
 	public void presentReady() {
 		// Draws Ready Message.
-		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, "Ready?", 640, 500, 1.75f);
+		batcher.beginBatch(AssetsManager.vergeFont);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "Ready?", 640, 500, 1.75f);
 		batcher.endBatch();
 		
 	    // Draws Back Arrow.
-        batcher.beginBatch(Assets.backArrow);
-        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
+        batcher.beginBatch(AssetsManager.backArrow);
+        batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
         batcher.endBatch();
         
         // Draws Sound Toggle.
-        batcher.beginBatch(Assets.soundToggle);
-        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
+        batcher.beginBatch(AssetsManager.soundToggle);
+        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes
@@ -455,23 +455,23 @@ public abstract class Mode extends Screen {
 	
 	public void presentPaused() {
 		// Draws Paused Message.
-		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, "- PAUSED -", 640, 500, 1.75f);
+		batcher.beginBatch(AssetsManager.vergeFont);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "- PAUSED -", 640, 500, 1.75f);
 		batcher.endBatch();
 		
 		// Draw unpause symbol.
-		batcher.beginBatch(Assets.pauseToggle);
-		batcher.drawSprite(pauseToggleBounds, Assets.unpauseRegion);
+		batcher.beginBatch(AssetsManager.pauseToggle);
+		batcher.drawSprite(pauseToggleBounds, AssetsManager.unpauseRegion);
 		batcher.endBatch();
 		
 	    // Draws Back Arrow.
-        batcher.beginBatch(Assets.backArrow);
-        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
+        batcher.beginBatch(AssetsManager.backArrow);
+        batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
         batcher.endBatch();
         
         // Draws Sound Toggle.
-        batcher.beginBatch(Assets.soundToggle);
-        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
+        batcher.beginBatch(AssetsManager.soundToggle);
+        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes
@@ -491,8 +491,8 @@ public abstract class Mode extends Screen {
 		presentStatusReport();
 		
 		// Draws the pause symbol.
-		batcher.beginBatch(Assets.pauseToggle);
-		batcher.drawSprite(pauseToggleBounds, Assets.pauseRegion);
+		batcher.beginBatch(AssetsManager.pauseToggle);
+		batcher.drawSprite(pauseToggleBounds, AssetsManager.pauseRegion);
 		batcher.endBatch();
 	}
 	
@@ -502,16 +502,16 @@ public abstract class Mode extends Screen {
 	
 	public void presentWon() {
 		// Draws the win message.
-		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, "A Winner is You!", 640, 500, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFont);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "A Winner is You!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// Draws the end game status report.
 		presentStatusReport();
 		
 		// Draws the back arrow.
-        batcher.beginBatch(Assets.backArrow);
-        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
+        batcher.beginBatch(AssetsManager.backArrow);
+        batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
         batcher.endBatch();
 		
 		// Bounding Boxes
@@ -522,16 +522,16 @@ public abstract class Mode extends Screen {
 	
 	public void presentLost() {
 		// Draws the lose message.	
-		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, "You Lost The Game!", 640, 500, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFont);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "You Lost The Game!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// Draws the end game status report.
 		presentStatusReport();
 		
 		// Draws the back arrow.
-        batcher.beginBatch(Assets.backArrow);
-        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
+        batcher.beginBatch(AssetsManager.backArrow);
+        batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
         batcher.endBatch();
 
 		// Bounding Boxes

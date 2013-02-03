@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dbz.framework.Game;
+import com.dbz.framework.gl.Texture;
+import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 import com.dbz.verge.MicroGame;
 
 public class TossMicroGame extends MicroGame {
@@ -15,6 +17,11 @@ public class TossMicroGame extends MicroGame {
 	// --- Fields ---
 	// --------------
 
+	// Assets
+	public static Texture toss;
+    public static TextureRegion tossBallRegion;
+    public static TextureRegion tossBackgroundRegion;
+	
 	// Physics variables
 	final private int gravity = 1;
 	private float velocityX = 0;
@@ -40,11 +47,16 @@ public class TossMicroGame extends MicroGame {
 
 	public TossMicroGame(Game game) {
 		super(game);
-
+		load();
 		// Extend allowed time.
 		baseMicroGameTime = 10.0f;
 	}
-
+	
+	public void load() {
+		toss = new Texture(game,"toss.png");
+        tossBallRegion = new TextureRegion(toss, 0, 800, 80, 80);
+        tossBackgroundRegion = new TextureRegion(toss, 0, 0, 1280, 800);
+	}
 	// ---------------------
 	// --- Update Method ---
 	// ---------------------
@@ -53,7 +65,7 @@ public class TossMicroGame extends MicroGame {
 	public void updateRunning(float deltaTime) {
 		// Checks for loss based on time.
 		if (lostTimeBased(deltaTime)) {
-			Assets.playSound(Assets.hitSound);
+			AssetsManager.playSound(AssetsManager.hitSound);
 			return;
 		}
 		// Checks for collision based win
@@ -61,7 +73,7 @@ public class TossMicroGame extends MicroGame {
 		if (collision(ball, hoop)) {
 			basketCount++;
 			if (basketCount == requiredBasketCount[level - 1]) {
-				Assets.playSound(Assets.highJumpSound);
+				AssetsManager.playSound(AssetsManager.highJumpSound);
 				microGameState = MicroGameState.Won;
 			}
 			ball.lowerLeft.set(ballStartX, ballStartY);
@@ -220,7 +232,7 @@ public class TossMicroGame extends MicroGame {
 
 	@Override
 	public void presentRunning() {
-		batcher.beginBatch(Assets.toss);
+		batcher.beginBatch(toss);
 		drawRunningBackground();
 		drawRunningObjects();
 		batcher.endBatch();
@@ -235,23 +247,23 @@ public class TossMicroGame extends MicroGame {
 
 	@Override
 	public void drawRunningBackground() {
-		batcher.drawSprite(0, 0, 1280, 800, Assets.tossBackgroundRegion);
+		batcher.drawSprite(0, 0, 1280, 800, tossBackgroundRegion);
 	}
 
 	@Override
 	public void drawRunningObjects() {
-		batcher.drawSprite(ball, Assets.tossBallRegion);
+		batcher.drawSprite(ball, tossBallRegion);
 	}
 
 	@Override
 	public void drawRunningBounds() {
 		// Bounding Boxes
-		batcher.beginBatch(Assets.boundOverlay);
-		batcher.drawSprite(ball, Assets.boundOverlayRegion);
-		batcher.drawSprite(hoop, Assets.boundOverlayRegion);
-		batcher.drawSprite(backBoard, Assets.boundOverlayRegion);
-		batcher.drawSprite(court, Assets.boundOverlayRegion);
-		batcher.drawSprite(freeThrow, Assets.boundOverlayRegion);
+		batcher.beginBatch(AssetsManager.boundOverlay);
+		batcher.drawSprite(ball, AssetsManager.boundOverlayRegion);
+		batcher.drawSprite(hoop, AssetsManager.boundOverlayRegion);
+		batcher.drawSprite(backBoard, AssetsManager.boundOverlayRegion);
+		batcher.drawSprite(court, AssetsManager.boundOverlayRegion);
+		batcher.drawSprite(freeThrow, AssetsManager.boundOverlayRegion);
 		batcher.endBatch();
 	}
 

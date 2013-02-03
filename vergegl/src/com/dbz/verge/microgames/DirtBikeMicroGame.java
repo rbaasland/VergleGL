@@ -3,9 +3,11 @@ package com.dbz.verge.microgames;
 import java.util.List;
 
 import com.dbz.framework.Game;
+import com.dbz.framework.gl.Texture;
+import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 import com.dbz.verge.MicroGame;
 
 // TODO: Scale animation with speed level
@@ -14,6 +16,18 @@ public class DirtBikeMicroGame extends MicroGame {
 	// --------------
 	// --- Fields ---
 	// --------------
+	
+	// Assets
+	public static Texture dirtBikeBackground;
+    public static TextureRegion dirtBikeBackgroundRegion;
+    public static TextureRegion dirtBikeRegion;
+    public static TextureRegion dirtBikeGasPedalRegion;
+    public static TextureRegion dirtBikeJumpButtonRegion;
+    public static TextureRegion dirtBikeFrameRegion;
+    public static TextureRegion dirtBikeWheelRegion;
+    public static TextureRegion dirtBikeObstacleOneRegion;
+    public static TextureRegion dirtBikeObstacleTwoRegion;
+    
 	
 	//number of obstacles per level
 	private int[] levelObstacles = { 0, 1, 2 };
@@ -49,6 +63,20 @@ public class DirtBikeMicroGame extends MicroGame {
 	
     public DirtBikeMicroGame(Game game) {
         super(game);
+        load();
+    }
+    
+    public void load() {
+    	dirtBikeBackground = new Texture(game,"DirtBikeScreen.png");
+        dirtBikeBackgroundRegion = new TextureRegion(dirtBikeBackground,0,0,1300,700);
+        dirtBikeRegion = new TextureRegion(dirtBikeBackground, 1400,1,256,256);
+        dirtBikeGasPedalRegion = new TextureRegion(dirtBikeBackground,1440,300,160,160);
+        dirtBikeJumpButtonRegion = new TextureRegion(dirtBikeBackground,1440,460,160,160);
+        dirtBikeFrameRegion = new TextureRegion(dirtBikeBackground,0,720,250,220);
+        dirtBikeWheelRegion = new TextureRegion(dirtBikeBackground,270,720,100,100);
+        dirtBikeObstacleOneRegion = new TextureRegion(dirtBikeBackground,400,720,200,160);
+        dirtBikeObstacleTwoRegion = new TextureRegion(dirtBikeBackground,630,730,50,200);
+        
     }
 
 	// ---------------------
@@ -59,11 +87,11 @@ public class DirtBikeMicroGame extends MicroGame {
 	public void updateRunning(float deltaTime) {
 		// Checks for time-based loss.
 		if (lostTimeBased(deltaTime)) {
-			Assets.playSound(Assets.hitSound);
+			AssetsManager.playSound(AssetsManager.hitSound);
 			return;
 		}
   		if (dirtBikeRWheelBounds.lowerLeft.x > 1200) {
-			Assets.playSound(Assets.highJumpSound);
+			AssetsManager.playSound(AssetsManager.highJumpSound);
 			microGameState = MicroGameState.Won;
 			return;
 		}
@@ -74,7 +102,7 @@ public class DirtBikeMicroGame extends MicroGame {
         	Rectangle tempRWheel = new Rectangle ((dirtBikeRWheelBounds.lowerLeft.x - (dirtBikeRWheelBounds.width-20)/2),(dirtBikeRWheelBounds.lowerLeft.y - (dirtBikeRWheelBounds.height-20)/2),(dirtBikeRWheelBounds.width-20),(dirtBikeRWheelBounds.height-20));
             if(collision(tempRWheel, obstacles[j]) || collision(tempFWheel, obstacles[j])){
             	microGameState = MicroGameState.Lost;
-            	Assets.playSound(Assets.hitSound);
+            	AssetsManager.playSound(AssetsManager.hitSound);
             	return;
             }
 
@@ -202,24 +230,24 @@ public class DirtBikeMicroGame extends MicroGame {
 	@Override
 	public void drawRunningBackground() {
 		// Draw background.
-		batcher.beginBatch(Assets.dirtBikeBackground);
-		batcher.drawSprite(0, 0, 1280, 800, Assets.dirtBikeBackgroundRegion);
+		batcher.beginBatch(dirtBikeBackground);
+		batcher.drawSprite(0, 0, 1280, 800, dirtBikeBackgroundRegion);
 		batcher.endBatch();
 	}
 	
 	@Override
 	public void drawRunningObjects() {
 		// dirt bike and gas
-		batcher.beginBatch(Assets.dirtBikeBackground);
-		batcher.drawSprite(dirtBikeFrameBounds, Assets.dirtBikeFrameRegion);
-		batcher.drawSprite(dirtBikeRWheelBounds.lowerLeft.x,dirtBikeRWheelBounds.lowerLeft.y,dirtBikeRWheelBounds.width,dirtBikeRWheelBounds.height,rotation,Assets.dirtBikeWheelRegion);
-		batcher.drawSprite(dirtBikeFWheelBounds.lowerLeft.x,dirtBikeFWheelBounds.lowerLeft.y,dirtBikeFWheelBounds.width,dirtBikeFWheelBounds.height,rotation,Assets.dirtBikeWheelRegion);
-		batcher.drawSprite(gasBounds, Assets.dirtBikeGasPedalRegion);
-		batcher.drawSprite(jumpBounds, Assets.dirtBikeJumpButtonRegion);
+		batcher.beginBatch(dirtBikeBackground);
+		batcher.drawSprite(dirtBikeFrameBounds, dirtBikeFrameRegion);
+		batcher.drawSprite(dirtBikeRWheelBounds.lowerLeft.x,dirtBikeRWheelBounds.lowerLeft.y,dirtBikeRWheelBounds.width,dirtBikeRWheelBounds.height,rotation, dirtBikeWheelRegion);
+		batcher.drawSprite(dirtBikeFWheelBounds.lowerLeft.x,dirtBikeFWheelBounds.lowerLeft.y,dirtBikeFWheelBounds.width,dirtBikeFWheelBounds.height,rotation, dirtBikeWheelRegion);
+		batcher.drawSprite(gasBounds, dirtBikeGasPedalRegion);
+		batcher.drawSprite(jumpBounds, dirtBikeJumpButtonRegion);
 		if(levelObstacles[level-1] != 0)
-			batcher.drawSprite(obstaclesBounds, Assets.dirtBikeObstacleOneRegion);
+			batcher.drawSprite(obstaclesBounds, dirtBikeObstacleOneRegion);
 		if(levelObstacles[level-1] == 2)
-			batcher.drawSprite(obstacles2Bounds, Assets.dirtBikeObstacleTwoRegion);
+			batcher.drawSprite(obstacles2Bounds, dirtBikeObstacleTwoRegion);
 		batcher.endBatch();	
 	}
 	

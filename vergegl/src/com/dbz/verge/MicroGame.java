@@ -124,7 +124,7 @@ public abstract class MicroGame extends Screen {
 	        
 	        // Ready Bounds Check.
 	        if(OverlapTester.pointInRectangle(readyBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            microGameState = MicroGameState.Running;
 	            return;     
 	        }
@@ -133,7 +133,7 @@ public abstract class MicroGame extends Screen {
 	        if (backArrowEnabled) { 
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
-		            Assets.playSound(Assets.clickSound);
+		            AssetsManager.playSound(AssetsManager.clickSound);
 		            game.setScreen(new GameGridMenu(game));
 		            return;
 		        }
@@ -141,12 +141,12 @@ public abstract class MicroGame extends Screen {
 	        
 	        // Sound Toggle Bounds Check.
 	        if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            Settings.soundEnabled = !Settings.soundEnabled;
 	            if(Settings.soundEnabled) 
-	                Assets.music.play();
+	                AssetsManager.music.play();
 	            else
-	                Assets.music.pause();
+	                AssetsManager.music.pause();
 	        }
 	    }
 	}
@@ -175,7 +175,7 @@ public abstract class MicroGame extends Screen {
 	        
 	        // Pause Toggle Bounds Check.
 			if (OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
-				Assets.playSound(Assets.clickSound);
+				AssetsManager.playSound(AssetsManager.clickSound);
 				microGameState = MicroGameState.Running;
 				return;
 			}
@@ -184,7 +184,7 @@ public abstract class MicroGame extends Screen {
 	        if (backArrowEnabled) { 
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
-		            Assets.playSound(Assets.clickSound);
+		            AssetsManager.playSound(AssetsManager.clickSound);
 		            game.setScreen(new GameGridMenu(game));
 		            return;     
 		        }
@@ -192,12 +192,12 @@ public abstract class MicroGame extends Screen {
 	        
 	        // Sound Toggle Bounds Check.
 	        if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
-	            Assets.playSound(Assets.clickSound);
+	            AssetsManager.playSound(AssetsManager.clickSound);
 	            Settings.soundEnabled = !Settings.soundEnabled;
 	            if(Settings.soundEnabled) 
-	                Assets.music.play();
+	                AssetsManager.music.play();
 	            else
-	                Assets.music.pause();
+	                AssetsManager.music.pause();
 	        }
 	    }
 	}
@@ -212,7 +212,7 @@ public abstract class MicroGame extends Screen {
 		if(pauseEnabled) {
 			// ... Pause Toggle Bounds Check.
 			if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
-		            Assets.playSound(Assets.clickSound);
+		            AssetsManager.playSound(AssetsManager.clickSound);
 		            microGameState = MicroGameState.Paused;
 		            return;
 		    }
@@ -244,11 +244,11 @@ public abstract class MicroGame extends Screen {
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		        	
 		        	if(game.getCurrentScreen() instanceof Mode){ //TODO fix issue w/ microgame inside a mode so we don't use code smell
-		        		Assets.playSound(Assets.clickSound);
+		        		AssetsManager.playSound(AssetsManager.clickSound);
 			            game.setScreen(new com.dbz.verge.menus.PlayMenu(game));
 			            
 		        	} else {	
-		        		Assets.playSound(Assets.clickSound);
+		        		AssetsManager.playSound(AssetsManager.clickSound);
 		        		game.setScreen(new GameGridMenu(game));
 		        		return;    
 		        	}
@@ -282,11 +282,11 @@ public abstract class MicroGame extends Screen {
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		        	
 		        	if(game.getCurrentScreen() instanceof Mode){ //TODO fix issue w/ microgame inside a mode so we don't use code smell
-		        		Assets.playSound(Assets.clickSound);
+		        		AssetsManager.playSound(AssetsManager.clickSound);
 			            game.setScreen(new com.dbz.verge.menus.PlayMenu(game));
 			            
 		        	} else {	
-		        		Assets.playSound(Assets.clickSound);
+		        		AssetsManager.playSound(AssetsManager.clickSound);
 		        		game.setScreen(new GameGridMenu(game));
 		        		return;    
 		        	}  
@@ -427,20 +427,20 @@ public abstract class MicroGame extends Screen {
 	
 	public void presentReady() {		
 		// Draws Ready Message.
-		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, "Ready?", 640, 500, 1.75f);
+		batcher.beginBatch(AssetsManager.vergeFont);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "Ready?", 640, 500, 1.75f);
 		batcher.endBatch();
 		
 		if (backArrowEnabled) {
 		    // Draws the Back Arrow.
-	        batcher.beginBatch(Assets.backArrow);
-	        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
+	        batcher.beginBatch(AssetsManager.backArrow);
+	        batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
 	        batcher.endBatch();
 		}
 		
 		// Draws Sound Toggle.
-        batcher.beginBatch(Assets.soundToggle);
-        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
+        batcher.beginBatch(AssetsManager.soundToggle);
+        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes
@@ -455,29 +455,29 @@ public abstract class MicroGame extends Screen {
 	//		 Exception: If the Android State Management System calls pause().
 	public void presentPaused() {
 		// Draws Paused Message.
-		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, "- PAUSED -", 640, 500, 1.75f);
+		batcher.beginBatch(AssetsManager.vergeFont);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "- PAUSED -", 640, 500, 1.75f);
 		batcher.endBatch();
 		
 		// If Pause is enabled...
 		if (pauseEnabled) {
 			// ... Draws the Unpause Symbol.
-			batcher.beginBatch(Assets.pauseToggle);
-			batcher.drawSprite(pauseToggleBounds, Assets.unpauseRegion);
+			batcher.beginBatch(AssetsManager.pauseToggle);
+			batcher.drawSprite(pauseToggleBounds, AssetsManager.unpauseRegion);
 			batcher.endBatch();
 		}
 	    
 		// If Back Arrow is enabled...
 		if (backArrowEnabled) {
 			// ... Draws the back arrow.
-	        batcher.beginBatch(Assets.backArrow);
-	        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
+	        batcher.beginBatch(AssetsManager.backArrow);
+	        batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
 	        batcher.endBatch();
 		}
 		
 		// Draws Sound Toggle.
-        batcher.beginBatch(Assets.soundToggle);
-        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?Assets.soundOnRegion:Assets.soundOffRegion);
+        batcher.beginBatch(AssetsManager.soundToggle);
+        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes
@@ -491,15 +491,15 @@ public abstract class MicroGame extends Screen {
 		// Draw the Timer.
 		totalMicroGameTime = (baseMicroGameTime / speedScalar[speed-1]);
 		timerString = String.format("%.2f", totalMicroGameTime - totalRunningTime);
-		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, timerString, 640, 15, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFont);
+		AssetsManager.terminalFont.drawTextCentered(batcher, timerString, 640, 15, 1.5f);
 		batcher.endBatch();
 	    
 		// If Pause is enabled...
 		if (pauseEnabled) {
 			// ... Draws the Pause symbol.
-			batcher.beginBatch(Assets.pauseToggle);
-			batcher.drawSprite(pauseToggleBounds, Assets.pauseRegion);
+			batcher.beginBatch(AssetsManager.pauseToggle);
+			batcher.drawSprite(pauseToggleBounds, AssetsManager.pauseRegion);
 			batcher.endBatch();
 		}
 	    
@@ -511,15 +511,15 @@ public abstract class MicroGame extends Screen {
 	
 	public void presentWon() {
 		// Draws the Win message.	
-		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, "You Win!", 640, 500, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFont);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "You Win!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// If Back Arrow is enabled...
 		if (backArrowEnabled) {
 			// ... Draws the Back Arrow.
-	        batcher.beginBatch(Assets.backArrow);
-	        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
+	        batcher.beginBatch(AssetsManager.backArrow);
+	        batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
 	        batcher.endBatch();
 		}
 		
@@ -531,15 +531,15 @@ public abstract class MicroGame extends Screen {
 	
 	public void presentLost() {
 		// Draws the Lose message.		
-		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, "You Lose!", 640, 500, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFont);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "You Lose!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// If Back Arrow is enabled...
 		if (backArrowEnabled) {
 			// ... Draws the Back Arrow.
-			batcher.beginBatch(Assets.backArrow);
-			batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
+			batcher.beginBatch(AssetsManager.backArrow);
+			batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
 			batcher.endBatch();
 		}
 
@@ -567,8 +567,8 @@ public abstract class MicroGame extends Screen {
 //			batcher.endBatch();
 //		}
 		// ...or could just dedicate screen space for it for the entire MicroGame.
-		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, string, 640, 700, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFont);
+		AssetsManager.terminalFont.drawTextCentered(batcher, string, 640, 700, 1.5f);
 		batcher.endBatch();
 	}
 	

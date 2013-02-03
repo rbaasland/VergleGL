@@ -6,7 +6,7 @@ import com.dbz.framework.Game;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Menu;
 
 public class MainMenu extends Menu {
@@ -51,21 +51,21 @@ public class MainMenu extends Menu {
                 
                 // Play Button Bounds Check.
                 if(OverlapTester.pointInRectangle(playBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
+                    AssetsManager.playSound(AssetsManager.clickSound);
                     game.setScreen(new PlayMenu(game));
                     return;
                 }
                 
                 // High Scores Button Bounds Check.
                 if(OverlapTester.pointInRectangle(highScoresBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
+                    AssetsManager.playSound(AssetsManager.clickSound);
                     // game.setScreen(new HighScoresScreen(game));
                     return;
                 }
                 
                 // Help Button Bounds Check.
                 if(OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
+                    AssetsManager.playSound(AssetsManager.clickSound);
                     //  game.setScreen(new HelpScreen(game));
                     return;
                 }
@@ -82,16 +82,16 @@ public class MainMenu extends Menu {
     
     @Override
     public void drawBackground() {
-        batcher.beginBatch(Assets.background);
-        batcher.drawSprite(0, 0, 1280, 800, Assets.backgroundRegion);
+        batcher.beginBatch(AssetsManager.background);
+        batcher.drawSprite(0, 0, 1280, 800, AssetsManager.backgroundRegion);
         batcher.endBatch();
     }
     
     @Override
     public void drawObjects() {
         // Draws Main Menu Buttons.
-        batcher.beginBatch(Assets.mainMenuButtons);
-        batcher.drawSprite(0, 0, 1280, 800, Assets.mainMenuButtonsRegion);
+        batcher.beginBatch(AssetsManager.mainMenuButtons);
+        batcher.drawSprite(0, 0, 1280, 800, AssetsManager.mainMenuButtonsRegion);
         batcher.endBatch();
         
         super.drawObjects();
@@ -99,10 +99,10 @@ public class MainMenu extends Menu {
     
     @Override
     public void drawBounds() {
-      batcher.beginBatch(Assets.boundOverlay);     
-      batcher.drawSprite(playBounds, Assets.boundOverlayRegion); 		// Play Button Bounding Box
-      batcher.drawSprite(highScoresBounds, Assets.boundOverlayRegion);  // HighScores Button Bounding Box
-      batcher.drawSprite(helpBounds, Assets.boundOverlayRegion); 		// Help Button Bounding Box
+      batcher.beginBatch(AssetsManager.boundOverlay);     
+      batcher.drawSprite(playBounds, AssetsManager.boundOverlayRegion); 		// Play Button Bounding Box
+      batcher.drawSprite(highScoresBounds, AssetsManager.boundOverlayRegion);  // HighScores Button Bounding Box
+      batcher.drawSprite(helpBounds, AssetsManager.boundOverlayRegion); 		// Help Button Bounding Box
       super.drawBounds();
       batcher.endBatch();
     }

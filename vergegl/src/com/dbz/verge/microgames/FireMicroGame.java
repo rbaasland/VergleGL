@@ -3,9 +3,11 @@ package com.dbz.verge.microgames;
 import java.util.List;
 
 import com.dbz.framework.Game;
+import com.dbz.framework.gl.Texture;
+import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 import com.dbz.verge.MicroGame;
 
 // TODO: Add water sprite generation on touch.
@@ -16,6 +18,12 @@ public class FireMicroGame extends MicroGame {
 	// --------------
 	// --- Fields ---
 	// --------------
+	
+	// Assets
+	public static Texture fire;
+    public static TextureRegion fireBackgroundRegion;
+    public static TextureRegion fireWindowRegion;
+    public static TextureRegion clearWindowRegion;
 	
 	// Array used to store the different required counts of the 3 difficulty levels.
 	private int requiredWaterCount[] = { 10, 20, 30 };
@@ -44,6 +52,14 @@ public class FireMicroGame extends MicroGame {
 	
     public FireMicroGame(Game game) {
         super(game);
+        load();
+    }
+    
+    public void load(){
+    	fire = new Texture(game, "firehouse.png");
+        fireBackgroundRegion = new TextureRegion(fire, 0, 0, 1280, 800);
+        fireWindowRegion = new TextureRegion(fire, 1300, 20, 180, 260);
+        clearWindowRegion = new TextureRegion(fire, 1500, 20, 180, 260);
     }
 
 	// ---------------------
@@ -62,14 +78,14 @@ public class FireMicroGame extends MicroGame {
 		
 		// Checks for time-based loss.
 		if (lostTimeBased(deltaTime)) {
-			Assets.playSound(Assets.hitSound);
+			AssetsManager.playSound(AssetsManager.hitSound);
 //			Assets.burningSound.stop();	// TODO: Use same format as Asset.playSound(), i.e. Assets.stopSound().
 			return;
 		}
 		
 		// Tests for Multi-Area win.
 		if (clearedFireOne && clearedFireTwo && clearedFireThree) {
-			Assets.playSound(Assets.highJumpSound);
+			AssetsManager.playSound(AssetsManager.highJumpSound);
 //			Assets.burningSound.stop();	// TODO: Use same format as Asset.playSound(), i.e. Assets.stopSound().
 			microGameState = MicroGameState.Won;
     		return;	
@@ -96,7 +112,7 @@ public class FireMicroGame extends MicroGame {
         			clearedFireOne = true;
         		if (soundCooldown > 0.075f) {
 	        		if (fireOneCount <= requiredWaterCount[level-1]) {
-	        			Assets.playSound(Assets.splashSound);
+	        			AssetsManager.playSound(AssetsManager.splashSound);
 	        			soundCooldown = 0;
 	        		}
         		}
@@ -110,7 +126,7 @@ public class FireMicroGame extends MicroGame {
         			clearedFireTwo = true;
         		if (soundCooldown > 0.075f) {
 	        		if (fireTwoCount <= requiredWaterCount[level-1]) {
-	        			Assets.playSound(Assets.splashSound);
+	        			AssetsManager.playSound(AssetsManager.splashSound);
 	        			soundCooldown = 0;
         			}
         		}
@@ -124,7 +140,7 @@ public class FireMicroGame extends MicroGame {
         			clearedFireThree = true;
         		if (soundCooldown > 0.075f) {
 	        		if (fireThreeCount <= requiredWaterCount[level-1]) {
-	        			Assets.playSound(Assets.splashSound);
+	        			AssetsManager.playSound(AssetsManager.splashSound);
 	        			soundCooldown = 0;
 	        		}
         		}
@@ -158,7 +174,7 @@ public class FireMicroGame extends MicroGame {
 	
 	@Override
 	public void presentRunning() {
-		batcher.beginBatch(Assets.fire);
+		batcher.beginBatch(fire);
 		drawRunningBackground();
 		drawRunningObjects();
 		batcher.endBatch();		
@@ -173,37 +189,37 @@ public class FireMicroGame extends MicroGame {
 	
 	@Override
 	public void drawRunningBackground() {
-		batcher.drawSprite(0, 0, 1280, 800, Assets.fireBackgroundRegion);
+		batcher.drawSprite(0, 0, 1280, 800, fireBackgroundRegion);
 	}
 	
 	@Override
 	public void drawRunningObjects() {
 		// Draw target #1.
 		if (fireOneCount < requiredWaterCount[level-1]) 
-			batcher.drawSprite(fireOneBounds, Assets.fireWindowRegion);
+			batcher.drawSprite(fireOneBounds, fireWindowRegion);
 		else
-			batcher.drawSprite(fireOneBounds,  Assets.clearWindowRegion);
+			batcher.drawSprite(fireOneBounds,  clearWindowRegion);
 		
 		// Draw target #2.
 		if (fireTwoCount < requiredWaterCount[level-1])
-			batcher.drawSprite(fireTwoBounds, Assets.fireWindowRegion);
+			batcher.drawSprite(fireTwoBounds, fireWindowRegion);
 		else
-			batcher.drawSprite(fireTwoBounds,  Assets.clearWindowRegion);
+			batcher.drawSprite(fireTwoBounds,  clearWindowRegion);
 		
 		// Draw target #3.
 		if (fireThreeCount < requiredWaterCount[level-1]) 
-			batcher.drawSprite(fireThreeBounds, Assets.fireWindowRegion);
+			batcher.drawSprite(fireThreeBounds, fireWindowRegion);
 		else
-			batcher.drawSprite(fireThreeBounds, Assets.clearWindowRegion);
+			batcher.drawSprite(fireThreeBounds, clearWindowRegion);
 	}
 	
 	@Override
 	public void drawRunningBounds() {
 		// Bounding Boxes
-		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(fireOneBounds, Assets.boundOverlayRegion); // fireOne Bounding Box
-	    batcher.drawSprite(fireTwoBounds, Assets.boundOverlayRegion); // fireTwo Bounding Box
-	    batcher.drawSprite(fireThreeBounds, Assets.boundOverlayRegion); // fireThree Bounding Box
+		batcher.beginBatch(AssetsManager.boundOverlay);
+	    batcher.drawSprite(fireOneBounds, AssetsManager.boundOverlayRegion); // fireOne Bounding Box
+	    batcher.drawSprite(fireTwoBounds, AssetsManager.boundOverlayRegion); // fireTwo Bounding Box
+	    batcher.drawSprite(fireThreeBounds, AssetsManager.boundOverlayRegion); // fireThree Bounding Box
 	    batcher.endBatch();
 	}
 	

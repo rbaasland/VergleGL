@@ -5,11 +5,13 @@ import java.util.List;
 
 import com.dbz.framework.DynamicGameObject;
 import com.dbz.framework.Game;
+import com.dbz.framework.gl.Animation;
+import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 import com.dbz.verge.MicroGame;
 
 //TODO: Comment code. Try to match the standard that is created with other MicroGame comments.
@@ -21,6 +23,19 @@ public class CircuitMicroGame extends MicroGame {
 	// --------------
 	// --- Fields ---
 	// --------------
+	
+	// Assets
+	public static Texture circuitBackground;
+    public static TextureRegion circuitBackgroundRegion;
+    public static Texture circuit;
+    public static TextureRegion circuitLine1;
+    public static TextureRegion circuitLine2;
+    public static TextureRegion circuitLine3;
+    public static TextureRegion circuitLine4;
+    public static TextureRegion circuitSparkState1Region;
+    public static TextureRegion circuitSparkState2Region;
+    public static Animation circuitSparkAnim;
+	
 	// Used to determine win Condition (Number of direction changes per level)
 	private int directionPointsInLevel[] = {12, 16, 19};
 	
@@ -31,7 +46,7 @@ public class CircuitMicroGame extends MicroGame {
 			new Rectangle(508, 800-612, 325, 122), new Rectangle(1022, 800-287, 557, 480)};
 
 	// Corresponding textures for circuit piece
-	private TextureRegion[] circuitTextures = {Assets.circuitLine1, Assets.circuitLine2, Assets.circuitLine3, Assets.circuitLine4}; //temp? put in assets?
+	private TextureRegion[] circuitTextures = new TextureRegion[4]; //temp? put in assets?
 
 
 	//Spark Direction Vectors
@@ -86,12 +101,31 @@ public class CircuitMicroGame extends MicroGame {
 
 	public CircuitMicroGame(Game game) {
 		super(game);
-
+		load();
 		//totalMicroGameTime = 10; //note, time based loss/win doesn't apply to this game.
 		speedScalar = new float[] { 1.0f, 1.1f, 1.2f }; //TODO adjust sparkSpeed to work w/ Microgame.speedScalar
 		// Calculate rate of change for first two vectors
 		calculateRateofChange(); //TODO bug, spark starts slow because level isn't updated until after constructor call. In general, needs to be fixed.
 								//IDEA, add level as a param to microgame constructor, then call super.updateLevel so we don't have to rework a bunch of code.
+	}
+	
+	public void load() {
+		circuitBackground = new Texture(game, "circuit_background.png");
+        circuitBackgroundRegion = new TextureRegion(circuitBackground, 0, 0, 1280, 800);
+          
+        circuit = new Texture(game, "circuit_items.png");
+        circuitSparkState1Region = new TextureRegion(circuit, 0,896,128,128);
+        circuitSparkState2Region = new TextureRegion(circuit, 128,896,128,128);
+        circuitSparkAnim = new Animation(0.2f, circuitSparkState1Region, circuitSparkState2Region);
+        //Circuit parts TODO draw lines based on vectors instead of images
+        circuitLine1 = new TextureRegion(circuit, 0, 0, 405, 195);
+        circuitLine2 = new TextureRegion(circuit, 0, 256, 328, 383);
+        circuitLine3 = new TextureRegion(circuit, 416, 512, 325, 122);
+        circuitLine4 = new TextureRegion(circuit, 436,10, 557, 480);
+    	circuitTextures[0] = circuitLine1;
+    	circuitTextures[1] = circuitLine2;
+    	circuitTextures[2] = circuitLine3;
+    	circuitTextures[3] = circuitLine4;
 	}
 
 	// ---------------------
@@ -103,7 +137,7 @@ public class CircuitMicroGame extends MicroGame {
 
 		if(doesDirectionPointStartCircuitGap[directionIndex]) // if between a gap
 			if(!circuitCompleted){				// if circuit not complete, game lost
-				Assets.playSound(Assets.hitSound);
+				AssetsManager.playSound(AssetsManager.hitSound);
 				microGameState = MicroGameState.Lost;
 				return;
 			}
@@ -119,7 +153,7 @@ public class CircuitMicroGame extends MicroGame {
 
 			// if last last node, win
 			if(directionIndex == directionPointsInLevel[level-1]-1){ 
-				Assets.playSound(Assets.highJumpSound);
+				AssetsManager.playSound(AssetsManager.highJumpSound);
 				microGameState = MicroGameState.Won;
 				return;
 			}
@@ -151,7 +185,7 @@ public class CircuitMicroGame extends MicroGame {
 			for (int i = circuitNodesIndex; i < circuitNodesIndex + 2 ; i++){
 
 				if(targetTouchDownCenterCoords(touchEvent, touchPoint, circuitNodes[i])) {
-					Assets.playSound(Assets.hitSound);
+					AssetsManager.playSound(AssetsManager.hitSound);
 					isCircuitNodeTouched[i] = true;
 				}
 
@@ -231,15 +265,15 @@ public class CircuitMicroGame extends MicroGame {
 	@Override
 	public void drawRunningBackground() {
 		// Draw background.
-		batcher.beginBatch(Assets.circuitBackground);
-		batcher.drawSprite(0, 0, 1280, 800, Assets.circuitBackgroundRegion);
+		batcher.beginBatch(circuitBackground);
+		batcher.drawSprite(0, 0, 1280, 800, circuitBackgroundRegion);
 		batcher.endBatch();
 	}
 
 	@Override
 	public void drawRunningObjects() {
 		// Draw circuits
-		batcher.beginBatch(Assets.circuit);
+		batcher.beginBatch(circuit);
 
 		//level implementation
 		for(int i = 0; i < level+1; i++){
@@ -248,7 +282,7 @@ public class CircuitMicroGame extends MicroGame {
 
 		if(!circuitCompleted || doesDirectionPointStartCircuitGap[directionIndex] == false){ //show spark only when on circuit
 			spark.updateAnimationIndex();
-			batcher.drawSprite(spark.bounds, Assets.circuitSparkAnim.getKeyFrame(spark.animationIndex)); 	
+			batcher.drawSprite(spark.bounds, circuitSparkAnim.getKeyFrame(spark.animationIndex)); 	
 			//works but animation is slow
 			//batcher.drawSprite(spark.bounds, Assets.circuitSparkAnim.getKeyFrame(spark.stateTime, Animation.ANIMATION_LOOPING));	
 		}
@@ -259,14 +293,14 @@ public class CircuitMicroGame extends MicroGame {
 	@Override
 	public void drawRunningBounds() {
 		// Bounding Boxes
-		batcher.beginBatch(Assets.boundOverlay);
-		batcher.drawSprite(spark.bounds, Assets.boundOverlayRegion);
+		batcher.beginBatch(AssetsManager.boundOverlay);
+		batcher.drawSprite(spark.bounds, AssetsManager.boundOverlayRegion);
 
 		for (Vector2 point : directionPoints)
-			batcher.drawSpriteCenterCoords(new Rectangle(point.x, point.y ,32, 32), Assets.boundOverlayRegion);
+			batcher.drawSpriteCenterCoords(new Rectangle(point.x, point.y ,32, 32), AssetsManager.boundOverlayRegion);
 
 		for (Rectangle r : circuitNodes)
-			batcher.drawSpriteCenterCoords(r, Assets.boundOverlayRegion);
+			batcher.drawSpriteCenterCoords(r, AssetsManager.boundOverlayRegion);
 
 		batcher.endBatch();
 	}

@@ -3,13 +3,22 @@ package com.dbz.verge.microgames;
 import java.util.List;
 
 import com.dbz.framework.Game;
+import com.dbz.framework.gl.Texture;
+import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 import com.dbz.verge.MicroGame;
 
 // TODO: Stop sound from playing on all touched..
 public class AquariumMicroGame extends MicroGame{
+	
+	// Assets
+	public static Texture aquariumBackround;
+    public static Texture aquariumTank;
+    public static TextureRegion aquariumBackroundRegion;
+    public static TextureRegion aquariumTankRegion;
+    public static TextureRegion aquariumCrack;
 	
 	// Array used to store the crack appearance times for the 3 difficulty levels.
 	public float crackTimes[] = { 4.0f, 2.5f, 1.0f };
@@ -29,9 +38,18 @@ public class AquariumMicroGame extends MicroGame{
 	
 	public AquariumMicroGame(Game game) {
 		super(game);
-
+		load();
 		// Extend allowed time.
 		baseMicroGameTime = 10.0f;
+	}
+	
+	public void load() {
+		aquariumBackround=new Texture(game,"aquariumBackground.png");
+        aquariumBackroundRegion=new TextureRegion(aquariumBackround,0,0,1280,800);
+        aquariumTank=new Texture(game,"aquariumTank.png");
+        aquariumTankRegion=new TextureRegion(aquariumTank,0,0,1280,800);
+        aquariumCrack=new TextureRegion(aquariumTank,1285,0,128,128);
+        
 	}
 
 	// ---------------------
@@ -42,13 +60,13 @@ public class AquariumMicroGame extends MicroGame{
 	public void updateRunning(float deltaTime) {
 		// Checks for time-based win.
 		if (wonTimeBased(deltaTime)) {
-			Assets.playSound(Assets.highJumpSound);
+			AssetsManager.playSound(AssetsManager.highJumpSound);
 			return;
 		}
 		
 		// Checks for water level based loss.
 		if(waterLevel >= 800) {
-			Assets.playSound(Assets.hitSound);
+			AssetsManager.playSound(AssetsManager.hitSound);
 			microGameState = MicroGameState.Lost;
 			return;
 		}
@@ -69,14 +87,14 @@ public class AquariumMicroGame extends MicroGame{
 				if(crackList[i].onScreen == true) {
 					if(touchEvent.type == TouchEvent.TOUCH_DOWN)
 					{
-						Assets.playSound(Assets.pop);
+						AssetsManager.playSound(AssetsManager.pop);
 					}
 					if(targetTouchDragged(touchEvent, touchPoint, crackList[i].bounds))
 						crackList[i].isLeaking = false;
 					
 					if(touchEvent.type == TouchEvent.TOUCH_UP)
 					{
-						Assets.playSound(Assets.pop);
+						AssetsManager.playSound(AssetsManager.pop);
 						crackList[i].isLeaking = true;
 					}
 				}
@@ -158,19 +176,19 @@ public class AquariumMicroGame extends MicroGame{
 	@Override
 	public void drawRunningBackground() {
 		// Draw background.
-		batcher.beginBatch(Assets.aquariumBackround);
-		batcher.drawSprite(0, 0, 1280, 800, Assets.aquariumBackroundRegion);
+		batcher.beginBatch(aquariumBackround);
+		batcher.drawSprite(0, 0, 1280, 800, aquariumBackroundRegion);
 		batcher.endBatch();
 	}
 
 	@Override
 	public void drawRunningObjects() {
-		batcher.beginBatch(Assets.aquariumTank);
+		batcher.beginBatch(aquariumTank);
 		
-		batcher.drawSprite(0, 0, 1280, waterLevel, Assets.aquariumTankRegion);
+		batcher.drawSprite(0, 0, 1280, waterLevel, aquariumTankRegion);
 		for (int i = 0; i < level+1; i++)
 			if(crackList[i].onScreen == true)
-				batcher.drawSprite(crackList[i].bounds,Assets.aquariumCrack);
+				batcher.drawSprite(crackList[i].bounds,aquariumCrack);
 		
 		batcher.endBatch();
 	}

@@ -3,9 +3,11 @@ package com.dbz.verge.microgames;
 import java.util.List;
 
 import com.dbz.framework.Game;
+import com.dbz.framework.gl.Texture;
+import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 import com.dbz.verge.MicroGame;
 
 // TODO: Make fly's movement random.
@@ -17,6 +19,12 @@ public class FlyMicroGame extends MicroGame {
 	// --- Fields ---
 	// --------------
 
+	// Assets
+	public static Texture flyBackground;
+    public static TextureRegion flyBackgroundRegion;
+    public static Texture fly;
+    public static TextureRegion flyRegion;
+	
 	// Array used to store the different required counts of the 3 difficulty levels.
 	private int requiredSwatCount[] = { 1, 2, 3 };
 	private int flySwatCount = 0;
@@ -37,8 +45,15 @@ public class FlyMicroGame extends MicroGame {
 	
     public FlyMicroGame(Game game) {
         super(game);
+        load();
     }
-
+    
+    public void load() {
+    	flyBackground = new Texture(game, "flybackground.png");
+        flyBackgroundRegion = new TextureRegion(flyBackground, 0, 0, 1280, 800);
+        fly = new Texture(game, "fly.png");
+        flyRegion = new TextureRegion(fly, 0, 0, 80, 60);
+    }
 	// ---------------------
 	// --- Update Method ---
 	// ---------------------
@@ -54,7 +69,7 @@ public class FlyMicroGame extends MicroGame {
 		
 		// Checks for time-based loss.
 		if (lostTimeBased(deltaTime)) {
-			Assets.playSound(Assets.hitSound);
+			AssetsManager.playSound(AssetsManager.hitSound);
 //			Assets.flyBuzzSound.stop(); // TODO: Use same format as Asset.playSound(), i.e. Assets.stopSound().
 			return;
 		}
@@ -85,12 +100,12 @@ public class FlyMicroGame extends MicroGame {
         	if (targetTouchDown(event, touchPoint, flyBounds)) {
         		flySwatCount++;
         		if (flySwatCount == requiredSwatCount[level-1]) {
-        			Assets.playSound(Assets.highJumpSound);
+        			AssetsManager.playSound(AssetsManager.highJumpSound);
 //        			Assets.flyBuzzSound.stop(); // TODO: Use same format as Asset.playSound(), i.e. Assets.stopSound().
         			microGameState = MicroGameState.Won;
         		}
         		else if (flySwatCount < requiredSwatCount[level-1])
-        			Assets.playSound(Assets.punchSound);
+        			AssetsManager.playSound(AssetsManager.punchSound);
         		return;
         	}
 	        
@@ -174,24 +189,24 @@ public class FlyMicroGame extends MicroGame {
 	@Override
 	public void drawRunningBackground() {
 		// Draw the background.
-		batcher.beginBatch(Assets.flyBackground);
-		batcher.drawSprite(0, 0, 1280, 800, Assets.flyBackgroundRegion);
+		batcher.beginBatch(flyBackground);
+		batcher.drawSprite(0, 0, 1280, 800, flyBackgroundRegion);
 		batcher.endBatch();
 	}
 	
 	@Override
 	public void drawRunningObjects() {
 		// Draw the fly.
-		batcher.beginBatch(Assets.fly);
-		batcher.drawSprite(flyBounds, Assets.flyRegion);
+		batcher.beginBatch(fly);
+		batcher.drawSprite(flyBounds, flyRegion);
 		batcher.endBatch();
 	}
 	
 	@Override
 	public void drawRunningBounds() {
 		// Bounding Boxes
-		batcher.beginBatch(Assets.boundOverlay);
-	    batcher.drawSprite(flyBounds, Assets.boundOverlayRegion); // Fly Bounding Box
+		batcher.beginBatch(AssetsManager.boundOverlay);
+	    batcher.drawSprite(flyBounds, AssetsManager.boundOverlayRegion); // Fly Bounding Box
 	    batcher.endBatch();
 	}
 	

@@ -1,7 +1,7 @@
 package com.dbz.verge.modes;
 
 import com.dbz.framework.Game;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Mode;
 
 public class TimeAttackMode extends Mode {
@@ -83,11 +83,11 @@ public class TimeAttackMode extends Mode {
 		totalMinutes = (int)(totalTime / 60);
 		totalSeconds = totalTime % 60.0f;
 		
-		batcher.beginBatch(Assets.vergeFont);
-		Assets.terminalFont.drawTextCentered(batcher, "Level: " + String.valueOf(level), 640, 450, 1.5f);
-		Assets.terminalFont.drawTextCentered(batcher, "Speed: " + String.valueOf(speed), 640, 400, 1.5f);
-		Assets.terminalFont.drawTextCentered(batcher, "Wins: " + String.valueOf(currentRound-1) + " / " + String.valueOf(winsRequired), 640, 350, 1.5f);
-		Assets.terminalFont.drawTextCentered(batcher, "Total Time: " + String.format("%02d:%05.2f", totalMinutes, totalSeconds), 640, 300, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFont);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "Level: " + String.valueOf(level), 640, 450, 1.5f);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "Speed: " + String.valueOf(speed), 640, 400, 1.5f);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "Wins: " + String.valueOf(currentRound-1) + " / " + String.valueOf(winsRequired), 640, 350, 1.5f);
+		AssetsManager.terminalFont.drawTextCentered(batcher, "Total Time: " + String.format("%02d:%05.2f", totalMinutes, totalSeconds), 640, 300, 1.5f);
 		batcher.endBatch();
 	}
 	

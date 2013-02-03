@@ -6,7 +6,7 @@ import com.dbz.framework.Game;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Menu;
 import com.dbz.verge.modes.SurvivalMode;
 import com.dbz.verge.modes.TimeAttackMode;
@@ -56,28 +56,28 @@ public class PlayMenu extends Menu {
                 
                 // Survival Button Bounds Check.   
                 if(OverlapTester.pointInRectangle(survivalBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
+                    AssetsManager.playSound(AssetsManager.clickSound);
                     game.setScreen(new SurvivalMode(game));
                     return;
                 }
                 
                 // Time Attack Button Bounds Check.
                 if(OverlapTester.pointInRectangle(timeAttackBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
+                    AssetsManager.playSound(AssetsManager.clickSound);
                     game.setScreen(new TimeAttackMode(game));
                     return;
                 }
                 
                 // Game Grid Button Bounds Check.
                 if(OverlapTester.pointInRectangle(gameGridBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
+                    AssetsManager.playSound(AssetsManager.clickSound);
                     game.setScreen(new GameGridMenu(game));
                     return;
                 }
                 
                 // Back Arrow Bounds Check.
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
-                    Assets.playSound(Assets.clickSound);
+                    AssetsManager.playSound(AssetsManager.clickSound);
                     game.setScreen(new MainMenu(game));
                     return;
                 }
@@ -93,31 +93,31 @@ public class PlayMenu extends Menu {
  	// ----------------------------
     
     public void drawBackground() {
-        batcher.beginBatch(Assets.background);
-        batcher.drawSprite(0, 0, 1280, 800, Assets.backgroundRegion);
+        batcher.beginBatch(AssetsManager.background);
+        batcher.drawSprite(0, 0, 1280, 800, AssetsManager.backgroundRegion);
         batcher.endBatch();
     }
     
     public void drawObjects() {
         // Draws Play Menu Buttons.
-        batcher.beginBatch(Assets.playMenuButtons);
-        batcher.drawSprite(0, 0, 1280, 800, Assets.playMenuButtonsRegion);
+        batcher.beginBatch(AssetsManager.playMenuButtons);
+        batcher.drawSprite(0, 0, 1280, 800, AssetsManager.playMenuButtonsRegion);
         batcher.endBatch();
         
         // Draws Back Arrow.
-        batcher.beginBatch(Assets.backArrow);
-        batcher.drawSprite(backArrowBounds, Assets.backArrowRegion);
+        batcher.beginBatch(AssetsManager.backArrow);
+        batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
         batcher.endBatch(); 
         
         super.drawObjects();
     }
     
     public void drawBounds() {
-      batcher.beginBatch(Assets.boundOverlay);     
-      batcher.drawSprite(survivalBounds, Assets.boundOverlayRegion); 	// Survival Button Bounding Box
-      batcher.drawSprite(timeAttackBounds, Assets.boundOverlayRegion);  // Time Attack Bounding Box
-      batcher.drawSprite(gameGridBounds, Assets.boundOverlayRegion); 	// Game Grid Button Bounding Box
-      batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); 	// Back Arrow Bounding Box
+      batcher.beginBatch(AssetsManager.boundOverlay);     
+      batcher.drawSprite(survivalBounds, AssetsManager.boundOverlayRegion); 	// Survival Button Bounding Box
+      batcher.drawSprite(timeAttackBounds, AssetsManager.boundOverlayRegion);  // Time Attack Bounding Box
+      batcher.drawSprite(gameGridBounds, AssetsManager.boundOverlayRegion); 	// Game Grid Button Bounding Box
+      batcher.drawSprite(backArrowBounds, AssetsManager.boundOverlayRegion); 	// Back Arrow Bounding Box
       super.drawBounds();
       batcher.endBatch();
     }

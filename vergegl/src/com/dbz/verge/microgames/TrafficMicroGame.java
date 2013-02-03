@@ -6,9 +6,11 @@ import java.util.Queue;
 import java.util.Random;
 
 import com.dbz.framework.Game;
+import com.dbz.framework.gl.Texture;
+import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 import com.dbz.verge.MicroGame;
 
 // TODO: Make left two lanes oncoming, make right two ongoing.
@@ -19,6 +21,13 @@ public class TrafficMicroGame extends MicroGame {
 	// --------------
 	// --- Fields ---
 	// --------------
+	
+	// Assets
+	public static Texture traffic;
+    public static TextureRegion trafficBackgroundRegion;
+    public static TextureRegion trafficBlueCarRegion;
+    public static TextureRegion trafficRedCarRegion;
+    public static TextureRegion trafficBlackCarRegion;
 
 	// Queue for lane selection
 	private Queue<Float> lanes = new LinkedList<Float>();
@@ -64,7 +73,17 @@ public class TrafficMicroGame extends MicroGame {
 
 	public TrafficMicroGame(Game game) {
 		super(game);
+		load();
 		randomizeCarsLanes();
+	}
+	
+	public void load() {
+		traffic = new Texture(game, "traffic.png");
+        trafficBackgroundRegion = new TextureRegion(traffic, 0, 0, 1280, 800);
+        trafficBlueCarRegion = new TextureRegion(traffic, 0, 800, 80, 170);
+        trafficRedCarRegion = new TextureRegion(traffic, 80, 800, 80, 170);
+        trafficBlackCarRegion = new TextureRegion(traffic, 160, 800, 80, 170);
+        
 	}
 
 	// ---------------------
@@ -75,7 +94,7 @@ public class TrafficMicroGame extends MicroGame {
 	public void updateRunning(float deltaTime) {
 		// Checks for time-based win.
 		if (wonTimeBased(deltaTime)) {
-			Assets.playSound(Assets.highJumpSound);
+			AssetsManager.playSound(AssetsManager.highJumpSound);
 			return;
 		}
 
@@ -87,28 +106,28 @@ public class TrafficMicroGame extends MicroGame {
 
 		// Checks for collision-based loss. (obstacleOne)
 		if (collision(carBounds, obstacleOneBounds)) {
-			Assets.playSound(Assets.hitSound);
+			AssetsManager.playSound(AssetsManager.hitSound);
 			microGameState = MicroGameState.Lost;
 			return;
 		}
 
 		// Checks for collision-based loss. (obstacleTwo)
 		if (collision(carBounds, obstacleTwoBounds)) {
-			Assets.playSound(Assets.hitSound);
+			AssetsManager.playSound(AssetsManager.hitSound);
 			microGameState = MicroGameState.Lost;
 			return;
 		}
 
 		// Checks for collision-based loss. (obstacleThree)
 		if (collision(carBounds, obstacleThreeBounds)) {
-			Assets.playSound(Assets.hitSound);
+			AssetsManager.playSound(AssetsManager.hitSound);
 			microGameState = MicroGameState.Lost;
 			return;
 		}
 
 		// Checks for collision-based loss. (obstacleFour)
 		if (collision(carBounds, obstacleFourBounds)) {
-			Assets.playSound(Assets.hitSound);
+			AssetsManager.playSound(AssetsManager.hitSound);
 			microGameState = MicroGameState.Lost;
 			return;
 		}
@@ -262,7 +281,7 @@ public class TrafficMicroGame extends MicroGame {
 
 	@Override
 	public void presentRunning() {
-		batcher.beginBatch(Assets.traffic);
+		batcher.beginBatch(traffic);
 		drawRunningBackground();
 		drawRunningObjects();
 		batcher.endBatch();
@@ -277,37 +296,37 @@ public class TrafficMicroGame extends MicroGame {
 
 	@Override
 	public void drawRunningBackground() {
-		batcher.drawSprite(0, 0, 1280, 800, Assets.trafficBackgroundRegion);
+		batcher.drawSprite(0, 0, 1280, 800, trafficBackgroundRegion);
 	}
 
 	@Override
 	public void drawRunningObjects() {
 		// Draws obstacle car.
-		batcher.drawSprite(obstacleOneBounds, Assets.trafficRedCarRegion);
+		batcher.drawSprite(obstacleOneBounds, trafficRedCarRegion);
 		// Draws obstacle car.
-		batcher.drawSprite(obstacleTwoBounds, Assets.trafficBlackCarRegion);
+		batcher.drawSprite(obstacleTwoBounds, trafficBlackCarRegion);
 		// Draws obstacle car.
-		batcher.drawSprite(obstacleThreeBounds, Assets.trafficBlueCarRegion);
+		batcher.drawSprite(obstacleThreeBounds, trafficBlueCarRegion);
 		// Draws obstacle car.
-		batcher.drawSprite(obstacleFourBounds, Assets.trafficBlackCarRegion);
+		batcher.drawSprite(obstacleFourBounds, trafficBlackCarRegion);
 		// Draws player car.
-		batcher.drawSprite(carBounds, Assets.trafficBlueCarRegion);
+		batcher.drawSprite(carBounds, trafficBlueCarRegion);
 	}
 
 	@Override
 	public void drawRunningBounds() {
 		// Bounding Boxes
-		batcher.beginBatch(Assets.boundOverlay);
+		batcher.beginBatch(AssetsManager.boundOverlay);
 		// Obstacle Car Bounding Box
-		batcher.drawSprite(obstacleOneBounds, Assets.boundOverlayRegion);
+		batcher.drawSprite(obstacleOneBounds, AssetsManager.boundOverlayRegion);
 		// Obstacle Car Bounding Box
-		batcher.drawSprite(obstacleTwoBounds, Assets.boundOverlayRegion);
+		batcher.drawSprite(obstacleTwoBounds, AssetsManager.boundOverlayRegion);
 		// Obstacle Car Bounding Box
-		batcher.drawSprite(obstacleThreeBounds, Assets.boundOverlayRegion);
+		batcher.drawSprite(obstacleThreeBounds, AssetsManager.boundOverlayRegion);
 		// Obstacle Car Bounding Box
-		batcher.drawSprite(obstacleFourBounds, Assets.boundOverlayRegion);
+		batcher.drawSprite(obstacleFourBounds, AssetsManager.boundOverlayRegion);
 		// Car Bounding Box
-		batcher.drawSprite(carBounds, Assets.boundOverlayRegion);
+		batcher.drawSprite(carBounds, AssetsManager.boundOverlayRegion);
 		batcher.endBatch();
 	}
 

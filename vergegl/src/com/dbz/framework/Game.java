@@ -18,7 +18,7 @@ import com.dbz.framework.gl.GLGraphics;
 import com.dbz.framework.gl.Screen;
 import com.dbz.framework.input.FileIO;
 import com.dbz.framework.input.Input;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 
 public abstract class Game extends Activity implements Renderer {
 	enum GameState {
@@ -169,7 +169,7 @@ public abstract class Game extends Activity implements Renderer {
 
 	@Override  //used for hardware back button
 	public void onBackPressed() {
-    	Assets.playSound(Assets.clickSound);
+    	AssetsManager.playSound(AssetsManager.clickSound);
 		screen.onBackPressed(); //lil strategy pattern-esk - each instance of screen implements its own onBackPressed to define behavior.
 		
 	}

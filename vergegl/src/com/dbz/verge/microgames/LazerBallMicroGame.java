@@ -3,9 +3,11 @@ package com.dbz.verge.microgames;
 import java.util.List;
 
 import com.dbz.framework.Game;
+import com.dbz.framework.gl.Texture;
+import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.verge.Assets;
+import com.dbz.verge.AssetsManager;
 import com.dbz.verge.MicroGame;
 
 // TODO: Explosion Art, better laser art, something better than bob as target. (See todo's below)
@@ -16,6 +18,13 @@ public class LazerBallMicroGame extends MicroGame  {
 	// --- Fields ---
 	// --------------
 
+	// Assets
+	public static Texture lazerBackground;
+    public static TextureRegion lazerBackgroundRegion;
+    public static Texture lazer;
+    public static TextureRegion lazerBall;
+    public static TextureRegion lazerFace;
+	
 	// Array used to store the different required counts of the 3 difficulty levels.
 	private int requiredLazerChargeCount[] = { 10, 20, 30 };
 	// Charge rate = (max size - min size) / requiredLazerChargeCount[x]
@@ -43,9 +52,18 @@ public class LazerBallMicroGame extends MicroGame  {
 	// -------------------   
 	public LazerBallMicroGame(Game game) {
 		super(game);
+		load();
 		//totalMicroGameTime = new float[]{10.0f, 8.5f, 7.0f}; //leaving at default time for now
 	}
-
+	
+	public void load() {
+		lazerBackground = new Texture(game, "lazerBackground.png");
+        lazerBackgroundRegion = new TextureRegion(lazerBackground, 0, 0, 1280, 800);
+        lazer = new Texture(game, "lazerItems.png");
+        lazerBall= new TextureRegion(lazer, 0, 0, 192, 192);
+        lazerFace = new TextureRegion(lazer, 256, 0, 224, 320);
+        
+	}
 	// ---------------------
 	// --- Update Method ---
 	// ---------------------   
@@ -55,14 +73,14 @@ public class LazerBallMicroGame extends MicroGame  {
 		// stop game clock when lazer is charged
 		if(!lazerCharged){ 
 			if (lostTimeBased(deltaTime)) {
-				Assets.playSound(Assets.hitSound);
+				AssetsManager.playSound(AssetsManager.hitSound);
 				return;
 			} 
 		} else { // lazer fired
 			
 			if(!lazerSoundPlayed){ // if win sound hasn't played, pause bg music, start sound prep for animation.
-				Assets.music.pause();
-				Assets.playSound(Assets.firinMahLazer, speedScalar[speed-1]); //playspeed based on anim scalar
+				AssetsManager.music.pause();
+				AssetsManager.playSound(AssetsManager.firinMahLazer, speedScalar[speed-1]); //playspeed based on anim scalar
 						
 				try { // sleep for sound to play
 					Thread.sleep(animationPauseTime[speed-1]);
@@ -76,9 +94,9 @@ public class LazerBallMicroGame extends MicroGame  {
 				
 					if(collision(lazerBallBounds, targetBounds)){
 						if(com.dbz.verge.Settings.soundEnabled) //TODO add implementation in Assets.java??
-							Assets.music.play();
+							AssetsManager.music.play();
 						
-						Assets.playSound(Assets.highJumpSound);
+						AssetsManager.playSound(AssetsManager.highJumpSound);
 						microGameState = MicroGameState.Won;
 				}
 					return;
@@ -100,7 +118,7 @@ public class LazerBallMicroGame extends MicroGame  {
 					lazerCharged = true;
 				}
 				else if (chargeCount < requiredLazerChargeCount[level-1])
-					Assets.playSound(Assets.coinSound); //TODO need charging sound asset here
+					AssetsManager.playSound(AssetsManager.coinSound); //TODO need charging sound asset here
 				return;
 			}
 
@@ -165,19 +183,19 @@ public class LazerBallMicroGame extends MicroGame  {
 	@Override
 	public void drawRunningBackground() {
 		// Draw background.
-		batcher.beginBatch(Assets.lazerBackground);
-		batcher.drawSprite(0, 0, 1280, 800, Assets.lazerBackgroundRegion);
+		batcher.beginBatch(lazerBackground);
+		batcher.drawSprite(0, 0, 1280, 800, lazerBackgroundRegion);
 		batcher.endBatch();
 	}
 
 	@Override
 	public void drawRunningObjects() {
 		// Draw Lazer Assets
-		batcher.beginBatch(Assets.lazer);
+		batcher.beginBatch(lazer);
 		
 		if(lazerCharged)
-			batcher.drawSpriteCenterCoords(lazerFaceBounds, Assets.lazerFace);
-		batcher.drawSpriteCenterCoords(lazerBallBounds, Assets.lazerBall);
+			batcher.drawSpriteCenterCoords(lazerFaceBounds, lazerFace);
+		batcher.drawSpriteCenterCoords(lazerBallBounds, lazerBall);
 		//batcher.drawSprite(targetBounds, Assets.lazerTargetRegion);
 		batcher.endBatch();
 	}
@@ -185,9 +203,9 @@ public class LazerBallMicroGame extends MicroGame  {
 	@Override
 	public void drawRunningBounds() {
 		// Bounding Boxes
-		batcher.beginBatch(Assets.boundOverlay);
-		batcher.drawSpriteCenterCoords(lazerBallBounds, Assets.boundOverlayRegion);  // LazerBall Bounding Box
-		batcher.drawSprite(targetBounds, Assets.boundOverlayRegion);	 // Target Bounding Box
+		batcher.beginBatch(AssetsManager.boundOverlay);
+		batcher.drawSpriteCenterCoords(lazerBallBounds, AssetsManager.boundOverlayRegion);  // LazerBall Bounding Box
+		batcher.drawSprite(targetBounds, AssetsManager.boundOverlayRegion);	 // Target Bounding Box
 		batcher.endBatch();
 	}
 
