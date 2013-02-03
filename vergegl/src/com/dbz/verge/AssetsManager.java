@@ -344,10 +344,6 @@ public class AssetsManager {
             music.play();
     }
     
-    public static void reload(AssetsCollection assetsCollection) {
-    	
-    }
-    
     public static void playSound(Sound sound) {
         if(Settings.soundEnabled)
             sound.play();
