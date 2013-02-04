@@ -36,11 +36,11 @@ public class AquariumMicroGame extends MicroGame{
 	// ------------------- 	
 	
 	public AquariumMicroGame() {
-		load();
 		// Extend allowed time.
 		baseMicroGameTime = 10.0f;
 	}
 	
+	@Override
 	public void load() {
 		aquariumBackround=new Texture("aquariumBackground.png");
         aquariumBackroundRegion=new TextureRegion(aquariumBackround,0,0,1280,800);
@@ -49,6 +49,21 @@ public class AquariumMicroGame extends MicroGame{
         aquariumCrack=new TextureRegion(aquariumTank,1285,0,128,128);
         
 	}
+	
+	@Override
+	public void unload() {
+		aquariumBackround.dispose();
+		aquariumTank.dispose();
+		
+	}
+
+	@Override
+	public void reload() {
+		aquariumBackround.dispose();
+		aquariumTank.dispose();
+		
+	}
+	
 
 	// ---------------------
 	// --- Update Method ---
@@ -219,4 +234,5 @@ public class AquariumMicroGame extends MicroGame{
 			bounds = rectangle;
 		}
 	}
+
 }

@@ -240,6 +240,7 @@ public class GameGridMenu extends Menu {
                 // Ready Bounds Check.
                 if(OverlapTester.pointInRectangle(checkMarkBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
+                    AssetsManager.loadMicrogame(selectedMicroGame);
                     game.setScreen(selectedMicroGame);
                     return;
                 }

@@ -99,7 +99,6 @@ public class CircuitMicroGame extends MicroGame {
 	// -------------------
 
 	public CircuitMicroGame() {
-		load();
 		//totalMicroGameTime = 10; //note, time based loss/win doesn't apply to this game.
 		speedScalar = new float[] { 1.0f, 1.1f, 1.2f }; //TODO adjust sparkSpeed to work w/ Microgame.speedScalar
 		// Calculate rate of change for first two vectors
@@ -126,6 +125,20 @@ public class CircuitMicroGame extends MicroGame {
     	circuitTextures[3] = circuitLine4;
 	}
 
+	@Override
+	public void unload() {
+		circuitBackground.dispose();
+		circuit.dispose();
+
+	}
+
+	@Override
+	public void reload() {
+		circuitBackground.reload();
+		circuit.reload();
+		
+	}
+	
 	// ---------------------
 	// --- Update Method ---
 	// ---------------------

@@ -71,7 +71,6 @@ public class TrafficMicroGame extends MicroGame {
 	// -------------------
 
 	public TrafficMicroGame() {
-		load();
 		randomizeCarsLanes();
 	}
 	
@@ -82,6 +81,18 @@ public class TrafficMicroGame extends MicroGame {
         trafficRedCarRegion = new TextureRegion(traffic, 80, 800, 80, 170);
         trafficBlackCarRegion = new TextureRegion(traffic, 160, 800, 80, 170);
         
+	}
+	
+	@Override
+	public void unload() {
+		traffic.dispose();
+		
+	}
+
+	@Override
+	public void reload() {
+		traffic.reload();
+		
 	}
 
 	// ---------------------

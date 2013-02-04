@@ -42,9 +42,7 @@ public class FlyMicroGame extends MicroGame {
 	// --- Constructor ---
 	// -------------------
 	
-    public FlyMicroGame() {
-        load();
-    }
+    public FlyMicroGame() {}
     
     public void load() {
     	flyBackground = new Texture("flybackground.png");
@@ -52,6 +50,21 @@ public class FlyMicroGame extends MicroGame {
         fly = new Texture("fly.png");
         flyRegion = new TextureRegion(fly, 0, 0, 80, 60);
     }
+    
+	@Override
+	public void unload() {
+		flyBackground.dispose();
+		fly.dispose();
+		
+	}
+
+	@Override
+	public void reload() {
+		flyBackground.reload();
+		fly.reload();
+		
+	}
+	
 	// ---------------------
 	// --- Update Method ---
 	// ---------------------

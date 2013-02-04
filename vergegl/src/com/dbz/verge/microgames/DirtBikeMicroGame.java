@@ -60,9 +60,7 @@ public class DirtBikeMicroGame extends MicroGame {
 	// --- Constructor ---
 	// ------------------- 
 	
-    public DirtBikeMicroGame() {
-        load();
-    }
+    public DirtBikeMicroGame() {}
     
     public void load() {
     	dirtBikeBackground = new Texture("DirtBikeScreen.png");
@@ -76,6 +74,17 @@ public class DirtBikeMicroGame extends MicroGame {
         dirtBikeObstacleTwoRegion = new TextureRegion(dirtBikeBackground,630,730,50,200);
         
     }
+    
+	@Override
+	public void unload() {
+		dirtBikeBackground.dispose();
+		
+	}
+
+	@Override
+	public void reload() {
+		dirtBikeBackground.reload();
+	}
 
 	// ---------------------
 	// --- Update Method ---

@@ -34,9 +34,7 @@ public class BroFistMicroGame extends MicroGame {
 	// --- Constructor ---
 	// ------------------- 
 	
-    public BroFistMicroGame() {
-        load();
-    }
+    public BroFistMicroGame() {}
     
     public void load() {
     	broFistBackground = new Texture("brofistbackground.png");
@@ -45,9 +43,21 @@ public class BroFistMicroGame extends MicroGame {
         broFistRegion = new TextureRegion(broFist, 0, 0, 320, 240);
     }
     
-    public void unload() {
-    	
-    }
+	@Override
+	public void unload() {
+		// TODO Auto-generated method stub
+		broFist.dispose();
+		broFistBackground.dispose();
+		
+	}
+
+	@Override
+	public void reload() {
+		// TODO Auto-generated method stub
+		broFist.reload();
+		broFistBackground.reload();
+		
+	}
 	// ---------------------
 	// --- Update Method ---
 	// ---------------------

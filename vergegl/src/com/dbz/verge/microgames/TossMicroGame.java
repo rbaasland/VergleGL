@@ -45,7 +45,6 @@ public class TossMicroGame extends MicroGame {
 	// -------------------
 
 	public TossMicroGame() {
-		load();
 		// Extend allowed time.
 		baseMicroGameTime = 10.0f;
 	}
@@ -55,6 +54,19 @@ public class TossMicroGame extends MicroGame {
         tossBallRegion = new TextureRegion(toss, 0, 800, 80, 80);
         tossBackgroundRegion = new TextureRegion(toss, 0, 0, 1280, 800);
 	}
+	
+	@Override
+	public void unload() {
+		toss.dispose();
+		
+	}
+
+	@Override
+	public void reload() {
+		toss.reload();
+		
+	}
+	
 	// ---------------------
 	// --- Update Method ---
 	// ---------------------

@@ -376,6 +376,7 @@ public abstract class Mode extends Screen {
 				speed++;
 		
 		// Resets the MicroGame, and sets its state to Running to skip the Ready state.
+		AssetsManager.loadMicrogame(microGames[microGameIndex]); //unloads previous mg, loads current mg
 		microGames[microGameIndex].level = level;
 		microGames[microGameIndex].speed = speed;
 		microGames[microGameIndex].reset();

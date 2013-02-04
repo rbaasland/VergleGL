@@ -6,10 +6,34 @@ import com.dbz.framework.audio.Sound;
 import com.dbz.framework.audio.SoundManager;
 import com.dbz.framework.gl.Animation;
 import com.dbz.framework.gl.Font;
+import com.dbz.framework.gl.Screen;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 
 public class AssetsManager {
+	
+	
+	static MicroGame currentMicroGame;
+	
+	public static void loadMicrogame(MicroGame mg){
+		
+		if(currentMicroGame == null){
+			currentMicroGame = mg;
+			mg.load();
+			return;
+		} 
+		else {
+			currentMicroGame.unload();
+			currentMicroGame = mg;
+			mg.load();	
+		}
+	}
+	
+	public static void reloadCurrentMicroGame(){
+		currentMicroGame.reload();
+	}
+
+	
 	
 	// -------------------
 	// --- Menu Assets ---
@@ -321,7 +345,12 @@ public class AssetsManager {
         pauseToggle.reload();
         vergeFont.reload();
 
+        
+        
         // *** Reload MicroGame Assets. ***
+        reloadCurrentMicroGame();
+        
+        /*
         aquariumBackround.reload();
         aquariumTank.reload();
         dirtBikeBackground.reload();
@@ -336,6 +365,7 @@ public class AssetsManager {
         circuitBackground.reload();
         circuit.reload();
         toss.reload();
+        */
         
         // *** Reload Testing Assets. ***
         boundOverlay.reload();

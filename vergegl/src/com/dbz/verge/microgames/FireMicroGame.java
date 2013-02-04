@@ -49,9 +49,7 @@ public class FireMicroGame extends MicroGame {
 	// --- Constructor ---
 	// -------------------
 	
-    public FireMicroGame() {
-        load();
-    }
+    public FireMicroGame() {}
     
     public void load(){
     	fire = new Texture("firehouse.png");
@@ -59,6 +57,18 @@ public class FireMicroGame extends MicroGame {
         fireWindowRegion = new TextureRegion(fire, 1300, 20, 180, 260);
         clearWindowRegion = new TextureRegion(fire, 1500, 20, 180, 260);
     }
+    
+	@Override
+	public void unload() {
+		fire.dispose();
+		
+	}
+
+	@Override
+	public void reload() {
+		fire.reload();
+		
+	}
 
 	// ---------------------
 	// --- Update Method ---

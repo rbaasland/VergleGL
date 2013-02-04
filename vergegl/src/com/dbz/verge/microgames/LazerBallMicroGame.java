@@ -50,7 +50,6 @@ public class LazerBallMicroGame extends MicroGame  {
 	// --- Constructor ---
 	// -------------------   
 	public LazerBallMicroGame() {
-		load();
 		//totalMicroGameTime = new float[]{10.0f, 8.5f, 7.0f}; //leaving at default time for now
 	}
 	
@@ -62,6 +61,20 @@ public class LazerBallMicroGame extends MicroGame  {
         lazerFace = new TextureRegion(lazer, 256, 0, 224, 320);
         
 	}
+	
+	@Override
+	public void unload() {
+		lazerBackground.dispose();
+		lazer.dispose();
+	}
+
+	@Override
+	public void reload() {
+		lazerBackground.dispose();
+		lazer.dispose();
+		
+	}
+	
 	// ---------------------
 	// --- Update Method ---
 	// ---------------------   
