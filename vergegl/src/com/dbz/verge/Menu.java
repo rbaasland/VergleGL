@@ -2,7 +2,6 @@ package com.dbz.verge;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.Screen;
 import com.dbz.framework.gl.SpriteBatcher;
@@ -27,8 +26,7 @@ public abstract class Menu extends Screen {
     // -------------------
  	// --- Constructor ---
     // -------------------
-    public Menu(Game game) {
-        super(game);                    
+    public Menu() {                
     }       
 
     // ---------------------

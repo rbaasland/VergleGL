@@ -5,11 +5,10 @@ import com.dbz.framework.Game;
 
 public abstract class Screen {
     protected final GLGraphics glGraphics;
-    protected final Game game;
+    public static Game game;
     
-    public Screen(Game game) {
-        this.game = game;
-        glGraphics = ((Game)game).getGLGraphics();
+    public Screen() {
+        glGraphics = game.getGLGraphics();
     }
     
     public abstract void update(float deltaTime);

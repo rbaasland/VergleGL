@@ -2,7 +2,6 @@ package com.dbz.verge.microgames;
 
 import java.util.List;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
@@ -36,17 +35,16 @@ public class AquariumMicroGame extends MicroGame{
 	// --- Constructor ---
 	// ------------------- 	
 	
-	public AquariumMicroGame(Game game) {
-		super(game);
+	public AquariumMicroGame() {
 		load();
 		// Extend allowed time.
 		baseMicroGameTime = 10.0f;
 	}
 	
 	public void load() {
-		aquariumBackround=new Texture(game,"aquariumBackground.png");
+		aquariumBackround=new Texture("aquariumBackground.png");
         aquariumBackroundRegion=new TextureRegion(aquariumBackround,0,0,1280,800);
-        aquariumTank=new Texture(game,"aquariumTank.png");
+        aquariumTank=new Texture("aquariumTank.png");
         aquariumTankRegion=new TextureRegion(aquariumTank,0,0,1280,800);
         aquariumCrack=new TextureRegion(aquariumTank,1285,0,128,128);
         

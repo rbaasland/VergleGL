@@ -2,7 +2,6 @@ package com.dbz.verge.microgames;
 
 import java.util.List;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
@@ -35,15 +34,14 @@ public class BroFistMicroGame extends MicroGame {
 	// --- Constructor ---
 	// ------------------- 
 	
-    public BroFistMicroGame(Game game) {
-        super(game);
+    public BroFistMicroGame() {
         load();
     }
     
     public void load() {
-    	broFistBackground = new Texture(game, "brofistbackground.png");
+    	broFistBackground = new Texture("brofistbackground.png");
         broFistBackgroundRegion = new TextureRegion(broFistBackground, 0, 0, 1280, 800);
-        broFist = new Texture(game, "brofist.png");
+        broFist = new Texture("brofist.png");
         broFistRegion = new TextureRegion(broFist, 0, 0, 320, 240);
     }
     

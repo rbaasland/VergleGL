@@ -1,6 +1,5 @@
 package com.dbz.verge.modes;
 
-import com.dbz.framework.Game;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Mode;
 
@@ -22,9 +21,7 @@ public class TimeAttackMode extends Mode {
 	// -------------------
 	// --- Constructor ---
 	// -------------------
-	public TimeAttackMode(Game game) {
-		super(game);
-		
+	public TimeAttackMode() {
 		winsRequired = microGames.length * 3;
 		roundsToLevelUp = microGames.length;
 		roundsToSpeedUp = microGames.length;

@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.input.FileIO;
 
 public class Texture {
@@ -22,9 +21,9 @@ public class Texture {
     public int width;
     public int height;
     
-    public Texture(Game game, String fileName) {
-        this.glGraphics = game.getGLGraphics();
-        this.fileIO = game.getFileIO();
+    public Texture(String fileName) {
+        this.glGraphics = Screen.game.getGLGraphics();
+        this.fileIO = Screen.game.getFileIO();
         this.fileName = fileName;
         load();
     }

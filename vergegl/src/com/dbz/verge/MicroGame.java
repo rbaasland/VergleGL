@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.FPSCounter;
 import com.dbz.framework.gl.Screen;
@@ -71,8 +70,7 @@ public abstract class MicroGame extends Screen {
     // -------------------
 	// --- Constructor ---
     // -------------------
-	public MicroGame(Game game) {
-		super(game);
+	public MicroGame() {
 	}
 
 	// ----------------------
@@ -134,7 +132,7 @@ public abstract class MicroGame extends Screen {
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		            AssetsManager.playSound(AssetsManager.clickSound);
-		            game.setScreen(new GameGridMenu(game));
+		            game.setScreen(new GameGridMenu());
 		            return;
 		        }
 	        }
@@ -185,7 +183,7 @@ public abstract class MicroGame extends Screen {
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		            AssetsManager.playSound(AssetsManager.clickSound);
-		            game.setScreen(new GameGridMenu(game));
+		            game.setScreen(new GameGridMenu());
 		            return;     
 		        }
 	        }
@@ -245,11 +243,11 @@ public abstract class MicroGame extends Screen {
 		        	
 		        	if(game.getCurrentScreen() instanceof Mode){ //TODO fix issue w/ microgame inside a mode so we don't use code smell
 		        		AssetsManager.playSound(AssetsManager.clickSound);
-			            game.setScreen(new com.dbz.verge.menus.PlayMenu(game));
+			            game.setScreen(new com.dbz.verge.menus.PlayMenu());
 			            
 		        	} else {	
 		        		AssetsManager.playSound(AssetsManager.clickSound);
-		        		game.setScreen(new GameGridMenu(game));
+		        		game.setScreen(new GameGridMenu());
 		        		return;    
 		        	}
 		        }
@@ -283,11 +281,11 @@ public abstract class MicroGame extends Screen {
 		        	
 		        	if(game.getCurrentScreen() instanceof Mode){ //TODO fix issue w/ microgame inside a mode so we don't use code smell
 		        		AssetsManager.playSound(AssetsManager.clickSound);
-			            game.setScreen(new com.dbz.verge.menus.PlayMenu(game));
+			            game.setScreen(new com.dbz.verge.menus.PlayMenu());
 			            
 		        	} else {	
 		        		AssetsManager.playSound(AssetsManager.clickSound);
-		        		game.setScreen(new GameGridMenu(game));
+		        		game.setScreen(new GameGridMenu());
 		        		return;    
 		        	}  
 		        }
@@ -595,7 +593,7 @@ public abstract class MicroGame extends Screen {
 		
 		//TODO: Add condition where if Ready State, back to previous menu.
 		case Ready:
-			game.setScreen(new GameGridMenu(game));
+			game.setScreen(new GameGridMenu());
 		
 		case Running:  //cases to pause
 			microGameState = MicroGameState.Paused;
@@ -607,7 +605,7 @@ public abstract class MicroGame extends Screen {
 			
 		case Won:
 		case Lost:
-			game.setScreen(new GameGridMenu(game));
+			game.setScreen(new GameGridMenu());
 		}
 		
 	}

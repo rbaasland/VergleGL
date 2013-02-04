@@ -9,13 +9,14 @@ import com.dbz.verge.menus.MainMenu;
 
 public class VergeGame extends Game {
     boolean firstTimeCreate = true;
-      
+    
     public Screen getStartScreen() {
-        return new MainMenu(this);
+        return new MainMenu();
     }
     
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {         
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+    	Screen.game = this;
         super.onSurfaceCreated(gl, config);
         if(firstTimeCreate) {
             Settings.load(getFileIO());

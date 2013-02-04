@@ -2,7 +2,6 @@ package com.dbz.verge.microgames;
 
 import java.util.List;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
@@ -50,16 +49,15 @@ public class LazerBallMicroGame extends MicroGame  {
 	// -------------------
 	// --- Constructor ---
 	// -------------------   
-	public LazerBallMicroGame(Game game) {
-		super(game);
+	public LazerBallMicroGame() {
 		load();
 		//totalMicroGameTime = new float[]{10.0f, 8.5f, 7.0f}; //leaving at default time for now
 	}
 	
 	public void load() {
-		lazerBackground = new Texture(game, "lazerBackground.png");
+		lazerBackground = new Texture("lazerBackground.png");
         lazerBackgroundRegion = new TextureRegion(lazerBackground, 0, 0, 1280, 800);
-        lazer = new Texture(game, "lazerItems.png");
+        lazer = new Texture("lazerItems.png");
         lazerBall= new TextureRegion(lazer, 0, 0, 192, 192);
         lazerFace = new TextureRegion(lazer, 256, 0, 224, 320);
         

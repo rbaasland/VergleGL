@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.dbz.framework.DynamicGameObject;
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Animation;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
@@ -99,8 +98,7 @@ public class CircuitMicroGame extends MicroGame {
 	// --- Constructor ---
 	// -------------------
 
-	public CircuitMicroGame(Game game) {
-		super(game);
+	public CircuitMicroGame() {
 		load();
 		//totalMicroGameTime = 10; //note, time based loss/win doesn't apply to this game.
 		speedScalar = new float[] { 1.0f, 1.1f, 1.2f }; //TODO adjust sparkSpeed to work w/ Microgame.speedScalar
@@ -110,10 +108,10 @@ public class CircuitMicroGame extends MicroGame {
 	}
 	
 	public void load() {
-		circuitBackground = new Texture(game, "circuit_background.png");
+		circuitBackground = new Texture("circuit_background.png");
         circuitBackgroundRegion = new TextureRegion(circuitBackground, 0, 0, 1280, 800);
           
-        circuit = new Texture(game, "circuit_items.png");
+        circuit = new Texture("circuit_items.png");
         circuitSparkState1Region = new TextureRegion(circuit, 0,896,128,128);
         circuitSparkState2Region = new TextureRegion(circuit, 128,896,128,128);
         circuitSparkAnim = new Animation(0.2f, circuitSparkState1Region, circuitSparkState2Region);

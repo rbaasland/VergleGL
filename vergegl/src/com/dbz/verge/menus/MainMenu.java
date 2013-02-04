@@ -2,7 +2,6 @@ package com.dbz.verge.menus;
 
 import java.util.List;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
@@ -23,8 +22,7 @@ public class MainMenu extends Menu {
     // -------------------
  	// --- Constructor ---
     // -------------------
-    public MainMenu(Game game) {
-        super(game);                    
+    public MainMenu() {             
     }       
 
     // ---------------------
@@ -52,7 +50,7 @@ public class MainMenu extends Menu {
                 // Play Button Bounds Check.
                 if(OverlapTester.pointInRectangle(playBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-                    game.setScreen(new PlayMenu(game));
+                    game.setScreen(new PlayMenu());
                     return;
                 }
                 

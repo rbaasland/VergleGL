@@ -1,11 +1,9 @@
 package com.dbz.verge;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.FPSCounter;
 import com.dbz.framework.gl.Screen;
@@ -90,12 +88,11 @@ public abstract class Mode extends Screen {
     // -------------------
 	// --- Constructor ---
     // -------------------
-	public Mode(Game game) {
-		super(game);
+	public Mode() {
 		// Initialize MicroGame set.
-		microGames = new MicroGame[] { new BroFistMicroGame(game), new FlyMicroGame(game), new FireMicroGame(game),
-										   new TrafficMicroGame(game), new CircuitMicroGame(game), new LazerBallMicroGame(game),
-										   new TossMicroGame(game) };
+		microGames = new MicroGame[] { new BroFistMicroGame(), new FlyMicroGame(), new FireMicroGame(),
+										   new TrafficMicroGame(), new CircuitMicroGame(), new LazerBallMicroGame(),
+										   new TossMicroGame() };
 	
 		// Disables BackArrow and Pause UI elements for all MicroGames in the set.
 //		for (int i = 0; i < microGames.length; i++) {
@@ -164,7 +161,7 @@ public abstract class Mode extends Screen {
 	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new PlayMenu(game));
+	            game.setScreen(new PlayMenu());
 	            return;     
 	        }
 	        
@@ -214,7 +211,7 @@ public abstract class Mode extends Screen {
 	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new PlayMenu(game));
+	            game.setScreen(new PlayMenu());
 	            return;
 	        }
 	        
@@ -329,7 +326,7 @@ public abstract class Mode extends Screen {
 	        /// Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new PlayMenu(game));
+	            game.setScreen(new PlayMenu());
 	            return;     
 	        }
 	    }
@@ -357,7 +354,7 @@ public abstract class Mode extends Screen {
 	        /// Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new PlayMenu(game));
+	            game.setScreen(new PlayMenu());
 	            return;     
 	        }
 	    }
@@ -590,7 +587,7 @@ public abstract class Mode extends Screen {
 		case Ready:
 		case Won:
 		case Lost:
-			game.setScreen(new PlayMenu(game));
+			game.setScreen(new PlayMenu());
 			break;
 
 		default:

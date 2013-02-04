@@ -2,7 +2,6 @@ package com.dbz.verge.microgames;
 
 import java.util.List;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
@@ -50,13 +49,12 @@ public class FireMicroGame extends MicroGame {
 	// --- Constructor ---
 	// -------------------
 	
-    public FireMicroGame(Game game) {
-        super(game);
+    public FireMicroGame() {
         load();
     }
     
     public void load(){
-    	fire = new Texture(game, "firehouse.png");
+    	fire = new Texture("firehouse.png");
         fireBackgroundRegion = new TextureRegion(fire, 0, 0, 1280, 800);
         fireWindowRegion = new TextureRegion(fire, 1300, 20, 180, 260);
         clearWindowRegion = new TextureRegion(fire, 1500, 20, 180, 260);

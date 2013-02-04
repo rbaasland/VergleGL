@@ -2,7 +2,6 @@ package com.dbz.verge.menus;
 
 import java.util.List;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.OverlapTester;
@@ -76,8 +75,7 @@ public class GameGridMenu extends Menu {
     // -------------------
  	// --- Constructor ---
     // -------------------
-    public GameGridMenu(Game game) {
-        super(game); 
+    public GameGridMenu() {
     }       
 
     // ---------------------
@@ -110,11 +108,11 @@ public class GameGridMenu extends Menu {
                 if (OverlapTester.pointInRectangle(firstMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
                 	if (currentPage == 1) {
-                		selectedMicroGame = new BroFistMicroGame(game);
+                		selectedMicroGame = new BroFistMicroGame();
                 		selectedMicroGameIcon = AssetsManager.broFistIconRegion;
                 	}
                 	else if (currentPage == 2) {
-                		selectedMicroGame = new AquariumMicroGame(game);
+                		selectedMicroGame = new AquariumMicroGame();
                 		selectedMicroGameIcon = AssetsManager.aquariumIconRegion;
                 	}
                 	overlayPresent = true;
@@ -125,11 +123,11 @@ public class GameGridMenu extends Menu {
                 if (OverlapTester.pointInRectangle(secondMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
                 	if (currentPage == 1) {
-                		selectedMicroGame = new FlyMicroGame(game);
+                		selectedMicroGame = new FlyMicroGame();
                 		selectedMicroGameIcon = AssetsManager.flyIconRegion;
                 	}
                 	else if (currentPage == 2) {
-                		selectedMicroGame = new DirtBikeMicroGame(game);
+                		selectedMicroGame = new DirtBikeMicroGame();
                 		selectedMicroGameIcon = AssetsManager.dirtBikeIconRegion;
                 	}
                 	overlayPresent = true;
@@ -140,11 +138,11 @@ public class GameGridMenu extends Menu {
                 if (OverlapTester.pointInRectangle(thirdMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
                 	if (currentPage == 1) {
-                		selectedMicroGame = new FireMicroGame(game);
+                		selectedMicroGame = new FireMicroGame();
                 		selectedMicroGameIcon = AssetsManager.fireIconRegion;
                 	}
                 	else if (currentPage == 2) {
-                		selectedMicroGame = new TossMicroGame(game);
+                		selectedMicroGame = new TossMicroGame();
                 		selectedMicroGameIcon = AssetsManager.tossIconRegion;
                 	}
                 	overlayPresent = true;
@@ -155,7 +153,7 @@ public class GameGridMenu extends Menu {
                 if (OverlapTester.pointInRectangle(fourthMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
                 	if (currentPage == 1){
-                		selectedMicroGame = new TrafficMicroGame(game);
+                		selectedMicroGame = new TrafficMicroGame();
                 		selectedMicroGameIcon = AssetsManager.trafficIconRegion;
                 		overlayPresent = true;
                 	}
@@ -166,7 +164,7 @@ public class GameGridMenu extends Menu {
                 if (OverlapTester.pointInRectangle(fifthMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
                 	if (currentPage == 1){
-                		selectedMicroGame = new CircuitMicroGame(game);
+                		selectedMicroGame = new CircuitMicroGame();
                 		selectedMicroGameIcon = AssetsManager.circuitIconRegion;
                 		overlayPresent = true;
                 	}
@@ -177,7 +175,7 @@ public class GameGridMenu extends Menu {
                 if (OverlapTester.pointInRectangle(sixthMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
                 	if (currentPage == 1){
-                		selectedMicroGame = new LazerBallMicroGame(game);
+                		selectedMicroGame = new LazerBallMicroGame();
                 		selectedMicroGameIcon = AssetsManager.lazerBallIconRegion;
                 		overlayPresent = true;
                 	}
@@ -188,7 +186,7 @@ public class GameGridMenu extends Menu {
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
                     currentPage = 1;
-                    game.setScreen(new PlayMenu(game));
+                    game.setScreen(new PlayMenu());
                     return;
                 }
                 
@@ -430,7 +428,7 @@ public class GameGridMenu extends Menu {
     		overlayPresent = false;
     	else {
     		currentPage = 1;
-    		game.setScreen(new PlayMenu(game));	
+    		game.setScreen(new PlayMenu());	
     	}
     }
     

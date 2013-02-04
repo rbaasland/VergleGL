@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
@@ -71,14 +70,13 @@ public class TrafficMicroGame extends MicroGame {
 	// --- Constructor ---
 	// -------------------
 
-	public TrafficMicroGame(Game game) {
-		super(game);
+	public TrafficMicroGame() {
 		load();
 		randomizeCarsLanes();
 	}
 	
 	public void load() {
-		traffic = new Texture(game, "traffic.png");
+		traffic = new Texture("traffic.png");
         trafficBackgroundRegion = new TextureRegion(traffic, 0, 0, 1280, 800);
         trafficBlueCarRegion = new TextureRegion(traffic, 0, 800, 80, 170);
         trafficRedCarRegion = new TextureRegion(traffic, 80, 800, 80, 170);

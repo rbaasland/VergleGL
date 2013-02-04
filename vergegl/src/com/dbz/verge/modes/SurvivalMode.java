@@ -4,7 +4,6 @@ import java.util.Random;
 
 import android.util.Log;
 
-import com.dbz.framework.Game;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Mode;
 
@@ -28,9 +27,7 @@ public class SurvivalMode extends Mode {
 	// -------------------
 	// --- Constructor ---
 	// -------------------
-	public SurvivalMode(Game game) {
-		super(game);
-		
+	public SurvivalMode() {
 		indexHistory = new int[microGames.length];
 		clearIndexHistory();
 	}

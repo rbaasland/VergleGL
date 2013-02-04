@@ -2,7 +2,6 @@ package com.dbz.verge.microgames;
 
 import java.util.List;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
@@ -43,15 +42,14 @@ public class FlyMicroGame extends MicroGame {
 	// --- Constructor ---
 	// -------------------
 	
-    public FlyMicroGame(Game game) {
-        super(game);
+    public FlyMicroGame() {
         load();
     }
     
     public void load() {
-    	flyBackground = new Texture(game, "flybackground.png");
+    	flyBackground = new Texture("flybackground.png");
         flyBackgroundRegion = new TextureRegion(flyBackground, 0, 0, 1280, 800);
-        fly = new Texture(game, "fly.png");
+        fly = new Texture("fly.png");
         flyRegion = new TextureRegion(fly, 0, 0, 80, 60);
     }
 	// ---------------------

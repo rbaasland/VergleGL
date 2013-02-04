@@ -3,7 +3,6 @@ package com.dbz.verge.microgames;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
@@ -45,15 +44,14 @@ public class TossMicroGame extends MicroGame {
 	// --- Constructor ---
 	// -------------------
 
-	public TossMicroGame(Game game) {
-		super(game);
+	public TossMicroGame() {
 		load();
 		// Extend allowed time.
 		baseMicroGameTime = 10.0f;
 	}
 	
 	public void load() {
-		toss = new Texture(game,"toss.png");
+		toss = new Texture("toss.png");
         tossBallRegion = new TextureRegion(toss, 0, 800, 80, 80);
         tossBackgroundRegion = new TextureRegion(toss, 0, 0, 1280, 800);
 	}

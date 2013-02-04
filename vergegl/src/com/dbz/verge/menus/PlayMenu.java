@@ -2,7 +2,6 @@ package com.dbz.verge.menus;
 
 import java.util.List;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
@@ -27,8 +26,7 @@ public class PlayMenu extends Menu {
  	// --- Constructor ---
     // -------------------
     
-    public PlayMenu(Game game) {
-        super(game);                    
+    public PlayMenu() {                  
     }       
 
     // ---------------------
@@ -57,28 +55,28 @@ public class PlayMenu extends Menu {
                 // Survival Button Bounds Check.   
                 if(OverlapTester.pointInRectangle(survivalBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-                    game.setScreen(new SurvivalMode(game));
+                    game.setScreen(new SurvivalMode());
                     return;
                 }
                 
                 // Time Attack Button Bounds Check.
                 if(OverlapTester.pointInRectangle(timeAttackBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-                    game.setScreen(new TimeAttackMode(game));
+                    game.setScreen(new TimeAttackMode());
                     return;
                 }
                 
                 // Game Grid Button Bounds Check.
                 if(OverlapTester.pointInRectangle(gameGridBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-                    game.setScreen(new GameGridMenu(game));
+                    game.setScreen(new GameGridMenu());
                     return;
                 }
                 
                 // Back Arrow Bounds Check.
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-                    game.setScreen(new MainMenu(game));
+                    game.setScreen(new MainMenu());
                     return;
                 }
                 
@@ -124,7 +122,7 @@ public class PlayMenu extends Menu {
     
     @Override
     public void onBackPressed(){
-    	game.setScreen(new MainMenu(game));
+    	game.setScreen(new MainMenu());
     }
     
 }

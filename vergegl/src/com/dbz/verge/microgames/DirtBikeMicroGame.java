@@ -2,7 +2,6 @@ package com.dbz.verge.microgames;
 
 import java.util.List;
 
-import com.dbz.framework.Game;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 import com.dbz.framework.input.Input.TouchEvent;
@@ -61,13 +60,12 @@ public class DirtBikeMicroGame extends MicroGame {
 	// --- Constructor ---
 	// ------------------- 
 	
-    public DirtBikeMicroGame(Game game) {
-        super(game);
+    public DirtBikeMicroGame() {
         load();
     }
     
     public void load() {
-    	dirtBikeBackground = new Texture(game,"DirtBikeScreen.png");
+    	dirtBikeBackground = new Texture("DirtBikeScreen.png");
         dirtBikeBackgroundRegion = new TextureRegion(dirtBikeBackground,0,0,1300,700);
         dirtBikeRegion = new TextureRegion(dirtBikeBackground, 1400,1,256,256);
         dirtBikeGasPedalRegion = new TextureRegion(dirtBikeBackground,1440,300,160,160);

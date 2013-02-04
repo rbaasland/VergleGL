@@ -161,15 +161,15 @@ public class AssetsManager {
     
     public static void load(Game game) {
     	// *** Initialize Menu Assets. ***
-        background = new Texture(game, "background.png");
+        background = new Texture("background.png");
         backgroundRegion = new TextureRegion(background, 0, 0, 1280, 800);
-        mainMenuButtons = new Texture(game, "mainmenubuttons.png");
+        mainMenuButtons = new Texture("mainmenubuttons.png");
         mainMenuButtonsRegion = new TextureRegion(mainMenuButtons, 0, 0, 1280, 800);
         
-        playMenuButtons = new Texture(game, "playmenubuttons.png");
+        playMenuButtons = new Texture("playmenubuttons.png");
         playMenuButtonsRegion = new TextureRegion(playMenuButtons, 0, 0, 1280, 800);
         
-        gameGrid = new Texture(game, "gamegrid.png");
+        gameGrid = new Texture("gamegrid.png");
         gameGridBackgroundRegion = new TextureRegion(gameGrid, 0, 0, 1280, 800);
         
         leftArrowRegion = new TextureRegion(gameGrid, 1280, 0, 80, 120);
@@ -185,7 +185,7 @@ public class AssetsManager {
         levelTwoRegion = new TextureRegion(gameGrid, 1200, 800, 300, 200);
         levelThreeRegion = new TextureRegion(gameGrid, 1500, 800, 300, 200);      
         
-        gameGridIconsPageOne = new Texture(game, "gamegridicons1.png");
+        gameGridIconsPageOne = new Texture("gamegridicons1.png");
         gameGridIconsPageOneRegion = new TextureRegion(gameGridIconsPageOne, 0, 0, 1024, 800);
         broFistIconRegion = new TextureRegion(gameGridIconsPageOne, 280, 180, 240, 220);
         flyIconRegion = new TextureRegion(gameGridIconsPageOne, 520, 180, 240, 220);
@@ -194,22 +194,22 @@ public class AssetsManager {
         circuitIconRegion = new TextureRegion(gameGridIconsPageOne, 520, 410, 240, 220);
         lazerBallIconRegion = new TextureRegion(gameGridIconsPageOne, 760, 410, 240, 220);
         
-        gameGridIconsPageTwo = new Texture(game, "gamegridicons2.png");
+        gameGridIconsPageTwo = new Texture("gamegridicons2.png");
         gameGridIconsPageTwoRegion = new TextureRegion(gameGridIconsPageTwo, 0, 0, 1024, 800);
         aquariumIconRegion = new TextureRegion(gameGridIconsPageTwo, 280, 180, 240, 220);
         dirtBikeIconRegion = new TextureRegion(gameGridIconsPageTwo, 520, 180, 240, 220);
         tossIconRegion = new TextureRegion(gameGridIconsPageTwo, 760, 180, 240, 220);
         
-        soundToggle = new Texture(game, "volumetoggle.png");
+        soundToggle = new Texture("volumetoggle.png");
         soundOnRegion = new TextureRegion(soundToggle, 0, 0, 140, 140);
         soundOffRegion = new TextureRegion(soundToggle, 140, 0, 140, 140);
-        backArrow = new Texture(game, "backarrow.png");
+        backArrow = new Texture("backarrow.png");
         backArrowRegion = new TextureRegion(backArrow, 0, 0, 140, 140); 
-        pauseToggle = new Texture(game, "pausetoggle.png");
+        pauseToggle = new Texture("pausetoggle.png");
         pauseRegion = new TextureRegion(pauseToggle, 0, 0, 140, 140);
         unpauseRegion = new TextureRegion(pauseToggle, 140, 0, 140, 140);
           
-        vergeFont = new Texture(game, "verge_font.png");
+        vergeFont = new Texture("verge_font.png");
         terminalFont = new Font(vergeFont, 0, 0, 15, 17, 32);
         
         // *** Initialize MicroGame Assets. ***
@@ -273,7 +273,7 @@ public class AssetsManager {
 //        tossBackgroundRegion = new TextureRegion(toss, 0, 0, 1280, 800);
 //        
         // *** Initialize Testing Assets. ***
-        boundOverlay = new Texture(game, "boundoverlay.png");
+        boundOverlay = new Texture("boundoverlay.png");
         boundOverlayRegion = new TextureRegion(boundOverlay, 0, 0, 1280, 800);
         
         soundManager = SoundManager.getInstance(); //instance of soundManager-- needed for sound objects

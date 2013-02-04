@@ -4,7 +4,6 @@ import java.util.Random;
 
 import android.util.Log;
 
-import com.dbz.framework.Game;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Mode;
 
@@ -29,8 +28,7 @@ public class StoryMode extends Mode {
 	// -------------------
 	// --- Constructor ---
 	// -------------------
-	public StoryMode(Game game) {
-		super(game);
+	public StoryMode() {
 		
 		indexHistory = new int[microGames.length];
 		clearIndexHistory();
