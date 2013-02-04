@@ -10,6 +10,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -166,6 +167,28 @@ public abstract class Game extends Activity implements Renderer {
 	}
 	
 	public abstract Screen getStartScreen();
+	
+	//Logs supported texture compression for device 
+	public void checkSupportedTextureCompression(GL10 gl){
+		
+		String s = gl.glGetString(GL10.GL_EXTENSIONS);
+		
+        if (s.contains("GL_IMG_texture_compression_pvrtc")){       //Use PVR compressed textures 
+        	Log.d("GL_EXTENSIONS", "pvrtc");
+        	
+        }else if (s.contains("GL_AMD_compressed_ATC_texture") ||
+                 s.contains("GL_ATI_texture_compression_atitc")){  //Load ATI Textures     
+        	Log.d("GL_EXTENSIONS", "ATITC"); 
+        	
+        }else if (s.contains("GL_OES_texture_compression_S3TC") ||
+                   s.contains("GL_EXT_texture_compression_s3tc")){  //Use DTX Textures
+        	Log.d("GL_EXTENSIONS", "S3TC");
+        	
+        }else{														//No texture compression found. 
+        	Log.d("GL_EXTENSIONS", "NONE");
+        }         
+	}
+
 
 	@Override  //used for hardware back button
 	public void onBackPressed() {
