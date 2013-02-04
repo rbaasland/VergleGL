@@ -4,9 +4,7 @@ import com.dbz.framework.Game;
 import com.dbz.framework.audio.Music;
 import com.dbz.framework.audio.Sound;
 import com.dbz.framework.audio.SoundManager;
-import com.dbz.framework.gl.Animation;
 import com.dbz.framework.gl.Font;
-import com.dbz.framework.gl.Screen;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 
@@ -32,8 +30,6 @@ public class AssetsManager {
 	public static void reloadCurrentMicroGame(){
 		currentMicroGame.reload();
 	}
-
-	
 	
 	// -------------------
 	// --- Menu Assets ---
@@ -93,70 +89,7 @@ public class AssetsManager {
     // ------------------------
  	// --- MicroGame Assets ---
  	// ------------------------
-    
-    public static Texture broFistBackground;
-    public static TextureRegion broFistBackgroundRegion;
-    public static Texture broFist;
-    public static TextureRegion broFistRegion;
-    
-    public static Texture flyBackground;
-    public static TextureRegion flyBackgroundRegion;
-    public static Texture fly;
-    public static TextureRegion flyRegion;
-    
-    public static Texture fire;
-    public static TextureRegion fireBackgroundRegion;
-    public static TextureRegion fireWindowRegion;
-    public static TextureRegion clearWindowRegion;
-    
-    public static Texture traffic;
-    public static TextureRegion trafficBackgroundRegion;
-    public static TextureRegion trafficBlueCarRegion;
-    public static TextureRegion trafficRedCarRegion;
-    public static TextureRegion trafficBlackCarRegion;
-    
-    public static Texture circuitBackground;
-    public static TextureRegion circuitBackgroundRegion;
-    public static Texture circuit;
-    public static TextureRegion circuitLine1;
-    public static TextureRegion circuitLine2;
-    public static TextureRegion circuitLine3;
-    public static TextureRegion circuitLine4;
-    public static TextureRegion circuitSparkState1Region;
-    public static TextureRegion circuitSparkState2Region;
-    public static Animation circuitSparkAnim;
 
-    public static Texture lazerBackground;
-    public static TextureRegion lazerBackgroundRegion;
-    public static Texture lazer;
-    public static TextureRegion lazerBall;
-    public static TextureRegion lazerFace;
-    
-    public static Texture aquariumBackround;
-    public static Texture aquariumTank;
-    public static TextureRegion aquariumBackroundRegion;
-    public static TextureRegion aquariumTankRegion;
-    public static TextureRegion aquariumCrack;
-    
-    public static Texture dirtBikeBackground;
-    public static TextureRegion dirtBikeBackgroundRegion;
-    public static TextureRegion dirtBikeRegion;
-    public static TextureRegion dirtBikeGasPedalRegion;
-    public static TextureRegion dirtBikeJumpButtonRegion;
-    public static TextureRegion dirtBikeFrameRegion;
-    public static TextureRegion dirtBikeWheelRegion;
-    public static TextureRegion dirtBikeObstacleOneRegion;
-    public static TextureRegion dirtBikeObstacleTwoRegion;
-    
-    public static Texture toss;
-    public static TextureRegion tossBallRegion;
-    public static TextureRegion tossBackgroundRegion;
-    
-    // ------------------------
-  	// --- Sound Assets -----
-  	// ------------------------
-    public static SoundManager soundManager; //needed to use Sound Objects
-    
     // ------------------------
   	// --- Testing Assets -----
   	// ------------------------
@@ -164,6 +97,11 @@ public class AssetsManager {
     public static Texture boundOverlay;
     public static TextureRegion boundOverlayRegion;
  
+    // ------------------------
+  	// --- Sound Assets -----
+  	// ------------------------
+    public static SoundManager soundManager; //needed to use Sound Objects
+    
     public static Music music;
     
     public static Sound punchSound;
@@ -183,6 +121,7 @@ public class AssetsManager {
     public static Sound firinMahLazer;
     public static Sound	pop;
     
+    /** Load Persistent Assets */   
     public static void load(Game game) {
     	// *** Initialize Menu Assets. ***
         background = new Texture("background.png");
@@ -235,67 +174,7 @@ public class AssetsManager {
           
         vergeFont = new Texture("verge_font.png");
         terminalFont = new Font(vergeFont, 0, 0, 15, 17, 32);
-        
-        // *** Initialize MicroGame Assets. ***
-//        broFistBackground = new Texture(game, "brofistbackground.png");
-//        broFistBackgroundRegion = new TextureRegion(broFistBackground, 0, 0, 1280, 800);
-//        broFist = new Texture(game, "brofist.png");
-//        broFistRegion = new TextureRegion(broFist, 0, 0, 320, 240);
-//        
-//        flyBackground = new Texture(game, "flybackground.png");
-//        flyBackgroundRegion = new TextureRegion(flyBackground, 0, 0, 1280, 800);
-//        fly = new Texture(game, "fly.png");
-//        flyRegion = new TextureRegion(fly, 0, 0, 80, 60);
-//        
-//        fire = new Texture(game, "firehouse.png");
-//        fireBackgroundRegion = new TextureRegion(fire, 0, 0, 1280, 800);
-//        fireWindowRegion = new TextureRegion(fire, 1300, 20, 180, 260);
-//        clearWindowRegion = new TextureRegion(fire, 1500, 20, 180, 260);
-//        
-//        traffic = new Texture(game, "traffic.png");
-//        trafficBackgroundRegion = new TextureRegion(traffic, 0, 0, 1280, 800);
-//        trafficBlueCarRegion = new TextureRegion(traffic, 0, 800, 80, 170);
-//        trafficRedCarRegion = new TextureRegion(traffic, 80, 800, 80, 170);
-//        trafficBlackCarRegion = new TextureRegion(traffic, 160, 800, 80, 170);
-//        
-//        circuitBackground = new Texture(game, "circuit_background.png");
-//        circuitBackgroundRegion = new TextureRegion(circuitBackground, 0, 0, 1280, 800); 
-//        circuit = new Texture(game, "circuit_items.png");
-//        circuitSparkState1Region = new TextureRegion(circuit, 0,896,128,128);
-//        circuitSparkState2Region = new TextureRegion(circuit, 128,896,128,128);
-//        circuitSparkAnim = new Animation(0.2f, circuitSparkState1Region, circuitSparkState2Region);
-//        //Circuit parts TODO draw lines based on vectors instead of images
-//        circuitLine1 = new TextureRegion(circuit, 0, 0, 405, 195);
-//        circuitLine2 = new TextureRegion(circuit, 0, 256, 328, 383);
-//        circuitLine3 = new TextureRegion(circuit, 416, 512, 325, 122);
-//        circuitLine4 = new TextureRegion(circuit, 436,10, 557, 480);
-//
-//        lazerBackground = new Texture(game, "lazerBackground.png");
-//        lazerBackgroundRegion = new TextureRegion(lazerBackground, 0, 0, 1280, 800);
-//        lazer = new Texture(game, "lazerItems.png");
-//        lazerBall= new TextureRegion(lazer, 0, 0, 192, 192);
-//        lazerFace = new TextureRegion(lazer, 256, 0, 224, 320);
-//        
-//        aquariumBackround=new Texture(game,"aquariumBackground.png");
-//        aquariumBackroundRegion=new TextureRegion(aquariumBackround,0,0,1280,800);
-//        aquariumTank=new Texture(game,"aquariumTank.png");
-//        aquariumTankRegion=new TextureRegion(aquariumTank,0,0,1280,800);
-//        aquariumCrack=new TextureRegion(aquariumTank,1285,0,128,128);
-//        
-//        dirtBikeBackground = new Texture(game,"DirtBikeScreen.png");
-//        dirtBikeBackgroundRegion = new TextureRegion(dirtBikeBackground,0,0,1300,700);
-//        dirtBikeRegion = new TextureRegion(dirtBikeBackground, 1400,1,256,256);
-//        dirtBikeGasPedalRegion = new TextureRegion(dirtBikeBackground,1440,300,160,160);
-//        dirtBikeJumpButtonRegion = new TextureRegion(dirtBikeBackground,1440,460,160,160);
-//        dirtBikeFrameRegion = new TextureRegion(dirtBikeBackground,0,720,250,220);
-//        dirtBikeWheelRegion = new TextureRegion(dirtBikeBackground,270,720,100,100);
-//        dirtBikeObstacleOneRegion = new TextureRegion(dirtBikeBackground,400,720,200,160);
-//        dirtBikeObstacleTwoRegion = new TextureRegion(dirtBikeBackground,630,730,50,200);
-//        
-//        toss = new Texture(game,"toss.png");
-//        tossBallRegion = new TextureRegion(toss, 0, 800, 80, 80);
-//        tossBackgroundRegion = new TextureRegion(toss, 0, 0, 1280, 800);
-//        
+                
         // *** Initialize Testing Assets. ***
         boundOverlay = new Texture("boundoverlay.png");
         boundOverlayRegion = new TextureRegion(boundOverlay, 0, 0, 1280, 800);
@@ -344,28 +223,9 @@ public class AssetsManager {
         backArrow.reload();
         pauseToggle.reload();
         vergeFont.reload();
-
-        
-        
+    
         // *** Reload MicroGame Assets. ***
         reloadCurrentMicroGame();
-        
-        /*
-        aquariumBackround.reload();
-        aquariumTank.reload();
-        dirtBikeBackground.reload();
-        broFistBackground.reload();
-        broFist.reload();
-        flyBackground.reload();
-        fly.reload();
-        fire.reload();
-        traffic.reload();
-        lazerBackground.reload();
-        lazer.reload();
-        circuitBackground.reload();
-        circuit.reload();
-        toss.reload();
-        */
         
         // *** Reload Testing Assets. ***
         boundOverlay.reload();

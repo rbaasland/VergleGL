@@ -19,7 +19,7 @@ import com.dbz.verge.menus.GameGridMenu;
 //		 Implement speed and difficulty level in a standard fashion.
 //		 Extract Bounding Boxes draw calls (in each present()) to their own method.	 
 //		 ^^^ Note: Doing this in GameScreen as well, should be the same. ^^^ 
-public abstract class MicroGame extends Screen implements Loadable {
+public abstract class MicroGame extends Screen {
 	
 	// --------------
 	// --- Fields ---
@@ -569,6 +569,16 @@ public abstract class MicroGame extends Screen implements Loadable {
 		AssetsManager.terminalFont.drawTextCentered(batcher, string, 640, 700, 1.5f);
 		batcher.endBatch();
 	}
+	
+	// ------------------------
+	// --- Asset Management ---
+	// ------------------------
+	
+	public void load() {}
+	
+	public void unload() {}
+	
+	public void reload() {}	
 	
 	// --------------------------------
 	// --- Android State Management ---
