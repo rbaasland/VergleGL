@@ -7,8 +7,6 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-
-
 public class Vertices {
     final GLGraphics glGraphics;
     final boolean hasColor;
