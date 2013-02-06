@@ -8,7 +8,16 @@ public class Animation {
     final TextureRegion[] keyFrames;
     final float frameDuration;
     
-    // "Class ... varname" is how to pass in a variable number of objects into a method. 
+    /**
+     *  Frame Duration Table
+    	|Input Value||Frame Duration (sec)|
+    		1                 2 
+   			.5                1 
+  			.25               1/2 
+  			.175              1/4 
+  			.0875             1/8 
+  			.04375            1/16	
+     */
     public Animation(float frameDuration, TextureRegion ... keyFrames) {
         this.frameDuration = frameDuration;
         this.keyFrames = keyFrames;
@@ -25,7 +34,7 @@ public class Animation {
         return keyFrames[frameNumber];
     }
     
-    //added to return one of the keyFrames directly
+    /**return one of the keyFrames directly*/
     public TextureRegion getKeyFrame(int keyFrame) {
         return keyFrames[Math.min(keyFrames.length-1, keyFrame)]; //Math.min ensures no array out to bounds
     }
