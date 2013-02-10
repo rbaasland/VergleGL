@@ -49,6 +49,7 @@ public class TossMicroGame extends MicroGame {
 		baseMicroGameTime = 10.0f;
 	}
 	
+	@Override
 	public void load() {
 		toss = new Texture("toss.png");
         tossBallRegion = new TextureRegion(toss, 0, 800, 80, 80);

@@ -74,6 +74,7 @@ public class TrafficMicroGame extends MicroGame {
 		randomizeCarsLanes();
 	}
 	
+	@Override
 	public void load() {
 		traffic = new Texture("traffic.png");
         trafficBackgroundRegion = new TextureRegion(traffic, 0, 0, 1280, 800);

@@ -106,6 +106,7 @@ public class CircuitMicroGame extends MicroGame {
 								//IDEA, add level as a param to microgame constructor, then call super.updateLevel so we don't have to rework a bunch of code.
 	}
 	
+	@Override
 	public void load() {
 		circuitBackground = new Texture("circuit_background.png");
         circuitBackgroundRegion = new TextureRegion(circuitBackground, 0, 0, 1280, 800);

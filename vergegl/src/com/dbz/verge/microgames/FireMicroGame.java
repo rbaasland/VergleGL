@@ -51,6 +51,7 @@ public class FireMicroGame extends MicroGame {
 	
     public FireMicroGame() {}
     
+    @Override
     public void load(){
     	fire = new Texture("firehouse.png");
         fireBackgroundRegion = new TextureRegion(fire, 0, 0, 1280, 800);

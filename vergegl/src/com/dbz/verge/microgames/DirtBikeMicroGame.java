@@ -61,7 +61,8 @@ public class DirtBikeMicroGame extends MicroGame {
 	// ------------------- 
 	
     public DirtBikeMicroGame() {}
-    
+   
+    @Override
     public void load() {
     	dirtBikeBackground = new Texture("DirtBikeScreen.png");
         dirtBikeBackgroundRegion = new TextureRegion(dirtBikeBackground,0,0,1300,700);

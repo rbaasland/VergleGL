@@ -53,6 +53,7 @@ public class LazerBallMicroGame extends MicroGame  {
 		//totalMicroGameTime = new float[]{10.0f, 8.5f, 7.0f}; //leaving at default time for now
 	}
 	
+	@Override
 	public void load() {
 		lazerBackground = new Texture("lazerBackground.png");
         lazerBackgroundRegion = new TextureRegion(lazerBackground, 0, 0, 1280, 800);

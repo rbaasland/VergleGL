@@ -70,8 +70,7 @@ public abstract class MicroGame extends Screen {
     // -------------------
 	// --- Constructor ---
     // -------------------
-	public MicroGame() {
-	}
+	public MicroGame() {}
 
 	// ----------------------
 	// --- Update Methods ---
@@ -302,7 +301,6 @@ public abstract class MicroGame extends Screen {
 	public void reset() {
 		totalRunningTime = 0;
 	}
-
 	
 	// Checks for time-based loss.
 	public boolean lostTimeBased(float deltaTime) {
@@ -377,7 +375,6 @@ public abstract class MicroGame extends Screen {
 	public boolean rectangleCollision(Rectangle r1, Rectangle r2){
 		return OverlapTester.overlapRectangles(r1, r2);
 	}
-
 	
 	// --------------------
 	// --- Draw Methods ---
@@ -423,7 +420,7 @@ public abstract class MicroGame extends Screen {
 	    fpsCounter.logFrame();
 	}
 	
-	public void presentReady() {		
+	public void presentReady() {
 		// Draws Ready Message.
 		batcher.beginBatch(AssetsManager.vergeFont);
 		AssetsManager.terminalFont.drawTextCentered(batcher, "Ready?", 640, 500, 1.75f);
@@ -574,11 +571,11 @@ public abstract class MicroGame extends Screen {
 	// --- Asset Management ---
 	// ------------------------
 	
-	public void load() {}
+	public abstract void load();
 	
-	public void unload() {}
+	public abstract void unload();
 	
-	public void reload() {}	
+	public abstract void reload();
 	
 	// --------------------------------
 	// --- Android State Management ---

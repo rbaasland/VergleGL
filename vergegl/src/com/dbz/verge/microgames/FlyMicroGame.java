@@ -44,6 +44,7 @@ public class FlyMicroGame extends MicroGame {
 	
     public FlyMicroGame() {}
     
+    @Override
     public void load() {
     	flyBackground = new Texture("flybackground.png");
         flyBackgroundRegion = new TextureRegion(flyBackground, 0, 0, 1280, 800);
