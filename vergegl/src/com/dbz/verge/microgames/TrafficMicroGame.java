@@ -59,7 +59,7 @@ public class TrafficMicroGame extends MicroGame {
 	private int obstacleTwoSpeedY = 8;
 	private int obstacleThreeSpeedY = 15;
 	private int obstacleFourSpeedY = 5;
-	private int crushedCarSpeedY = 10;
+	private float crushedCarSpeedY = 20 * speedScalar[speed - 1];
 	private int backgroundSpeedY;
 
 	// Crushed Car counter
