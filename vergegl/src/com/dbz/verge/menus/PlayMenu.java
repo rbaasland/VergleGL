@@ -26,8 +26,7 @@ public class PlayMenu extends Menu {
  	// --- Constructor ---
     // -------------------
     
-    public PlayMenu() {                  
-    }       
+    public PlayMenu() {}       
 
     // ---------------------
  	// --- Update Method ---

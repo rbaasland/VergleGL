@@ -331,7 +331,7 @@ public class GameGridMenu extends Menu {
 	        
 	    	// Draw Page Arrows.
 	        batcher.beginBatch(AssetsManager.gameGrid);
-	        batcher.drawSprite(prevPageBounds, AssetsManager.leftArrowRegion);		// Previous Page Arrow
+	        batcher.drawSprite(prevPageBounds, AssetsManager.leftArrowRegion);	// Previous Page Arrow
 	        batcher.drawSprite(nextPageBounds, AssetsManager.rightArrowRegion);	// Next Page Arrow
 	        batcher.endBatch();
 	        
@@ -340,8 +340,8 @@ public class GameGridMenu extends Menu {
 //			Assets.font.drawText(batcher, String.valueOf(currentPage), 600, 50);
 //			batcher.endBatch();
 			
-			batcher.beginBatch(AssetsManager.vergeFont);
-			AssetsManager.terminalFont.drawTextCentered(batcher, String.valueOf(currentPage), 640, 10, 2.5f);
+			batcher.beginBatch(AssetsManager.vergeFontTexture);
+			AssetsManager.vergeFont.drawTextCentered(batcher, String.valueOf(currentPage), 640, 10, 2.5f);
 			batcher.endBatch();
 		}
 		

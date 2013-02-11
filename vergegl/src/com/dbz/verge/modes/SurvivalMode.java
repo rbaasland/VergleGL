@@ -30,10 +30,11 @@ public class SurvivalMode extends Mode {
 	// Keeps track of randomized indexes.
 	public int indexHistory[];
 
-	//high score variables
+	// High Score Variables
 	public static int[] surivalHighScores=new int[]{0,0,0,0,0};
 	public static String[] extraHighScores=new String[]{"","","","",""};
 	public final static String file = ".vergehighscores";
+	
 	// -------------------
 	// --- Constructor ---
 	// -------------------
@@ -123,14 +124,15 @@ public class SurvivalMode extends Mode {
 	// ----------------------------
 
 	@Override
-	public void presentStatusReport() {		
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Level: " + String.valueOf(level), 640, 450, 1.5f);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Speed: " + String.valueOf(speed), 640, 400, 1.5f);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Lives: " + String.valueOf(lives), 640, 350, 1.5f);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Rounds Survived: " + String.valueOf(currentRound-1) + " / OVER 9000", 640, 300, 1.5f);
+	public void presentStatusReport() {
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Level: " + String.valueOf(level), 315, 170);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Speed: " + String.valueOf(speed), 315, 140);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Lives: " + String.valueOf(lives), 315, 110);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Rounds Survived: " + String.valueOf(currentRound-1) + " / OVER 9000", 315, 80);
 		batcher.endBatch();
 	}
+	
 	//HIGH SCORES FOR SURIVAL MODE STORED INSIDE OF .vergehighscores
 	public static void validHighScore(int score)
 	{

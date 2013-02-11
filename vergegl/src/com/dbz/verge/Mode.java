@@ -44,16 +44,16 @@ public abstract class Mode extends Screen {
 	public ModeState previousModeState = ModeState.Ready;
 	
     // OpenGL Related Objects
-    public Camera2D guiCam = new Camera2D(glGraphics, 1280, 800);
+    public Camera2D guiCam = new Camera2D(glGraphics, 854, 480);
     public SpriteBatcher batcher  = new SpriteBatcher(glGraphics, 1000);
     public FPSCounter fpsCounter = new FPSCounter();
     
     // TouchPoint Vector and Bounding Boxes
     public Vector2 touchPoint = new Vector2();
-    public Rectangle readyBounds = new Rectangle(160, 160, 960, 480);
-    public Rectangle pauseToggleBounds = new Rectangle(1140, 660, 140, 140);
-    public Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
-    public Rectangle soundToggleBounds = new Rectangle(1135, 5, 140, 140);
+    public Rectangle readyBounds = new Rectangle(100, 0, 650, 480);
+    public Rectangle pauseToggleBounds = new Rectangle(760, 395, 93, 85);
+    public Rectangle backArrowBounds = new Rectangle(3, 3, 93, 85);
+    public Rectangle soundToggleBounds = new Rectangle(757, 3, 93, 85);
     
     // *Possible Difficulty Level Implementation.*
     // *Could also try to use a class, struct or enum.*
@@ -429,9 +429,14 @@ public abstract class Mode extends Screen {
 	}
 	
 	public void presentReady() {
+		// Draws background.
+		batcher.beginBatch(AssetsManager.transition);
+		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
+		batcher.endBatch();
+		
 		// Draws Ready Message.
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Ready?", 640, 500, 1.75f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Ready?", 315, 170);
 		batcher.endBatch();
 		
 	    // Draws Back Arrow.
@@ -445,16 +450,21 @@ public abstract class Mode extends Screen {
         batcher.endBatch();
 	    
 	    // Bounding Boxes
-//	    batcher.beginBatch(Assets.boundOverlay);
-//	    batcher.drawSprite(readyBounds, Assets.boundOverlayRegion); // Ready Bounding Box
+//	    batcher.beginBatch(AssetsManager.boundOverlay);
+//	    batcher.drawSprite(readyBounds, AssetsManager.boundOverlayRegion); // Ready Bounding Box
 //	    batcher.drawSprite(backArrowBounds, Assets.boundOverlayRegion); // Back Arrow Bounding Box
 //	    batcher.endBatch();
 	}
 	
 	public void presentPaused() {
+		// Draws background.
+		batcher.beginBatch(AssetsManager.transition);
+		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
+		batcher.endBatch();
+		
 		// Draws Paused Message.
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "- PAUSED -", 640, 500, 1.75f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "- PAUSED -", 315, 170);
 		batcher.endBatch();
 		
 		// Draw unpause symbol.
@@ -481,9 +491,9 @@ public abstract class Mode extends Screen {
 	
 	public void presentTransition() {
 		// Draws background.
-//		batcher.beginBatch(Assets.broFistBackground);
-//		batcher.drawSprite(0, 0, 1280, 800, Assets.broFistBackgroundRegion);
-//		batcher.endBatch();
+		batcher.beginBatch(AssetsManager.transition);
+		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
+		batcher.endBatch();
 		
 		// Draws the mid game status report.
 		presentStatusReport();
@@ -500,8 +510,8 @@ public abstract class Mode extends Screen {
 	
 	public void presentWon() {
 		// Draws the win message.
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "A Winner is You!", 640, 500, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextCentered(batcher, "A Winner is You!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// Draws the end game status report.
@@ -520,8 +530,8 @@ public abstract class Mode extends Screen {
 	
 	public void presentLost() {
 		// Draws the lose message.	
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "You Lost The Game!", 640, 500, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextCentered(batcher, "You Lost The Game!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// Draws the end game status report.
