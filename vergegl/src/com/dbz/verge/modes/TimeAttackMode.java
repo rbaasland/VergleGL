@@ -25,10 +25,11 @@ public class TimeAttackMode extends Mode {
 	public int totalMinutes;
 	public float totalSeconds;
 
-	//high score variables
+	// High Score Variables
 	public static float[] timeHighScores=new float[]{3600,3600,3600,3600,3600};
 	public static String[] extraHighScores=new String[]{"","","","",""};
 	public final static String file = ".vergehighscores";
+	
 	// -------------------
 	// --- Constructor ---
 	// -------------------
@@ -94,13 +95,14 @@ public class TimeAttackMode extends Mode {
 		totalMinutes = (int)(totalTime / 60);
 		totalSeconds = totalTime % 60.0f;
 
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Level: " + String.valueOf(level), 640, 450, 1.5f);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Speed: " + String.valueOf(speed), 640, 400, 1.5f);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Wins: " + String.valueOf(currentRound-1) + " / " + String.valueOf(winsRequired), 640, 350, 1.5f);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Total Time: " + String.format("%02d:%05.2f", totalMinutes, totalSeconds), 640, 300, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Level: " + String.valueOf(level), 315, 170);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Speed: " + String.valueOf(speed), 315, 140);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Wins: " + String.valueOf(currentRound-1) + " / " + String.valueOf(winsRequired), 315, 110);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Total Time: " + String.format("%02d:%05.2f", totalMinutes, totalSeconds), 315, 80);
 		batcher.endBatch();
 	}
+	
 	//HIGH SCORES FOR TIME ATTACK MODE STORED INSIDE OF .vergehighscores
 	public static void validHighScore(float score)
 	{

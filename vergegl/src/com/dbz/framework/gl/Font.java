@@ -84,4 +84,19 @@ public class Font {
         }
     }
     
- }
+    // Alternate Version of drawText(). Draws the text right formatted at provided x. (Left Bottom Point)
+    public void drawTextLeft(SpriteBatcher batcher, String text, float x, float y) {
+    	int len = text.length();
+        y += (0.5 * glyphHeight);
+    	
+        for(int i = 0; i < len; i++) {
+            int c = text.charAt(i) - ' ';
+            if(c < 0 || c > glyphs.length - 1) 
+                continue;
+            
+            TextureRegion glyph = glyphs[c];
+            batcher.drawSprite(x, y, glyphWidth, glyphHeight, glyph);
+            x += glyphWidth;
+        }
+    }
+}

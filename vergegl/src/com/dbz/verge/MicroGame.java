@@ -422,8 +422,8 @@ public abstract class MicroGame extends Screen {
 	
 	public void presentReady() {
 		// Draws Ready Message.
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Ready?", 640, 500, 1.75f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextCentered(batcher, "Ready?", 640, 500, 1.75f);
 		batcher.endBatch();
 		
 		if (backArrowEnabled) {
@@ -450,8 +450,8 @@ public abstract class MicroGame extends Screen {
 	//		 Exception: If the Android State Management System calls pause().
 	public void presentPaused() {
 		// Draws Paused Message.
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "- PAUSED -", 640, 500, 1.75f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextCentered(batcher, "- PAUSED -", 640, 500, 1.75f);
 		batcher.endBatch();
 		
 		// If Pause is enabled...
@@ -486,8 +486,8 @@ public abstract class MicroGame extends Screen {
 		// Draw the Timer.
 		totalMicroGameTime = (baseMicroGameTime / speedScalar[speed-1]);
 		timerString = String.format("%.2f", totalMicroGameTime - totalRunningTime);
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, timerString, 640, 15, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextCentered(batcher, timerString, 640, 15, 1.5f);
 		batcher.endBatch();
 	    
 		// If Pause is enabled...
@@ -506,8 +506,8 @@ public abstract class MicroGame extends Screen {
 	
 	public void presentWon() {
 		// Draws the Win message.	
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "You Win!", 640, 500, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextCentered(batcher, "You Win!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// If Back Arrow is enabled...
@@ -526,8 +526,8 @@ public abstract class MicroGame extends Screen {
 	
 	public void presentLost() {
 		// Draws the Lose message.		
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "You Lose!", 640, 500, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextCentered(batcher, "You Lose!", 640, 500, 1.5f);
 		batcher.endBatch();
 		
 		// If Back Arrow is enabled...
@@ -562,8 +562,8 @@ public abstract class MicroGame extends Screen {
 //			batcher.endBatch();
 //		}
 		// ...or could just dedicate screen space for it for the entire MicroGame.
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, string, 640, 700, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextCentered(batcher, string, 640, 700, 1.5f);
 		batcher.endBatch();
 	}
 	

@@ -109,11 +109,11 @@ public class StoryMode extends Mode {
 
 	@Override
 	public void presentStatusReport() {		
-		batcher.beginBatch(AssetsManager.vergeFont);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Level: " + String.valueOf(level), 640, 450, 1.5f);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Speed: " + String.valueOf(speed), 640, 400, 1.5f);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Lives: " + String.valueOf(lives), 640, 350, 1.5f);
-		AssetsManager.terminalFont.drawTextCentered(batcher, "Rounds Survived: " + String.valueOf(currentRound-1) + " / OVER 9000", 640, 300, 1.5f);
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		AssetsManager.vergeFont.drawTextCentered(batcher, "Level: " + String.valueOf(level), 640, 450, 1.5f);
+		AssetsManager.vergeFont.drawTextCentered(batcher, "Speed: " + String.valueOf(speed), 640, 400, 1.5f);
+		AssetsManager.vergeFont.drawTextCentered(batcher, "Lives: " + String.valueOf(lives), 640, 350, 1.5f);
+		AssetsManager.vergeFont.drawTextCentered(batcher, "Rounds Survived: " + String.valueOf(currentRound-1) + " / OVER 9000", 640, 300, 1.5f);
 		batcher.endBatch();
 	}
 	

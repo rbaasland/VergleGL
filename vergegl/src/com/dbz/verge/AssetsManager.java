@@ -43,6 +43,9 @@ public class AssetsManager {
     public static Texture playMenuButtons;
     public static TextureRegion playMenuButtonsRegion;
     
+    public static Texture transition;
+    public static TextureRegion transitionBackgroundRegion;
+    
     public static Texture gameGrid;
     public static TextureRegion gameGridBackgroundRegion;
     
@@ -83,12 +86,8 @@ public class AssetsManager {
     public static TextureRegion pauseRegion;
     public static TextureRegion unpauseRegion;
        
-    public static Texture vergeFont;
-    public static Font terminalFont;
-    
-    // ------------------------
- 	// --- MicroGame Assets ---
- 	// ------------------------
+    public static Texture vergeFontTexture;
+    public static Font vergeFont;
 
     // ------------------------
   	// --- Testing Assets -----
@@ -132,6 +131,9 @@ public class AssetsManager {
         playMenuButtons = new Texture("playmenubuttons.png");
         playMenuButtonsRegion = new TextureRegion(playMenuButtons, 0, 0, 1280, 800);
         
+        transition = new Texture("transition.png");
+        transitionBackgroundRegion = new TextureRegion(transition, 0, 0, 854, 480);
+        
         gameGrid = new Texture("gamegrid.png");
         gameGridBackgroundRegion = new TextureRegion(gameGrid, 0, 0, 1280, 800);
         
@@ -172,14 +174,14 @@ public class AssetsManager {
         pauseRegion = new TextureRegion(pauseToggle, 0, 0, 140, 140);
         unpauseRegion = new TextureRegion(pauseToggle, 140, 0, 140, 140);
           
-        vergeFont = new Texture("verge_font.png");
-        terminalFont = new Font(vergeFont, 0, 0, 15, 17, 32);
+        vergeFontTexture = new Texture("verge_font.png");
+        vergeFont = new Font(vergeFontTexture, 0, 0, 15, 17, 32);
                 
         // *** Initialize Testing Assets. ***
         boundOverlay = new Texture("boundoverlay.png");
         boundOverlayRegion = new TextureRegion(boundOverlay, 0, 0, 1280, 800);
         
-        soundManager = SoundManager.getInstance(); //instance of soundManager-- needed for sound objects
+        soundManager = SoundManager.getInstance(); // instance of soundManager-- needed for sound objects
         
         music = game.getAudio().newMusic(R.raw.music);
         music.loop();
@@ -216,13 +218,14 @@ public class AssetsManager {
         background.reload();
         mainMenuButtons.reload();
         playMenuButtons.reload();
+        transition.reload();
         gameGrid.reload();
         gameGridIconsPageOne.reload();
         gameGridIconsPageTwo.reload();
         soundToggle.reload();
         backArrow.reload();
         pauseToggle.reload();
-        vergeFont.reload();
+        vergeFontTexture.reload();
     
         // *** Reload MicroGame Assets. ***
         reloadCurrentMicroGame();
