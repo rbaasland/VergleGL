@@ -47,6 +47,9 @@ public abstract class MicroGame extends Screen {
     public Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
     public Rectangle soundToggleBounds = new Rectangle(1135, 5, 140, 140);
     
+    // Version
+    public int version = 0;
+    
     // Difficulty level variable.
     public int level = 1;
     

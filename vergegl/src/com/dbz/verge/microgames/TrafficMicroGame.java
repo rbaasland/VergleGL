@@ -20,13 +20,17 @@ public class TrafficMicroGame extends MicroGame {
 	// --------------
 	// --- Fields ---
 	// --------------
-	
+
 	// Assets
 	public static Texture traffic;
-    public static TextureRegion trafficBackgroundRegion;
-    public static TextureRegion trafficBlueCarRegion;
-    public static TextureRegion trafficRedCarRegion;
-    public static TextureRegion trafficBlackCarRegion;
+	public static TextureRegion trafficBackgroundRegion;
+	public static TextureRegion trafficBlueCarRegion;
+	public static TextureRegion trafficRedCarRegion;
+	public static TextureRegion trafficBlackCarRegion;
+	public static TextureRegion trafficMonsterCarRegion;
+	public static TextureRegion trafficCrushedBlueCarRegion;
+	public static TextureRegion trafficCrushedRedCarRegion;
+	public static TextureRegion trafficCrushedBlackCarRegion;
 
 	// Queue for lane selection
 	private Queue<Float> lanes = new LinkedList<Float>();
@@ -46,16 +50,24 @@ public class TrafficMicroGame extends MicroGame {
 	private float laneSix = 777;
 	private float laneSeven = 892;
 	private float laneEight = 1007;
-	
+
 	private float lanePosition[] = { laneOne, laneTwo, laneThree, laneFour,
-			laneFive, laneSix, laneSeven, laneEight};
+			laneFive, laneSix, laneSeven, laneEight };
 
 	// Variable needed for obstacle movement.
 	private int obstacleOneSpeedY = 12;
 	private int obstacleTwoSpeedY = 8;
 	private int obstacleThreeSpeedY = 15;
 	private int obstacleFourSpeedY = 5;
+	private int crushedCarSpeedY = 10;
+	private int backgroundSpeedY;
 
+	// Crushed Car counter
+	private int carsCrushed = 0;
+	
+	// Crushed cars needed to win
+	private int crushedCarsNeeded = 10;
+	
 	// Number of cars based on level
 	private int totalCars[] = { 2, 3, 4 };
 
@@ -64,36 +76,55 @@ public class TrafficMicroGame extends MicroGame {
 	private Rectangle obstacleTwoBounds = new Rectangle(0, -171, 80, 170);
 	private Rectangle obstacleThreeBounds = new Rectangle(0, -171, 80, 170);
 	private Rectangle obstacleFourBounds = new Rectangle(0, -171, 80, 170);
+	private Rectangle crushedOneBounds = new Rectangle(0, -171, 80, 170);
+	private Rectangle crushedTwoBounds = new Rectangle(0, -171, 80, 170);
+	private Rectangle crushedThreeBounds = new Rectangle(0, -171, 80, 170);
+	private Rectangle crushedFourBounds = new Rectangle(0, -171, 80, 170);
 	private Rectangle carBounds = new Rectangle(carStartPosition, 0, 80, 170);
-
+	private Rectangle backgroundBounds = new Rectangle(0, 0, 1280, 800);
+	private Rectangle backgroundBounds2 = new Rectangle(0, 800, 1280, 800);
+	
 	// -------------------
 	// --- Constructor ---
 	// -------------------
 
 	public TrafficMicroGame() {
 		randomizeCarsLanes();
+		baseMicroGameTime = 10.0f;
 	}
-	
+
 	@Override
 	public void load() {
 		traffic = new Texture("traffic.png");
-        trafficBackgroundRegion = new TextureRegion(traffic, 0, 0, 1280, 800);
-        trafficBlueCarRegion = new TextureRegion(traffic, 0, 800, 80, 170);
-        trafficRedCarRegion = new TextureRegion(traffic, 80, 800, 80, 170);
-        trafficBlackCarRegion = new TextureRegion(traffic, 160, 800, 80, 170);
-        
+		if (version == 0) {
+			trafficBackgroundRegion = new TextureRegion(traffic, 0, 0, 1280, 800);
+			trafficBlueCarRegion = new TextureRegion(traffic, 0, 800, 80, 170);
+			trafficRedCarRegion = new TextureRegion(traffic, 80, 800, 80, 170);
+			trafficBlackCarRegion = new TextureRegion(traffic, 160, 800, 80, 170);
+		}
+		if (version == 1) {
+			carBounds = new Rectangle(carStartPosition, 0, 92, 170);
+			trafficBackgroundRegion = new TextureRegion(traffic, 0, 0, 1280, 800);
+			trafficBlueCarRegion = new TextureRegion(traffic, 0, 800, 80, 170);
+			trafficRedCarRegion = new TextureRegion(traffic, 80, 800, 80, 170);
+			trafficBlackCarRegion = new TextureRegion(traffic, 160, 800, 80, 170);
+			trafficMonsterCarRegion = new TextureRegion(traffic, 240, 800, 92, 170);
+			trafficCrushedBlueCarRegion = new TextureRegion(traffic, 412, 800, 80, 170);
+			trafficCrushedRedCarRegion = new TextureRegion(traffic, 494, 800, 80, 170);
+			trafficCrushedBlackCarRegion = new TextureRegion(traffic, 332, 800, 80, 170);
+		}
 	}
-	
+
 	@Override
 	public void unload() {
 		traffic.dispose();
-		
+
 	}
 
 	@Override
 	public void reload() {
 		traffic.reload();
-		
+
 	}
 
 	// ---------------------
@@ -102,44 +133,114 @@ public class TrafficMicroGame extends MicroGame {
 
 	@Override
 	public void updateRunning(float deltaTime) {
-		// Checks for time-based win.
-		if (wonTimeBased(deltaTime)) {
-			AssetsManager.playSound(AssetsManager.highJumpSound);
-			return;
+		
+		if (version == 0) {
+			// Checks for time-based win.
+			if (wonTimeBased(deltaTime)) {
+				AssetsManager.playSound(AssetsManager.highJumpSound);
+				return;
+			}
+			// Moves background
+			moveBackground();
+			
+			
+			// Moves obstacles at the rate of obstacleSpeedY.
+			moveObstacles();
+
+			// Moves car at the rate of the Accelerometer's Y axis.
+			moveCar();
+
+			// Checks for collision-based loss. (obstacleOne)
+			if (collision(carBounds, obstacleOneBounds)) {
+				AssetsManager.playSound(AssetsManager.hitSound);
+				microGameState = MicroGameState.Lost;
+				return;
+			}
+
+			// Checks for collision-based loss. (obstacleTwo)
+			if (collision(carBounds, obstacleTwoBounds)) {
+				AssetsManager.playSound(AssetsManager.hitSound);
+				microGameState = MicroGameState.Lost;
+				return;
+			}
+
+			// Checks for collision-based loss. (obstacleThree)
+			if (collision(carBounds, obstacleThreeBounds)) {
+				AssetsManager.playSound(AssetsManager.hitSound);
+				microGameState = MicroGameState.Lost;
+				return;
+			}
+
+			// Checks for collision-based loss. (obstacleFour)
+			if (collision(carBounds, obstacleFourBounds)) {
+				AssetsManager.playSound(AssetsManager.hitSound);
+				microGameState = MicroGameState.Lost;
+				return;
+			}
 		}
 
-		// Moves obstacles at the rate of obstacleSpeedY.
-		moveObstacles();
+		if (version == 1) {
+			// Checks for time-based win.
+			if (lostTimeBased(deltaTime)) {
+				AssetsManager.playSound(AssetsManager.highJumpSound);
+				return;
+			}
+			
+			// Moves background at the rate of backgroundSpeedY which is updated by Accelerometer Y value
+			moveBackground();
+			
+			// Moves crushed cars off screen
+			moveCrushedCars();
+			
+			// Moves obstacles at the rate of obstacleSpeedY.
+			moveObstacles();
 
-		// Moves car at the rate of the Accelerometer's Y axis.
-		moveCar();
+			// Moves car at the rate of the Accelerometer's Y axis.
+			moveCar();
+			
+			// Checks for collision-based loss. (obstacleOne)
+			if (collision(carBounds, obstacleOneBounds)) {
+				AssetsManager.playSound(AssetsManager.hitSound);
+				crushedOneBounds.lowerLeft.set(obstacleOneBounds.lowerLeft);
+				obstacleOneBounds.lowerLeft.y = -171;
+				carsCrushed++;
+				if (carsCrushed == crushedCarsNeeded)
+					microGameState = MicroGameState.Won;
+				return;
+			}
 
-		// Checks for collision-based loss. (obstacleOne)
-		if (collision(carBounds, obstacleOneBounds)) {
-			AssetsManager.playSound(AssetsManager.hitSound);
-			microGameState = MicroGameState.Lost;
-			return;
-		}
+			// Checks for collision-based loss. (obstacleTwo)
+			if (collision(carBounds, obstacleTwoBounds)) {
+				AssetsManager.playSound(AssetsManager.hitSound);
+				crushedTwoBounds.lowerLeft.set(obstacleTwoBounds.lowerLeft);
+				obstacleTwoBounds.lowerLeft.y = -171;
+				carsCrushed++;
+				if (carsCrushed == crushedCarsNeeded)
+					microGameState = MicroGameState.Won;
+				return;
+			}
 
-		// Checks for collision-based loss. (obstacleTwo)
-		if (collision(carBounds, obstacleTwoBounds)) {
-			AssetsManager.playSound(AssetsManager.hitSound);
-			microGameState = MicroGameState.Lost;
-			return;
-		}
+			// Checks for collision-based loss. (obstacleThree)
+			if (collision(carBounds, obstacleThreeBounds)) {
+				AssetsManager.playSound(AssetsManager.hitSound);
+				crushedThreeBounds.lowerLeft.set(obstacleThreeBounds.lowerLeft);
+				obstacleThreeBounds.lowerLeft.y = -171;
+				carsCrushed++;
+				if (carsCrushed == crushedCarsNeeded)
+					microGameState = MicroGameState.Won;
+				return;
+			}
 
-		// Checks for collision-based loss. (obstacleThree)
-		if (collision(carBounds, obstacleThreeBounds)) {
-			AssetsManager.playSound(AssetsManager.hitSound);
-			microGameState = MicroGameState.Lost;
-			return;
-		}
-
-		// Checks for collision-based loss. (obstacleFour)
-		if (collision(carBounds, obstacleFourBounds)) {
-			AssetsManager.playSound(AssetsManager.hitSound);
-			microGameState = MicroGameState.Lost;
-			return;
+			// Checks for collision-based loss. (obstacleFour)
+			if (collision(carBounds, obstacleFourBounds)) {
+				AssetsManager.playSound(AssetsManager.hitSound);
+				crushedFourBounds.lowerLeft.set(obstacleFourBounds.lowerLeft);
+				obstacleFourBounds.lowerLeft.y = -171;
+				carsCrushed++;
+				if (carsCrushed == crushedCarsNeeded)
+					microGameState = MicroGameState.Won;
+				return;
+			}
 		}
 
 		// Gets all TouchEvents and stores them in a list.
@@ -182,6 +283,20 @@ public class TrafficMicroGame extends MicroGame {
 		randomizeCarsLanes();
 	}
 
+	// Moves the background
+	public void moveBackground() {
+		backgroundSpeedY = (int) Math.abs(game.getInput().getAccelX() + 20 * speedScalar[speed - 1]);
+		if (backgroundBounds.lowerLeft.y >= -backgroundBounds.height + backgroundSpeedY )
+			backgroundBounds.lowerLeft.y -= backgroundSpeedY;
+		else
+			backgroundBounds.lowerLeft.y = backgroundBounds2.lowerLeft.y + backgroundBounds.height - backgroundSpeedY;
+		if (backgroundBounds2.lowerLeft.y >= -backgroundBounds2.height + backgroundSpeedY)
+			backgroundBounds2.lowerLeft.y -= backgroundSpeedY;
+		else
+			backgroundBounds2.lowerLeft.y = backgroundBounds.lowerLeft.y + backgroundBounds.height - backgroundSpeedY;
+		
+	}
+	
 	// Moves obstacles at the rate of obstacleSpeedY.
 	public void moveObstacles() {
 
@@ -213,48 +328,106 @@ public class TrafficMicroGame extends MicroGame {
 		obstacleY -= obstacleTwoSpeedY * speedScalar[speed - 1];
 		obstacleTwoBounds.lowerLeft.set(obstacleX, obstacleY);
 
-		// Move Obstacle #3.
-		if (totalCars[level - 1] >= 3) {
-
-			obstacleX = obstacleThreeBounds.lowerLeft.x;
-			obstacleY = obstacleThreeBounds.lowerLeft.y;
-
-			if (obstacleY < -170) {
-				obstacleY = 800;
-				if (obstacleX != 0)
-					lanes.add(obstacleX);
-				obstacleX = lanes.remove();
+		if (version == 0){
+			// Move Obstacle #3.
+			if (totalCars[level - 1] >= 3) {
+	
+				obstacleX = obstacleThreeBounds.lowerLeft.x;
+				obstacleY = obstacleThreeBounds.lowerLeft.y;
+	
+				if (obstacleY < -170) {
+					obstacleY = 800;
+					if (obstacleX != 0)
+						lanes.add(obstacleX);
+					obstacleX = lanes.remove();
+				}
+	
+				obstacleY -= obstacleThreeSpeedY * speedScalar[speed - 1];
+				obstacleThreeBounds.lowerLeft.set(obstacleX, obstacleY);
 			}
-
-			obstacleY -= obstacleThreeSpeedY * speedScalar[speed - 1];
-			obstacleThreeBounds.lowerLeft.set(obstacleX, obstacleY);
-		}
-
-		// Move Obstacle #4.
-		if (totalCars[level - 1] == 4) {
-
-			obstacleX = obstacleFourBounds.lowerLeft.x;
-			obstacleY = obstacleFourBounds.lowerLeft.y;
-
-			if (obstacleY < -170) {
-				obstacleY = 800;
-				if (obstacleX != 0)
-					lanes.add(obstacleX);
-				obstacleX = lanes.remove();
+	
+			// Move Obstacle #4.
+			if (totalCars[level - 1] == 4) {
+	
+				obstacleX = obstacleFourBounds.lowerLeft.x;
+				obstacleY = obstacleFourBounds.lowerLeft.y;
+	
+				if (obstacleY < -170) {
+					obstacleY = 800;
+					if (obstacleX != 0)
+						lanes.add(obstacleX);
+					obstacleX = lanes.remove();
+				}
+	
+				obstacleY -= obstacleFourSpeedY * speedScalar[speed - 1];
+				obstacleFourBounds.lowerLeft.set(obstacleX, obstacleY);
 			}
-
-			obstacleY -= obstacleFourSpeedY * speedScalar[speed - 1];
-			obstacleFourBounds.lowerLeft.set(obstacleX, obstacleY);
 		}
+		if (version == 1) {
+			// Move Obstacle #3.
+			if (totalCars[level - 1] <= 3) {
+	
+				obstacleX = obstacleThreeBounds.lowerLeft.x;
+				obstacleY = obstacleThreeBounds.lowerLeft.y;
+	
+				if (obstacleY < -170) {
+					obstacleY = 800;
+					if (obstacleX != 0)
+						lanes.add(obstacleX);
+					obstacleX = lanes.remove();
+				}
+	
+				obstacleY -= obstacleThreeSpeedY * speedScalar[speed - 1];
+				obstacleThreeBounds.lowerLeft.set(obstacleX, obstacleY);
+			}
+	
+			// Move Obstacle #4.
+			if (totalCars[level - 1] == 2) {
+	
+				obstacleX = obstacleFourBounds.lowerLeft.x;
+				obstacleY = obstacleFourBounds.lowerLeft.y;
+	
+				if (obstacleY < -170) {
+					obstacleY = 800;
+					if (obstacleX != 0)
+						lanes.add(obstacleX);
+					obstacleX = lanes.remove();
+				}
+	
+				obstacleY -= obstacleFourSpeedY * speedScalar[speed - 1];
+				obstacleFourBounds.lowerLeft.set(obstacleX, obstacleY);
+			}
+		}
+	}
+	
+	// Moves crushed cars off screen
+	public void moveCrushedCars() {
+		// Move crushed car off screen
+		if (crushedOneBounds.lowerLeft.y > -170 )
+			crushedOneBounds.lowerLeft.y -= crushedCarSpeedY;
+		
+		// Move crushed car off screen
+		if (crushedTwoBounds.lowerLeft.y > -170 )
+			crushedTwoBounds.lowerLeft.y -= crushedCarSpeedY;
+		
+		// Move crushed car off screen
+		if (crushedThreeBounds.lowerLeft.y > -170 )
+			crushedThreeBounds.lowerLeft.y -= crushedCarSpeedY;
+		
+		// Move crushed car off screen
+		if (crushedFourBounds.lowerLeft.y > -170 )
+			crushedFourBounds.lowerLeft.y -= crushedCarSpeedY;
 	}
 
 	// Moves car at the rate of the Accelerometer's Y axis.
 	public void moveCar() {
 		// Bounds checking so car doesn't fly off screen
 		if (carBounds.lowerLeft.x >= 150 && carBounds.lowerLeft.x <= 1025)
-			carBounds.lowerLeft.x += (int) game.getInput().getAccelY();
-		else
-			carBounds.lowerLeft.x -= (int) game.getInput().getAccelY();
+			carBounds.lowerLeft.x += (int) game.getInput().getAccelY() * 2;
+		if (carBounds.lowerLeft.x <= 150)
+			carBounds.lowerLeft.x = 150;
+		if (carBounds.lowerLeft.x >= 1025)
+			carBounds.lowerLeft.x = 1025;
 	}
 
 	// Checks for collision-based loss.
@@ -275,6 +448,7 @@ public class TrafficMicroGame extends MicroGame {
 
 	// Shuffle car lanes and put in queue
 	public void randomizeCarsLanes() {
+		
 		for (int i = 0; i < lanePosition.length; i++) {
 			int randTemp = rand.nextInt(lanePosition.length - 1);
 			float temp = lanePosition[i];
@@ -295,8 +469,11 @@ public class TrafficMicroGame extends MicroGame {
 		drawRunningBackground();
 		drawRunningObjects();
 		batcher.endBatch();
-		// drawRunningBounds();
-		drawInstruction("Dodge!");
+		//drawRunningBounds();
+		if (version == 0)
+			drawInstruction("Dodge!");
+		if (version == 1)
+			drawInstruction("Crush!");
 		super.presentRunning();
 	}
 
@@ -306,7 +483,8 @@ public class TrafficMicroGame extends MicroGame {
 
 	@Override
 	public void drawRunningBackground() {
-		batcher.drawSprite(0, 0, 1280, 800, trafficBackgroundRegion);
+		batcher.drawSprite(backgroundBounds, trafficBackgroundRegion);
+		batcher.drawSprite(backgroundBounds2, trafficBackgroundRegion);
 	}
 
 	@Override
@@ -319,8 +497,23 @@ public class TrafficMicroGame extends MicroGame {
 		batcher.drawSprite(obstacleThreeBounds, trafficBlueCarRegion);
 		// Draws obstacle car.
 		batcher.drawSprite(obstacleFourBounds, trafficBlackCarRegion);
-		// Draws player car.
-		batcher.drawSprite(carBounds, trafficBlueCarRegion);
+		if (version == 0) {
+			// Draws player car.
+			batcher.drawSprite(carBounds, trafficBlueCarRegion);
+		}
+		if (version == 1) {
+			// Draws crushed car.
+			batcher.drawSprite(crushedOneBounds, trafficCrushedRedCarRegion);
+			// Draws crushed car.
+			batcher.drawSprite(crushedTwoBounds, trafficCrushedBlackCarRegion);
+			// Draws crushed car.
+			batcher.drawSprite(crushedThreeBounds, trafficCrushedBlueCarRegion);
+			// Draws crushed car.
+			batcher.drawSprite(crushedFourBounds, trafficCrushedBlackCarRegion);
+			// Draws player car.
+			batcher.drawSprite(carBounds, trafficMonsterCarRegion);
+			
+		}
 	}
 
 	@Override
@@ -332,7 +525,8 @@ public class TrafficMicroGame extends MicroGame {
 		// Obstacle Car Bounding Box
 		batcher.drawSprite(obstacleTwoBounds, AssetsManager.boundOverlayRegion);
 		// Obstacle Car Bounding Box
-		batcher.drawSprite(obstacleThreeBounds, AssetsManager.boundOverlayRegion);
+		batcher.drawSprite(obstacleThreeBounds,
+				AssetsManager.boundOverlayRegion);
 		// Obstacle Car Bounding Box
 		batcher.drawSprite(obstacleFourBounds, AssetsManager.boundOverlayRegion);
 		// Car Bounding Box

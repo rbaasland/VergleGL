@@ -155,8 +155,13 @@ public class GameGridMenu extends Menu {
                 	if (currentPage == 1){
                 		selectedMicroGame = new TrafficMicroGame();
                 		selectedMicroGameIcon = AssetsManager.trafficIconRegion;
-                		overlayPresent = true;
                 	}
+                	else if (currentPage == 2) {
+                		selectedMicroGame = new TrafficMicroGame();
+                		selectedMicroGameIcon = AssetsManager.trafficIconRegion;
+                		selectedMicroGame.version = 1;
+                	}
+                	overlayPresent = true;
                 	return;
                 }
                 
@@ -181,6 +186,7 @@ public class GameGridMenu extends Menu {
                 	}
                 	return;
                 }
+                
                 
                 // Back Arrow Bounds Check.
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
