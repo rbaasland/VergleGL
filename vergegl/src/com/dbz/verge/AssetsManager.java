@@ -9,8 +9,7 @@ import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
 
 public class AssetsManager {
-	
-	
+
 	static MicroGame currentMicroGame;
 	
 	public static void loadMicrogame(MicroGame mg){
