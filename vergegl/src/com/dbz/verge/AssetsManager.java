@@ -10,7 +10,7 @@ import com.dbz.framework.gl.TextureRegion;
 
 public class AssetsManager {
 
-	static MicroGame currentMicroGame;
+	public static MicroGame currentMicroGame;
 	
 	public static void loadMicrogame(MicroGame mg){
 		
@@ -98,7 +98,7 @@ public class AssetsManager {
     // ------------------------
   	// --- Sound Assets -----
   	// ------------------------
-    public static SoundManager soundManager; //needed to use Sound Objects
+    public static SoundManager soundManager; // Required to use sound objects.
     
     public static Music music;
     
