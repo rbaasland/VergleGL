@@ -27,7 +27,9 @@ public class AssetsManager {
 	}
 	
 	public static void reloadCurrentMicroGame(){
-		currentMicroGame.reload();
+		if(currentMicroGame == null)
+			return;
+		else currentMicroGame.reload();
 	}
 	
 	// -------------------
