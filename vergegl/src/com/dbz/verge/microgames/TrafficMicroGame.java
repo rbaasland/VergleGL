@@ -442,16 +442,16 @@ public class TrafficMicroGame extends MicroGame {
 	}
 
 	// Checks for collision.
-	public boolean collision(Rectangle ball, Rectangle obstacle) {
+	public boolean collision(Rectangle car, Rectangle obstacle) {
 		float obstacleX = obstacle.lowerLeft.x;
 		float obstacleY = obstacle.lowerLeft.y;
-		float ballX = ball.lowerLeft.x;
-		float ballY = ball.lowerLeft.y;
+		float carX = car.lowerLeft.x;
+		float carY = car.lowerLeft.y;
 
-		if (obstacleY <= ballY + ball.height)
-			if (obstacleY + obstacle.height >= ballY)
-				if (obstacleX <= ballX + ball.width)
-					if (obstacleX + obstacle.width >= ballX)
+		if (obstacleY <= carY + car.height)
+			if (obstacleY + obstacle.height >= carY)
+				if (obstacleX <= carX + car.width)
+					if (obstacleX + obstacle.width >= carX)
 						return true;
 
 		return false;
