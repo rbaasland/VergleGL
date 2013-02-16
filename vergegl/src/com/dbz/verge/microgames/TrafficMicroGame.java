@@ -285,7 +285,8 @@ public class TrafficMicroGame extends MicroGame {
 
 	// Moves the background
 	public void moveBackground() {
-		backgroundSpeedY = (int) Math.abs(game.getInput().getAccelX() + 20 * speedScalar[speed - 1]);
+		float accelX = (30-game.getInput().getAccelX()); // Accelerometer max X value is 10 so background scrolls at least 20
+		backgroundSpeedY = (int) (accelX * speedScalar[speed - 1]);
 		if (backgroundBounds.lowerLeft.y >= -backgroundBounds.height + backgroundSpeedY )
 			backgroundBounds.lowerLeft.y -= backgroundSpeedY;
 		else
@@ -423,24 +424,34 @@ public class TrafficMicroGame extends MicroGame {
 	public void moveCar() {
 		// Bounds checking so car doesn't fly off screen
 		if (carBounds.lowerLeft.x >= 150 && carBounds.lowerLeft.x <= 1025)
-			carBounds.lowerLeft.x += (int) game.getInput().getAccelY() * 2;
+			carBounds.lowerLeft.x += (int) game.getInput().getAccelY() * 2 * speedScalar[speed - 1];
 		if (carBounds.lowerLeft.x <= 150)
 			carBounds.lowerLeft.x = 150;
 		if (carBounds.lowerLeft.x >= 1025)
 			carBounds.lowerLeft.x = 1025;
+		float accelX = game.getInput().getAccelX(); 
+		if (carBounds.lowerLeft.y >= 0 && carBounds.lowerLeft.y <= 630)
+			if (accelX < 5)
+				carBounds.lowerLeft.y += (10-accelX) * speedScalar[speed - 1];
+			else
+				carBounds.lowerLeft.y -= accelX * speedScalar[speed - 1];
+		if (carBounds.lowerLeft.y <= 0)
+			carBounds.lowerLeft.y = 0;
+		if (carBounds.lowerLeft.y >= 630)
+			carBounds.lowerLeft.y = 630;
 	}
 
-	// Checks for collision-based loss.
-	public boolean collision(Rectangle car, Rectangle obstacle) {
+	// Checks for collision.
+	public boolean collision(Rectangle ball, Rectangle obstacle) {
 		float obstacleX = obstacle.lowerLeft.x;
 		float obstacleY = obstacle.lowerLeft.y;
-		float carX = car.lowerLeft.x;
-		float carY = car.lowerLeft.y;
+		float ballX = ball.lowerLeft.x;
+		float ballY = ball.lowerLeft.y;
 
-		if (obstacleY <= car.height)
-			if (obstacleY + obstacle.height >= carY)
-				if (obstacleX <= carX + car.width)
-					if (obstacleX + obstacle.width >= carX)
+		if (obstacleY <= ballY + ball.height)
+			if (obstacleY + obstacle.height >= ballY)
+				if (obstacleX <= ballX + ball.width)
+					if (obstacleX + obstacle.width >= ballX)
 						return true;
 
 		return false;
