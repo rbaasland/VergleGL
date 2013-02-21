@@ -46,6 +46,9 @@ public class AssetsManager {
     
     public static Texture transition;
     public static TextureRegion transitionBackgroundRegion;
+    public static TextureRegion meterBarOutlineRegion;
+    public static TextureRegion meterBarEmptyRegion;
+    public static TextureRegion meterBarFillRegion;
     
     public static Texture gameGrid;
     public static TextureRegion gameGridBackgroundRegion;
@@ -134,6 +137,9 @@ public class AssetsManager {
         
         transition = new Texture("transition.png");
         transitionBackgroundRegion = new TextureRegion(transition, 0, 0, 854, 480);
+        meterBarOutlineRegion = new TextureRegion(transition, 8, 483, 113, 31);
+        meterBarEmptyRegion = new TextureRegion(transition, 8, 524, 109, 26);
+        meterBarFillRegion = new TextureRegion(transition, 133, 486, 109, 26);
         
         gameGrid = new Texture("gamegrid.png");
         gameGridBackgroundRegion = new TextureRegion(gameGrid, 0, 0, 1280, 800);

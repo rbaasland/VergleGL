@@ -432,6 +432,12 @@ public abstract class Mode extends Screen {
 		// Draws background.
 		batcher.beginBatch(AssetsManager.transition);
 		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
+//		batcher.endBatch();
+		
+		// Draws 'Meters' window content.
+		batcher.drawSprite(158, 425, 109, 26, AssetsManager.meterBarEmptyRegion);
+		batcher.drawSprite(158, 425, 75, 26, AssetsManager.meterBarFillRegion); // Full size is 109
+		batcher.drawSprite(156, 422, 113, 31, AssetsManager.meterBarOutlineRegion);
 		batcher.endBatch();
 		
 		// Draws Ready Message.
@@ -509,6 +515,11 @@ public abstract class Mode extends Screen {
 	}
 	
 	public void presentWon() {
+		// Draws background.
+		batcher.beginBatch(AssetsManager.transition);
+		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
+		batcher.endBatch();
+		
 		// Draws the win message.
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
 		AssetsManager.vergeFont.drawTextCentered(batcher, "A Winner is You!", 640, 500, 1.5f);
@@ -529,6 +540,11 @@ public abstract class Mode extends Screen {
 	}
 	
 	public void presentLost() {
+		// Draws background.
+		batcher.beginBatch(AssetsManager.transition);
+		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
+		batcher.endBatch();
+		
 		// Draws the lose message.	
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
 		AssetsManager.vergeFont.drawTextCentered(batcher, "You Lost The Game!", 640, 500, 1.5f);

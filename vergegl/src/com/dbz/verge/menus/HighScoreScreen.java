@@ -78,9 +78,9 @@ public class HighScoreScreen extends Menu {
 
 	public void drawObjects() {
 
-		//prints out the high scores for surival and time attack;
+		//prints out the high scores for survival and time attack;
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Surival High Scores", 180, 550);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Survival High Scores", 180, 550);
 		loadCurrentHighScores(game.getFileIO());
 		for(int i=0;i<5;i++)
 		{
