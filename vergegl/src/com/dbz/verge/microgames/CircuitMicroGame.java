@@ -5,9 +5,12 @@ import java.util.List;
 
 import com.dbz.framework.DynamicGameObject;
 import com.dbz.framework.gl.Animation;
+import com.dbz.framework.gl.LineBatcher;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
+import com.dbz.framework.gl.ThickLineBatcher;
 import com.dbz.framework.input.Input.TouchEvent;
+import com.dbz.framework.math.Circle;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.AssetsManager;
@@ -47,9 +50,8 @@ public class CircuitMicroGame extends MicroGame {
 	// Corresponding textures for circuit piece
 	private TextureRegion[] circuitTextures = new TextureRegion[4]; //temp? put in assets?
 
-
 	//Spark Direction Vectors
-
+	
 	//Direction points for each change in direction in the circuit.
 	private Vector2[] directionPoints = 
 			// Circuit one
@@ -92,7 +94,7 @@ public class CircuitMicroGame extends MicroGame {
 	private float r = 0;
 
 	Spark spark = new Spark(24-16, 800-32); //spark start location
-
+	//Spark spark = new Spark(100, 700); //for testing
 
 	// -------------------
 	// --- Constructor ---
@@ -183,6 +185,7 @@ public class CircuitMicroGame extends MicroGame {
 			// update spark position
 			spark.position.set(getPathVector(r, directionPoints[directionIndex], 
 					directionPoints[directionIndex+1]));
+			
 			spark.bounds.lowerLeft.set(spark.position.sub(Spark.SPARK_WIDTH / 2, Spark.SPARK_WIDTH / 2));
 		}
 
@@ -255,14 +258,16 @@ public class CircuitMicroGame extends MicroGame {
 		calculateRateofChange();
 		r = 0;
 	}
-
+	
 	// -------------------
 	// --- Draw Method ---
 	// -------------------
-
+	ThickLineBatcher tlb = new ThickLineBatcher(glGraphics, 100);
+	LineBatcher lineBatcher = new LineBatcher(glGraphics, 300, 2);
 	@Override
 	public void presentRunning() {
 
+		
 		drawRunningBackground();
 		drawRunningObjects();
 		//drawRunningBounds();
@@ -286,19 +291,28 @@ public class CircuitMicroGame extends MicroGame {
 	public void drawRunningObjects() {
 		// Draw circuits
 		batcher.beginBatch(circuit);
-
+		
 		//level implementation
 		for(int i = 0; i < level+1; i++){
 			batcher.drawSpriteCenterCoords(circuitPieces[i], circuitTextures[i]);
 		}
-
+		
+		//draw spark
 		if(!circuitCompleted || doesDirectionPointStartCircuitGap[directionIndex] == false){ //show spark only when on circuit
 			spark.updateAnimationIndex();
-			batcher.drawSprite(spark.bounds, circuitSparkAnim.getKeyFrame(spark.animationIndex)); 	
+			batcher.drawSprite(spark.bounds, circuitSparkAnim.getKeyFrame(spark.animationIndex)); //these used with spark texture
+			
+			 if(spark.frameCounter == 0){
+				lineBatcher.beginBatch();
+				spark.drawSparkLightning();
+
+				lineBatcher.endBatch();
+				spark.frameCounter = 2;
+			 } 
+			 spark.frameCounter--; 
+		} 
 			//works but animation is slow
 			//batcher.drawSprite(spark.bounds, Assets.circuitSparkAnim.getKeyFrame(spark.stateTime, Animation.ANIMATION_LOOPING));	
-		}
-
 		batcher.endBatch();
 	}
 
@@ -325,11 +339,13 @@ public class CircuitMicroGame extends MicroGame {
 
 		private static final float SPARK_WIDTH = 128;
 		private static final float SPARK_HEIGHT= 128;
+		private static final float SPARK_RADIUS= 64;
 
 		private Vector2 startCoordinates; //store starting coordinates for spark	
 		private float stateTime = 0; //used for animation
 		private int animationIndex = 0;
 		private int animationDelayCounter = 3;
+		private int frameCounter = 2; //used to slow down spark visual
 
 		//x,y is the center of the object
 		public Spark(float x, float y) {
@@ -362,6 +378,39 @@ public class CircuitMicroGame extends MicroGame {
 				animationDelayCounter = 3;
 
 			} else animationDelayCounter--;
+		}
+		
+		/** Draw's a circular spark.  
+		 * BeginBatch(), endbatch() still must be called before and after this function call*/
+		public void drawSparkLightning(){
+			
+			Vector2[] points = Circle.genVerticesInCircle(position.add(SPARK_WIDTH / 2, SPARK_HEIGHT / 2), SPARK_RADIUS, 20); 
+			//TODO fix code such that we don't need to use vector addition to line up sparks.
+			
+			//20 points
+			lineBatcher.drawLightning(points[0], points[10], 90, 10);
+			lineBatcher.drawLightning(points[1], points[11], 90, 10);
+			lineBatcher.drawLightning(points[2], points[12], 90, 10);
+			lineBatcher.drawLightning(points[3], points[13], 90, 10);
+			lineBatcher.drawLightning(points[4], points[14], 90, 10);
+			lineBatcher.drawLightning(points[5], points[15], 90, 10);
+			lineBatcher.drawLightning(points[6], points[16], 90, 10);
+			lineBatcher.drawLightning(points[7], points[17], 90, 10);
+			lineBatcher.drawLightning(points[8], points[18], 90, 10);
+			lineBatcher.drawLightning(points[9], points[19], 90, 10);
+			
+			/*//6 points
+			lineBatcher.drawLightning(points[0], points[3], 80, 10);
+			lineBatcher.drawLightning(points[1], points[4], 80, 10);
+			lineBatcher.drawLightning(points[2], points[5], 80, 10);
+			*/
+			
+			/*// 8points
+			lineBatcher.drawLightning(points[0], points[5], 90, 10);
+			lineBatcher.drawLightning(points[1], points[6], 90, 10);
+			lineBatcher.drawLightning(points[3], points[8], 90, 10);
+			lineBatcher.drawLightning(points[4], points[9], 90, 10);
+			 */
 		}
 	}
 }
