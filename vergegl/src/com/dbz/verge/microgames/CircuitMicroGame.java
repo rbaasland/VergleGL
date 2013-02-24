@@ -37,6 +37,8 @@ public class CircuitMicroGame extends MicroGame {
     public static TextureRegion circuitSparkState1Region;
     public static TextureRegion circuitSparkState2Region;
     public static Animation circuitSparkAnim;
+    
+    private boolean isFirstRun = true;
 	
 	// Used to determine win Condition (Number of direction changes per level)
 	private int directionPointsInLevel[] = {12, 16, 19};
@@ -44,8 +46,8 @@ public class CircuitMicroGame extends MicroGame {
 	//Circuit Arrays
 	
 	// Bounding rectangle for each circuit piece
-	private Rectangle[] circuitPieces = {new Rectangle(190, 800-94, 405, 195), new Rectangle(240, 800-478, 328, 383), 
-			new Rectangle(508, 800-612, 325, 122), new Rectangle(1022, 800-287, 557, 480)};
+	private Rectangle[] circuitPieces = {new Rectangle(190+64, 800-94, 405+128, 195), new Rectangle(240+64, 800-478, 328+128, 383), 
+			new Rectangle(508+64+64, 800-612, 325+128, 122), new Rectangle(1022+64+64, 800-287-64, 557, 480)};
 
 	// Corresponding textures for circuit piece
 	private TextureRegion[] circuitTextures = new TextureRegion[4]; //temp? put in assets?
@@ -55,13 +57,13 @@ public class CircuitMicroGame extends MicroGame {
 	//Direction points for each change in direction in the circuit.
 	private Vector2[] directionPoints = 
 			// Circuit one
-		{new Vector2(24-16, 800-32), new Vector2(128-16, 800-178), new Vector2(350-16, 800-181), new Vector2(382-16, 800-127), 
+		{new Vector2(24-16, 800-32), new Vector2(128-16, 800-178), new Vector2(350-16+128-16, 800-181), new Vector2(382-16+128-8, 800-127), 
 			// Circuit two
-			new Vector2(382,800-382), new Vector2(274,800-397), new Vector2(204,800-296), new Vector2(91,800-296), new Vector2(94,800-491),new Vector2(195,800-573),new Vector2(195,800-612), new Vector2(127,800-643),
+			new Vector2(382+128-8,800-382), new Vector2(274+32+8,800-397), new Vector2(204,800-296), new Vector2(91,800-296), new Vector2(94,800-491),new Vector2(195,800-573),new Vector2(195,800-612), new Vector2(127,800-643),
 			// Circuit three
-			new Vector2(362,800-640), new Vector2(403,800-612), new Vector2(611,800-611), new Vector2(640,800-568),
+			new Vector2(362+64+8,800-640), new Vector2(403+64+32,800-612), new Vector2(611+64+96-8,800-611), new Vector2(640+64+96-8,800-568),
 			// Circuit four
-			new Vector2(894+32,800-511) ,new Vector2(895+32,800-126), new Vector2(1272,800-126)};
+			new Vector2(894+32+64+8+64,800-511-64+16) ,new Vector2(895+32+64+8+64,800-126-32-16), new Vector2(1272+64+8+64,800-126-64-16)};
 
 	// 1-1 Correspondence to direction points - used to check if DirectionPoint starts a gap.
 	private boolean doesDirectionPointStartCircuitGap[] = 
@@ -74,9 +76,9 @@ public class CircuitMicroGame extends MicroGame {
 
 	// End nodes for touch points
 	private Rectangle[] circuitNodes = 
-		{new Rectangle(382-16, 800-127, 190,190),  new Rectangle(382,800-382, 190,190),    //gap 1
-			new Rectangle(127,800-643, 190,190), new Rectangle(362, 800-640, 190,190),     //gap 2
-			new Rectangle(640,800-568, 190,190), new Rectangle(894+32,800-511, 190,190)};  //gap 3
+		{new Rectangle(382-16+128-8, 800-127, 190,190),  new Rectangle(382+128-8,800-382, 190,190),    //gap 1
+			new Rectangle(127,800-643, 190,190), new Rectangle(362+64,800-640, 190,190),     //gap 2
+			new Rectangle(640+64+96-8,800-568, 190,190), new Rectangle(894+32+64+8+64,800-511-64+16, 190,190)};  //gap 3
 
 	// 1-1 Correspondence to circuit nodes - maintains list of whether or not its touched
 	private boolean[] isCircuitNodeTouched = {false, false, false, false, false, false}; 
@@ -100,12 +102,8 @@ public class CircuitMicroGame extends MicroGame {
 	// --- Constructor ---
 	// -------------------
 
-	public CircuitMicroGame() {
-		//totalMicroGameTime = 10; //note, time based loss/win doesn't apply to this game.
-		speedScalar = new float[] { 1.0f, 1.1f, 1.2f }; //TODO adjust sparkSpeed to work w/ Microgame.speedScalar
-		// Calculate rate of change for first two vectors
-		calculateRateofChange(); //TODO bug, spark starts slow because level isn't updated until after constructor call. In general, needs to be fixed.
-								//IDEA, add level as a param to microgame constructor, then call super.updateLevel so we don't have to rework a bunch of code.
+	public CircuitMicroGame() { 
+		speedScalar = new float[] { 1.0f, 1.2f, 1.3f };
 	}
 	
 	@Override
@@ -117,11 +115,13 @@ public class CircuitMicroGame extends MicroGame {
         circuitSparkState1Region = new TextureRegion(circuit, 0,896,128,128);
         circuitSparkState2Region = new TextureRegion(circuit, 128,896,128,128);
         circuitSparkAnim = new Animation(0.2f, circuitSparkState1Region, circuitSparkState2Region);
+        
         //Circuit parts TODO draw lines based on vectors instead of images
-        circuitLine1 = new TextureRegion(circuit, 0, 0, 405, 195);
-        circuitLine2 = new TextureRegion(circuit, 0, 256, 328, 383);
-        circuitLine3 = new TextureRegion(circuit, 416, 512, 325, 122);
-        circuitLine4 = new TextureRegion(circuit, 436,10, 557, 480);
+        circuitLine1 = new TextureRegion(circuit, 0, 0, 544, 195);
+        circuitLine2 = new TextureRegion(circuit, 0, 256, 448, 383);
+        circuitLine3 = new TextureRegion(circuit, 304, 896, 456, 122);
+        circuitLine4 = new TextureRegion(circuit, 512, 384, 512, 512);
+        
     	circuitTextures[0] = circuitLine1;
     	circuitTextures[1] = circuitLine2;
     	circuitTextures[2] = circuitLine3;
@@ -148,7 +148,12 @@ public class CircuitMicroGame extends MicroGame {
 
 	@Override
 	public void updateRunning(float deltaTime) {
-
+		
+		if(isFirstRun){
+			calculateRateofChange(); // Calculate rate of change for first two vectors (used to be in constructor)
+			isFirstRun = false;
+		}
+		
 		if(doesDirectionPointStartCircuitGap[directionIndex]) // if between a gap
 			if(!circuitCompleted){				// if circuit not complete, game lost
 				AssetsManager.playSound(AssetsManager.hitSound);
@@ -238,7 +243,7 @@ public class CircuitMicroGame extends MicroGame {
 	 */
 	private void calculateRateofChange(){
 		distance = directionPoints[directionIndex].dist(directionPoints[directionIndex+1]);
-		rateOfChange = ((sparkSpeed *= speedScalar[speed-1])/distance);
+		rateOfChange = ((sparkSpeed * speedScalar[speed-1])/distance);
 	}
 
 	// -----------------------------
@@ -249,6 +254,7 @@ public class CircuitMicroGame extends MicroGame {
 	public void reset() {
 		super.reset();
 		//reset class members
+		isFirstRun = true;
 		spark.resetSpark();
 		Arrays.fill(isCircuitNodeTouched, false);
 		sparkSpeed = 10; 	 
