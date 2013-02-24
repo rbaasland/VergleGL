@@ -1,5 +1,7 @@
 package com.dbz.framework;
 
+import java.nio.IntBuffer;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -56,7 +58,8 @@ public abstract class Game extends Activity implements Renderer {
 		audio = new Audio(this);
 		input = new Input(this, glView, 1, 1);
 		PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Game");        
+		wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Game");  
+
 	}
 
 	public void onResume() {
@@ -68,7 +71,10 @@ public abstract class Game extends Activity implements Renderer {
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		glGraphics.setGL(gl);
-
+		
+		//checkSupportedTextureCompression(gl);
+		//checkOpenGLPrimativeSizes(gl);
+		
 		synchronized(stateChanged) {
 			if(state == GameState.Initialized)
 				screen = getStartScreen();
@@ -187,6 +193,25 @@ public abstract class Game extends Activity implements Renderer {
         }else{														//No texture compression found. 
         	Log.d("GL_EXTENSIONS", "NONE");
         }         
+	}
+	
+	//Logs Primatives Sizes
+	public void checkOpenGLPrimativeSizes(GL10 gl){
+		
+		IntBuffer params = IntBuffer.allocate(2);
+		
+		gl.glGetIntegerv(GL10.GL_ALIASED_LINE_WIDTH_RANGE, params);
+		Log.d("GL_PRIMATIVE_SIZE", "ALIASED_LINE_WIDTH_RANGE = " + params.get(0) + " to " + params.get(1));
+			
+		gl.glGetIntegerv(GL10.GL_SMOOTH_LINE_WIDTH_RANGE, params);
+		Log.d("GL_PRIMATIVE_SIZE", "SMOOTH_LINE_WIDTH_RANGE = " + params.get(0) + " to " + params.get(1));
+			
+		gl.glGetIntegerv(GL10.GL_ALIASED_POINT_SIZE_RANGE, params);
+		Log.d("GL_PRIMATIVE_SIZE", "ALIASED_POINT_SIZE_RANGE = " + params.get(0) + " to " + params.get(1));
+			
+		gl.glGetIntegerv(GL10.GL_SMOOTH_POINT_SIZE_RANGE, params);
+		Log.d("GL_PRIMATIVE_SIZE", "SMOOTH_POINT_SIZE_RANGE = " + params.get(0) + " to " + params.get(1));
+		
 	}
 
 

@@ -59,6 +59,7 @@ public void bind() {
     gl.glVertexPointer(2, GL10.GL_FLOAT, vertexSize, vertices);
     
     if(hasColor) {
+    	gl.glDisable(GL10.GL_TEXTURE_2D); //disable texture to render color
         gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
         vertices.position(2);
         gl.glColorPointer(4, GL10.GL_FLOAT, vertexSize, vertices);
@@ -87,7 +88,9 @@ public void unbind() {
     if(hasTexCoords)
         gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
-    if(hasColor)
+    if(hasColor){
         gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+        gl.glEnable(GL10.GL_TEXTURE_2D);
+    }
 }
 }
