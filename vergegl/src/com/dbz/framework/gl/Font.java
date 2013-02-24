@@ -38,7 +38,7 @@ public class Font {
         }
     }
     
-    // Alternate Version of drawText(). Draws the text centered at provided x. (Center Bottom Point)
+    // Draws the text centered at provided x. (Center Bottom Point)
     public void drawTextCentered(SpriteBatcher batcher, String text, float x, float y) {
     	int len = text.length();
         float charsToShift = len / 2;
@@ -84,7 +84,7 @@ public class Font {
         }
     }
     
-    // Alternate Version of drawText(). Draws the text right formatted at provided x. (Left Bottom Point)
+    // Draws the text right formatted at provided x. (Left Bottom Point)
     public void drawTextLeft(SpriteBatcher batcher, String text, float x, float y) {
     	int len = text.length();
         y += (0.5 * glyphHeight);

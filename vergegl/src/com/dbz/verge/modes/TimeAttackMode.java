@@ -91,15 +91,15 @@ public class TimeAttackMode extends Mode {
 	// ----------------------------
 
 	@Override
-	public void presentStatusReport() {
+	public void presentStatusReport(int startY) {
 		totalMinutes = (int)(totalTime / 60);
 		totalSeconds = totalTime % 60.0f;
 
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Level: " + String.valueOf(level), 315, 170);
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Speed: " + String.valueOf(speed), 315, 140);
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Wins: " + String.valueOf(currentRound-1) + " / " + String.valueOf(winsRequired), 315, 110);
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Total Time: " + String.format("%02d:%05.2f", totalMinutes, totalSeconds), 315, 80);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Level: " + String.valueOf(level), 315, startY);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Speed: " + String.valueOf(speed), 315, startY-30);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Wins: " + String.valueOf(currentRound-1) + " / " + String.valueOf(winsRequired), 315, startY-60);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Total Time: " + String.format("%02d:%05.2f", totalMinutes, totalSeconds), 315, startY-90);
 		batcher.endBatch();
 	}
 	

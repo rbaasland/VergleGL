@@ -55,6 +55,12 @@ public abstract class Mode extends Screen {
     public Rectangle backArrowBounds = new Rectangle(3, 3, 93, 85);
     public Rectangle soundToggleBounds = new Rectangle(757, 3, 93, 85);
     
+    // 'Meter' Window Bar Percentages.
+    public float cmpBar = 0.0f;		// Determined by speed.
+    public float memBar = 0.0f;		// Determined by level.
+    public float netBar = 0.0f;		// Determined by currentRound.
+    public float tmpBar = 0.0f;		// Determined all three above (%33.3 percent each)
+    
     // *Possible Difficulty Level Implementation.*
     // *Could also try to use a class, struct or enum.*
     public int level = 1;
@@ -75,6 +81,7 @@ public abstract class Mode extends Screen {
     public int currentRound = 1;
     public int roundsToLevelUp = 6;
     public int roundsToSpeedUp = 3;
+    public int totalRounds = 10;	// ***Currently unused, except for NET meter percentage.***
     
     // Array of all possible MicroGames.
     // * Initialized in Constructor to avoid possible conflicts with Game variable. *
@@ -93,7 +100,8 @@ public abstract class Mode extends Screen {
 		microGames = new MicroGame[] { new BroFistMicroGame(), new FlyMicroGame(), new FireMicroGame(),
 										   new TrafficMicroGame(), new CircuitMicroGame(), new LazerBallMicroGame(),
 										   new TossMicroGame() };
-	
+		updateMeterBarPercentages();
+
 		// Disables BackArrow and Pause UI elements for all MicroGames in the set.
 //		for (int i = 0; i < microGames.length; i++) {
 //			microGames[i].backArrowEnabled = false;
@@ -296,11 +304,13 @@ public abstract class Mode extends Screen {
 	}
 	
 	public void updateMicroGameWon() {
+		updateMeterBarPercentages();
 		loadComplete = false;
 		currentRound++;
 	}
 	
 	public void updateMicroGameLost() {
+		updateMeterBarPercentages();
 		loadComplete = false;
 	}
 	
@@ -386,6 +396,16 @@ public abstract class Mode extends Screen {
 		loadComplete = true;
 	}
 
+	public void updateMeterBarPercentages() {
+		// Update 'Meters' bar percentages.
+		cmpBar = ((float)speed) / 3.0f;
+		memBar = ((float)level) / 3.0f;
+		netBar = ((float)currentRound) / totalRounds;
+		if (netBar > 1.0f)
+			netBar = 1.0f;
+		tmpBar = (cmpBar * 0.3333f) + (memBar * 0.3333f) + (netBar * 0.3333f);
+	}
+	
 	// --------------------
 	// --- Draw Methods ---
 	// --------------------
@@ -429,19 +449,11 @@ public abstract class Mode extends Screen {
 	}
 	
 	public void presentReady() {
-		// Draws background.
-		batcher.beginBatch(AssetsManager.transition);
-		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
-//		batcher.endBatch();
+		drawWindowContent();
 		
-		// Draws 'Meters' window content.
-		batcher.drawSprite(158, 425, 109, 26, AssetsManager.meterBarEmptyRegion);
-		batcher.drawSprite(158, 425, 75, 26, AssetsManager.meterBarFillRegion); // Full size is 109
-		batcher.drawSprite(156, 422, 113, 31, AssetsManager.meterBarOutlineRegion);
-		batcher.endBatch();
-		
-		// Draws Ready Message.
+		// Draws 'Meters' window text and Ready Message. 
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		drawWindowText();
 		AssetsManager.vergeFont.drawTextLeft(batcher, "Ready?", 315, 170);
 		batcher.endBatch();
 		
@@ -449,7 +461,7 @@ public abstract class Mode extends Screen {
         batcher.beginBatch(AssetsManager.backArrow);
         batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
         batcher.endBatch();
-        
+
         // Draws Sound Toggle.
         batcher.beginBatch(AssetsManager.soundToggle);
         batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
@@ -463,13 +475,11 @@ public abstract class Mode extends Screen {
 	}
 	
 	public void presentPaused() {
-		// Draws background.
-		batcher.beginBatch(AssetsManager.transition);
-		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
-		batcher.endBatch();
-		
-		// Draws Paused Message.
+		drawWindowContent();
+
+		// Draws 'Meters' window text and Paused Message. 
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		drawWindowText();
 		AssetsManager.vergeFont.drawTextLeft(batcher, "- PAUSED -", 315, 170);
 		batcher.endBatch();
 		
@@ -496,13 +506,15 @@ public abstract class Mode extends Screen {
 	}
 	
 	public void presentTransition() {
-		// Draws background.
-		batcher.beginBatch(AssetsManager.transition);
-		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
+		drawWindowContent();
+		
+		// Draws 'Meters' window text. 
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		drawWindowText();
 		batcher.endBatch();
 		
 		// Draws the mid game status report.
-		presentStatusReport();
+		presentStatusReport(170);
 		
 		// Draws the pause symbol.
 		batcher.beginBatch(AssetsManager.pauseToggle);
@@ -515,18 +527,16 @@ public abstract class Mode extends Screen {
 	}
 	
 	public void presentWon() {
-		// Draws background.
-		batcher.beginBatch(AssetsManager.transition);
-		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
-		batcher.endBatch();
+		drawWindowContent();
 		
-		// Draws the win message.
+		// Draws 'Meters' window text and Win Message.
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
-		AssetsManager.vergeFont.drawTextCentered(batcher, "A Winner is You!", 640, 500, 1.5f);
+		drawWindowText();
+		AssetsManager.vergeFont.drawTextLeft(batcher, "A Winner is You!", 315, 170);
 		batcher.endBatch();
 		
 		// Draws the end game status report.
-		presentStatusReport();
+		presentStatusReport(140);
 		
 		// Draws the back arrow.
         batcher.beginBatch(AssetsManager.backArrow);
@@ -540,18 +550,16 @@ public abstract class Mode extends Screen {
 	}
 	
 	public void presentLost() {
-		// Draws background.
-		batcher.beginBatch(AssetsManager.transition);
-		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
-		batcher.endBatch();
+		drawWindowContent();
 		
-		// Draws the lose message.	
+		// Draws 'Meters' window text and Lose Message. 
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
-		AssetsManager.vergeFont.drawTextCentered(batcher, "You Lost The Game!", 640, 500, 1.5f);
+		drawWindowText();
+		AssetsManager.vergeFont.drawTextLeft(batcher, "You Lost The Game!", 315, 170);
 		batcher.endBatch();
 		
 		// Draws the end game status report.
-		presentStatusReport();
+		presentStatusReport(140);
 		
 		// Draws the back arrow.
         batcher.beginBatch(AssetsManager.backArrow);
@@ -569,7 +577,38 @@ public abstract class Mode extends Screen {
 	// ----------------------------
 	
 	// TODO: Call shared lines via super.presentStatusReport() (???)
-	public abstract void presentStatusReport();
+	public abstract void presentStatusReport(int startY);
+	
+	public void drawWindowContent() {
+		// Draws background and 'Meters' window content.
+		batcher.beginBatch(AssetsManager.transition);
+		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
+
+		batcher.drawSprite(28, 174, 239, 26, AssetsManager.meterBarEmptyRegion);			// CMP Bar. (1st)
+		batcher.drawSprite(28, 174, (239 * cmpBar), 26, AssetsManager.meterBarFillRegion);
+		batcher.drawSprite(22, 172, 250, 31, AssetsManager.meterBarOutlineRegion);
+		
+		batcher.drawSprite(28, 124, 239, 26, AssetsManager.meterBarEmptyRegion);			// MEM Bar. (2nd)
+		batcher.drawSprite(28, 124, (239 * memBar), 26, AssetsManager.meterBarFillRegion);
+		batcher.drawSprite(22, 122, 250, 31, AssetsManager.meterBarOutlineRegion);
+		
+		batcher.drawSprite(28, 74, 239, 26, AssetsManager.meterBarEmptyRegion);				// NET Bar. (3rd)
+		batcher.drawSprite(28, 74, (239 * netBar), 26, AssetsManager.meterBarFillRegion); 	
+		batcher.drawSprite(22, 72, 250, 31, AssetsManager.meterBarOutlineRegion);
+		
+		batcher.drawSprite(28, 24, 239, 26, AssetsManager.meterBarEmptyRegion);				// TMP Bar. (4th)
+		batcher.drawSprite(28, 24, (239 * tmpBar), 26, AssetsManager.meterBarFillRegion); 	
+		batcher.drawSprite(22, 22, 250, 31, AssetsManager.meterBarOutlineRegion);
+		batcher.endBatch();
+	}
+	
+	public void drawWindowText() {
+		// Draws 'Meters' window text.
+		AssetsManager.vergeFont.drawTextLeft(batcher, "CMP", 20, 172);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "MEM", 20, 122);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "NET", 20, 72);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "TMP", 20, 22);
+	}
 	
 	// --------------------------------
 	// --- Android State Management ---
