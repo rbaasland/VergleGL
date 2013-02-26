@@ -49,6 +49,14 @@ public class AssetsManager {
     public static TextureRegion meterBarOutlineRegion;
     public static TextureRegion meterBarEmptyRegion;
     public static TextureRegion meterBarFillRegion;
+    public static TextureRegion singleTouchOnIndicatorRegion;
+    public static TextureRegion multiTouchOnIndicatorRegion;
+    public static TextureRegion accelerometerOnIndicatorRegion;
+    public static TextureRegion gestureOnIndicatorRegion;
+    public static TextureRegion singleTouchOffIndicatorRegion;
+    public static TextureRegion multiTouchOffIndicatorRegion;
+    public static TextureRegion accelerometerOffIndicatorRegion;
+    public static TextureRegion gesturesOffIndicatorRegion;
     
     public static Texture gameGrid;
     public static TextureRegion gameGridBackgroundRegion;
@@ -140,6 +148,14 @@ public class AssetsManager {
         meterBarOutlineRegion = new TextureRegion(transition, 8, 483, 113, 31);
         meterBarEmptyRegion = new TextureRegion(transition, 8, 524, 109, 26);
         meterBarFillRegion = new TextureRegion(transition, 133, 486, 109, 26);
+        singleTouchOnIndicatorRegion = new TextureRegion(transition, 867, 8, 75, 75);
+        multiTouchOnIndicatorRegion = new TextureRegion(transition, 942, 8, 75, 75);
+        accelerometerOnIndicatorRegion = new TextureRegion(transition, 867, 83, 75, 75);
+        gestureOnIndicatorRegion = new TextureRegion(transition, 942, 83, 75, 75);
+        singleTouchOffIndicatorRegion = new TextureRegion(transition, 867, 158, 75, 75);
+        multiTouchOffIndicatorRegion = new TextureRegion(transition, 942, 158, 75, 75);
+        accelerometerOffIndicatorRegion = new TextureRegion(transition, 867, 233, 75, 75);
+        gesturesOffIndicatorRegion = new TextureRegion(transition, 942, 233, 75, 75);
         
         gameGrid = new Texture("gamegrid.png");
         gameGridBackgroundRegion = new TextureRegion(gameGrid, 0, 0, 1280, 800);

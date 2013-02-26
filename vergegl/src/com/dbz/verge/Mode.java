@@ -599,6 +599,13 @@ public abstract class Mode extends Screen {
 		batcher.drawSprite(28, 24, 239, 26, AssetsManager.meterBarEmptyRegion);				// TMP Bar. (4th)
 		batcher.drawSprite(28, 24, (239 * tmpBar), 26, AssetsManager.meterBarFillRegion); 	
 		batcher.drawSprite(22, 22, 250, 31, AssetsManager.meterBarOutlineRegion);
+		// batcher.endBatch();
+		
+		// Draws MicroGame Indicators.
+		batcher.drawSprite(612, 368, 75, 75, AssetsManager.singleTouchOnIndicatorRegion);
+		batcher.drawSprite(725, 368, 75, 75, AssetsManager.multiTouchOnIndicatorRegion);
+		batcher.drawSprite(612, 267, 75, 75, AssetsManager.accelerometerOffIndicatorRegion);
+		batcher.drawSprite(725, 267, 75, 75, AssetsManager.gesturesOffIndicatorRegion);
 		batcher.endBatch();
 	}
 	
