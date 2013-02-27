@@ -47,6 +47,7 @@ public class TossMicroGame extends MicroGame {
 	public TossMicroGame() {
 		// Extend allowed time.
 		baseMicroGameTime = 10.0f;
+		gesturesEnabled = true;
 	}
 	
 	@Override

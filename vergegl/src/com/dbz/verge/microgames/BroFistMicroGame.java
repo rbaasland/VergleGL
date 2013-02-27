@@ -34,7 +34,7 @@ public class BroFistMicroGame extends MicroGame {
 	// --- Constructor ---
 	// ------------------- 
 	
-    public BroFistMicroGame() {}
+    public BroFistMicroGame() { singleTouchEnabled = true; }
     
     public void load() {
     	broFistBackground = new Texture("brofistbackground.png");

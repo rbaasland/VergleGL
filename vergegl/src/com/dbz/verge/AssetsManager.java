@@ -52,7 +52,7 @@ public class AssetsManager {
     public static TextureRegion singleTouchOnIndicatorRegion;
     public static TextureRegion multiTouchOnIndicatorRegion;
     public static TextureRegion accelerometerOnIndicatorRegion;
-    public static TextureRegion gestureOnIndicatorRegion;
+    public static TextureRegion gesturesOnIndicatorRegion;
     public static TextureRegion singleTouchOffIndicatorRegion;
     public static TextureRegion multiTouchOffIndicatorRegion;
     public static TextureRegion accelerometerOffIndicatorRegion;
@@ -151,7 +151,7 @@ public class AssetsManager {
         singleTouchOnIndicatorRegion = new TextureRegion(transition, 867, 8, 75, 75);
         multiTouchOnIndicatorRegion = new TextureRegion(transition, 942, 8, 75, 75);
         accelerometerOnIndicatorRegion = new TextureRegion(transition, 867, 83, 75, 75);
-        gestureOnIndicatorRegion = new TextureRegion(transition, 942, 83, 75, 75);
+        gesturesOnIndicatorRegion = new TextureRegion(transition, 942, 83, 75, 75);
         singleTouchOffIndicatorRegion = new TextureRegion(transition, 867, 158, 75, 75);
         multiTouchOffIndicatorRegion = new TextureRegion(transition, 942, 158, 75, 75);
         accelerometerOffIndicatorRegion = new TextureRegion(transition, 867, 233, 75, 75);

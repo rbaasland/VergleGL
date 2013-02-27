@@ -517,9 +517,9 @@ public abstract class Mode extends Screen {
 		presentStatusReport(170);
 		
 		// Draws the pause symbol.
-		batcher.beginBatch(AssetsManager.pauseToggle);
-		batcher.drawSprite(pauseToggleBounds, AssetsManager.pauseRegion);
-		batcher.endBatch();
+//		batcher.beginBatch(AssetsManager.pauseToggle);
+//		batcher.drawSprite(pauseToggleBounds, AssetsManager.pauseRegion);
+//		batcher.endBatch();
 	}
 	
 	public void presentRunning(float deltaTime) {
@@ -602,10 +602,28 @@ public abstract class Mode extends Screen {
 		// batcher.endBatch();
 		
 		// Draws MicroGame Indicators.
-		batcher.drawSprite(612, 368, 75, 75, AssetsManager.singleTouchOnIndicatorRegion);
-		batcher.drawSprite(725, 368, 75, 75, AssetsManager.multiTouchOnIndicatorRegion);
-		batcher.drawSprite(612, 267, 75, 75, AssetsManager.accelerometerOffIndicatorRegion);
-		batcher.drawSprite(725, 267, 75, 75, AssetsManager.gesturesOffIndicatorRegion);
+		if (microGames[microGameIndex].singleTouchEnabled && modeState != ModeState.Ready)
+			batcher.drawSprite(612, 368, 75, 75, AssetsManager.singleTouchOnIndicatorRegion);
+		else
+			batcher.drawSprite(612, 368, 75, 75, AssetsManager.singleTouchOffIndicatorRegion);
+
+		if (microGames[microGameIndex].multiTouchEnabled && modeState != ModeState.Ready)
+			batcher.drawSprite(725, 368, 75, 75, AssetsManager.multiTouchOnIndicatorRegion);
+		else
+			batcher.drawSprite(725, 368, 75, 75, AssetsManager.multiTouchOffIndicatorRegion);
+
+		if (microGames[microGameIndex].accelerometerEnabled && modeState != ModeState.Ready)
+			batcher.drawSprite(612, 267, 75, 75, AssetsManager.accelerometerOnIndicatorRegion);
+		else
+			batcher.drawSprite(612, 267, 75, 75, AssetsManager.accelerometerOffIndicatorRegion);
+
+			
+		if (microGames[microGameIndex].gesturesEnabled && modeState != ModeState.Ready)
+			batcher.drawSprite(725, 267, 75, 75, AssetsManager.gesturesOnIndicatorRegion);
+		else
+			batcher.drawSprite(725, 267, 75, 75, AssetsManager.gesturesOffIndicatorRegion);
+
+			
 		batcher.endBatch();
 	}
 	

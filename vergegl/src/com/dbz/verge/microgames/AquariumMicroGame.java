@@ -38,6 +38,7 @@ public class AquariumMicroGame extends MicroGame{
 	public AquariumMicroGame() {
 		// Extend allowed time.
 		baseMicroGameTime = 10.0f;
+		multiTouchEnabled = true;
 	}
 	
 	@Override

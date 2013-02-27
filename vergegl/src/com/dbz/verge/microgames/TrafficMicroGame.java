@@ -91,6 +91,7 @@ public class TrafficMicroGame extends MicroGame {
 	public TrafficMicroGame() {
 		randomizeCarsLanes();
 		baseMicroGameTime = 10.0f;
+		accelerometerEnabled = true;
 	}
 
 	@Override

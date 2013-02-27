@@ -61,7 +61,7 @@ public class DirtBikeMicroGame extends MicroGame {
 	// --- Constructor ---
 	// ------------------- 
 	
-    public DirtBikeMicroGame() {}
+    public DirtBikeMicroGame() { multiTouchEnabled = true; }
     
     public void load() {
     	dirtBikeBackground = new Texture("DirtBikeScreen.png");
