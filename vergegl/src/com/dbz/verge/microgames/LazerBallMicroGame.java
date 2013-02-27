@@ -51,6 +51,7 @@ public class LazerBallMicroGame extends MicroGame  {
 	// -------------------   
 	public LazerBallMicroGame() {
 		//totalMicroGameTime = new float[]{10.0f, 8.5f, 7.0f}; //leaving at default time for now
+		singleTouchEnabled = true;
 	}
 	
 	@Override

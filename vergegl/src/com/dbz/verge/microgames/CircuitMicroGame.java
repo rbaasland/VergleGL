@@ -104,6 +104,7 @@ public class CircuitMicroGame extends MicroGame {
 
 	public CircuitMicroGame() { 
 		speedScalar = new float[] { 1.0f, 1.2f, 1.3f };
+		multiTouchEnabled = true;
 	}
 	
 	@Override

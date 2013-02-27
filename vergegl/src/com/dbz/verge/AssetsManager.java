@@ -47,12 +47,16 @@ public class AssetsManager {
     public static Texture transition;
     public static TextureRegion transitionBackgroundRegion;
     public static TextureRegion meterBarOutlineRegion;
-    public static TextureRegion meterBarEmptyRegion;
-    public static TextureRegion meterBarFillRegion;
+    public static TextureRegion meterGreenBarEmptyRegion;
+    public static TextureRegion meterGreenBarFillRegion;
+    public static TextureRegion meterYellowBarEmptyRegion;
+    public static TextureRegion meterYellowBarFillRegion;
+    public static TextureRegion meterRedBarEmptyRegion;
+    public static TextureRegion meterRedBarFillRegion;
     public static TextureRegion singleTouchOnIndicatorRegion;
     public static TextureRegion multiTouchOnIndicatorRegion;
     public static TextureRegion accelerometerOnIndicatorRegion;
-    public static TextureRegion gestureOnIndicatorRegion;
+    public static TextureRegion gesturesOnIndicatorRegion;
     public static TextureRegion singleTouchOffIndicatorRegion;
     public static TextureRegion multiTouchOffIndicatorRegion;
     public static TextureRegion accelerometerOffIndicatorRegion;
@@ -146,12 +150,18 @@ public class AssetsManager {
         transition = new Texture("transition.png");
         transitionBackgroundRegion = new TextureRegion(transition, 0, 0, 854, 480);
         meterBarOutlineRegion = new TextureRegion(transition, 8, 483, 113, 31);
-        meterBarEmptyRegion = new TextureRegion(transition, 8, 524, 109, 26);
-        meterBarFillRegion = new TextureRegion(transition, 133, 486, 109, 26);
+        meterGreenBarEmptyRegion = new TextureRegion(transition, 8, 524, 109, 26);
+        meterGreenBarFillRegion = new TextureRegion(transition, 133, 486, 109, 26);
+        
+        meterYellowBarEmptyRegion = new TextureRegion(transition, 133, 524, 109, 26);
+        meterYellowBarFillRegion = new TextureRegion(transition, 258, 486, 109, 26);
+        meterRedBarEmptyRegion = new TextureRegion(transition, 258, 524, 109, 26);
+        meterRedBarFillRegion = new TextureRegion(transition, 383, 486, 109, 26);
+        
         singleTouchOnIndicatorRegion = new TextureRegion(transition, 867, 8, 75, 75);
         multiTouchOnIndicatorRegion = new TextureRegion(transition, 942, 8, 75, 75);
         accelerometerOnIndicatorRegion = new TextureRegion(transition, 867, 83, 75, 75);
-        gestureOnIndicatorRegion = new TextureRegion(transition, 942, 83, 75, 75);
+        gesturesOnIndicatorRegion = new TextureRegion(transition, 942, 83, 75, 75);
         singleTouchOffIndicatorRegion = new TextureRegion(transition, 867, 158, 75, 75);
         multiTouchOffIndicatorRegion = new TextureRegion(transition, 942, 158, 75, 75);
         accelerometerOffIndicatorRegion = new TextureRegion(transition, 867, 233, 75, 75);

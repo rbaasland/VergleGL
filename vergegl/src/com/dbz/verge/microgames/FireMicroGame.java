@@ -49,7 +49,7 @@ public class FireMicroGame extends MicroGame {
 	// --- Constructor ---
 	// -------------------
 	
-    public FireMicroGame() {}
+    public FireMicroGame() { gesturesEnabled = true;}
     
     @Override
     public void load(){

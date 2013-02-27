@@ -42,7 +42,7 @@ public class FlyMicroGame extends MicroGame {
 	// --- Constructor ---
 	// -------------------
 	
-    public FlyMicroGame() {}
+    public FlyMicroGame() { singleTouchEnabled = true; }
     
     @Override
     public void load() {

@@ -62,7 +62,7 @@ public class SurvivalMode extends Mode {
 		if (lives <= 0)
 		{
 			modeState = ModeState.Lost;
-			validHighScore(currentRound);
+			validHighScore(currentRound-1);
 
 		}
 		else {

@@ -65,10 +65,15 @@ public abstract class MicroGame extends Screen {
     public float totalMicroGameTime = 5.0f; 
     public float totalRunningTime = 0;
 
-    
     // Booleans used to enable UI components (Used when launched from GameGrid)
     public boolean pauseEnabled = true;
     public boolean backArrowEnabled = true;
+    
+    // Booleans for MicroGame Indicators.
+    public boolean singleTouchEnabled = false;
+    public boolean multiTouchEnabled = false;
+    public boolean accelerometerEnabled = false;
+    public boolean gesturesEnabled = false;
     
     // -------------------
 	// --- Constructor ---
