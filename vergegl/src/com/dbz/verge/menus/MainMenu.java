@@ -22,8 +22,7 @@ public class MainMenu extends Menu {
     // -------------------
  	// --- Constructor ---
     // -------------------
-    public MainMenu() {             
-    }       
+    public MainMenu() {}       
 
     // ---------------------
  	// --- Update Method ---

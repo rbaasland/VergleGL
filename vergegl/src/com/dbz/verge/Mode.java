@@ -304,14 +304,14 @@ public abstract class Mode extends Screen {
 	}
 	
 	public void updateMicroGameWon() {
-		updateMeterBarPercentages();
 		loadComplete = false;
 		currentRound++;
+		updateMeterBarPercentages();
 	}
 	
 	public void updateMicroGameLost() {
-		updateMeterBarPercentages();
 		loadComplete = false;
+		updateMeterBarPercentages();
 	}
 	
 	public void updateWon() {
@@ -584,46 +584,76 @@ public abstract class Mode extends Screen {
 		batcher.beginBatch(AssetsManager.transition);
 		batcher.drawSprite(0, 0, 854, 480, AssetsManager.transitionBackgroundRegion);
 
-		batcher.drawSprite(28, 174, 239, 26, AssetsManager.meterBarEmptyRegion);			// CMP Bar. (1st)
-		batcher.drawSprite(28, 174, (239 * cmpBar), 26, AssetsManager.meterBarFillRegion);
+		if (cmpBar <= 0.66) {
+			batcher.drawSprite(28, 174, 239, 26, AssetsManager.meterGreenBarEmptyRegion);			// CMP Bar. (1st)
+			batcher.drawSprite(28, 174, (239 * cmpBar), 26, AssetsManager.meterGreenBarFillRegion);
+		} else if (cmpBar <= 0.85) {
+			batcher.drawSprite(28, 174, 239, 26, AssetsManager.meterYellowBarEmptyRegion);	
+			batcher.drawSprite(28, 174, (239 * cmpBar), 26, AssetsManager.meterYellowBarFillRegion);
+		} else {
+			batcher.drawSprite(28, 174, 239, 26, AssetsManager.meterRedBarEmptyRegion);			
+			batcher.drawSprite(28, 174, (239 * cmpBar), 26, AssetsManager.meterRedBarFillRegion);
+		}
 		batcher.drawSprite(22, 172, 250, 31, AssetsManager.meterBarOutlineRegion);
 		
-		batcher.drawSprite(28, 124, 239, 26, AssetsManager.meterBarEmptyRegion);			// MEM Bar. (2nd)
-		batcher.drawSprite(28, 124, (239 * memBar), 26, AssetsManager.meterBarFillRegion);
+		if (memBar <= 0.66) {
+			batcher.drawSprite(28, 124, 239, 26, AssetsManager.meterGreenBarEmptyRegion);			// MEM Bar. (2nd)
+			batcher.drawSprite(28, 124, (239 * memBar), 26, AssetsManager.meterGreenBarFillRegion);
+		} else if (memBar <= 0.85) {
+			batcher.drawSprite(28, 124, 239, 26, AssetsManager.meterYellowBarEmptyRegion);			
+			batcher.drawSprite(28, 124, (239 * memBar), 26, AssetsManager.meterYellowBarFillRegion);
+		} else {
+			batcher.drawSprite(28, 124, 239, 26, AssetsManager.meterRedBarEmptyRegion);			
+			batcher.drawSprite(28, 124, (239 * memBar), 26, AssetsManager.meterRedBarFillRegion);
+		}
 		batcher.drawSprite(22, 122, 250, 31, AssetsManager.meterBarOutlineRegion);
 		
-		batcher.drawSprite(28, 74, 239, 26, AssetsManager.meterBarEmptyRegion);				// NET Bar. (3rd)
-		batcher.drawSprite(28, 74, (239 * netBar), 26, AssetsManager.meterBarFillRegion); 	
+		if (netBar <= 0.66) {
+			batcher.drawSprite(28, 74, 239, 26, AssetsManager.meterGreenBarEmptyRegion);				// NET Bar. (3rd)
+			batcher.drawSprite(28, 74, (239 * netBar), 26, AssetsManager.meterGreenBarFillRegion); 	
+		} else if (netBar <= 0.85) {
+			batcher.drawSprite(28, 74, 239, 26, AssetsManager.meterYellowBarEmptyRegion);
+			batcher.drawSprite(28, 74, (239 * netBar), 26, AssetsManager.meterYellowBarFillRegion); 	
+		} else {
+			batcher.drawSprite(28, 74, 239, 26, AssetsManager.meterRedBarEmptyRegion);				
+			batcher.drawSprite(28, 74, (239 * netBar), 26, AssetsManager.meterRedBarFillRegion); 	
+		}
 		batcher.drawSprite(22, 72, 250, 31, AssetsManager.meterBarOutlineRegion);
 		
-		batcher.drawSprite(28, 24, 239, 26, AssetsManager.meterBarEmptyRegion);				// TMP Bar. (4th)
-		batcher.drawSprite(28, 24, (239 * tmpBar), 26, AssetsManager.meterBarFillRegion); 	
+		if (tmpBar <= 0.66) {
+			batcher.drawSprite(28, 24, 239, 26, AssetsManager.meterGreenBarEmptyRegion);				// TMP Bar. (4th)
+			batcher.drawSprite(28, 24, (239 * tmpBar), 26, AssetsManager.meterGreenBarFillRegion); 	
+		} else if (tmpBar <= 0.85) {
+			batcher.drawSprite(28, 24, 239, 26, AssetsManager.meterYellowBarEmptyRegion);			
+			batcher.drawSprite(28, 24, (239 * tmpBar), 26, AssetsManager.meterYellowBarFillRegion); 	
+		} else {
+			batcher.drawSprite(28, 24, 239, 26, AssetsManager.meterRedBarEmptyRegion);			
+			batcher.drawSprite(28, 24, (239 * tmpBar), 26, AssetsManager.meterRedBarFillRegion); 	
+		}
 		batcher.drawSprite(22, 22, 250, 31, AssetsManager.meterBarOutlineRegion);
 		// batcher.endBatch();
 		
 		// Draws MicroGame Indicators.
-		if (microGames[microGameIndex].singleTouchEnabled && modeState != ModeState.Ready)
+		if (microGames[microGameIndex].singleTouchEnabled && loadComplete)
 			batcher.drawSprite(612, 368, 75, 75, AssetsManager.singleTouchOnIndicatorRegion);
 		else
 			batcher.drawSprite(612, 368, 75, 75, AssetsManager.singleTouchOffIndicatorRegion);
 
-		if (microGames[microGameIndex].multiTouchEnabled && modeState != ModeState.Ready)
+		if (microGames[microGameIndex].multiTouchEnabled && loadComplete)
 			batcher.drawSprite(725, 368, 75, 75, AssetsManager.multiTouchOnIndicatorRegion);
 		else
 			batcher.drawSprite(725, 368, 75, 75, AssetsManager.multiTouchOffIndicatorRegion);
 
-		if (microGames[microGameIndex].accelerometerEnabled && modeState != ModeState.Ready)
+		if (microGames[microGameIndex].accelerometerEnabled && loadComplete)
 			batcher.drawSprite(612, 267, 75, 75, AssetsManager.accelerometerOnIndicatorRegion);
 		else
 			batcher.drawSprite(612, 267, 75, 75, AssetsManager.accelerometerOffIndicatorRegion);
-
 			
-		if (microGames[microGameIndex].gesturesEnabled && modeState != ModeState.Ready)
+		if (microGames[microGameIndex].gesturesEnabled && loadComplete)
 			batcher.drawSprite(725, 267, 75, 75, AssetsManager.gesturesOnIndicatorRegion);
 		else
 			batcher.drawSprite(725, 267, 75, 75, AssetsManager.gesturesOffIndicatorRegion);
 
-			
 		batcher.endBatch();
 	}
 	
