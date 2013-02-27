@@ -124,12 +124,12 @@ public class SurvivalMode extends Mode {
 	// ----------------------------
 
 	@Override
-	public void presentStatusReport() {
+	public void presentStatusReport(int startY) {
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Level: " + String.valueOf(level), 315, 170);
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Speed: " + String.valueOf(speed), 315, 140);
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Lives: " + String.valueOf(lives), 315, 110);
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Rounds Survived: " + String.valueOf(currentRound-1) + " / OVER 9000", 315, 80);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Level: " + String.valueOf(level), 315, startY);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Speed: " + String.valueOf(speed), 315, startY-30);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Lives: " + String.valueOf(lives), 315, startY-60);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Rounds Survived: " + String.valueOf(currentRound-1) + " / OVER 9000", 315, startY-90);
 		batcher.endBatch();
 	}
 	
