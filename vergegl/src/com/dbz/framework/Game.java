@@ -1,12 +1,19 @@
 package com.dbz.framework;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Set;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
@@ -15,7 +22,6 @@ import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
-
 import com.dbz.framework.audio.Audio;
 import com.dbz.framework.gl.GLGraphics;
 import com.dbz.framework.gl.Screen;
@@ -42,6 +48,13 @@ public abstract class Game extends Activity implements Renderer {
 	Object stateChanged = new Object();
 	long startTime = System.nanoTime();
 	WakeLock wakeLock;
+	
+	//made public to avoid getters
+    public BluetoothAdapter mBtAdapter;  
+    public Set<BluetoothDevice> mPairedDevices;
+    public ArrayList<String> mNewDevices; //list cuz of issues with init hashset
+	
+	
 
 	@Override 
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,8 +71,12 @@ public abstract class Game extends Activity implements Renderer {
 		audio = new Audio(this);
 		input = new Input(this, glView, 1, 1);
 		PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Game");  
-
+		wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Game");
+		  
+		//should check if bluetooth is supported first...
+		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+		mPairedDevices = mBtAdapter.getBondedDevices();
+		
 	}
 
 	public void onResume() {
@@ -221,4 +238,73 @@ public abstract class Game extends Activity implements Renderer {
 		screen.onBackPressed(); //lil strategy pattern-esk - each instance of screen implements its own onBackPressed to define behavior.
 		
 	}
+	
+	// ---------------
+	// -- Bluetooth --
+	// ---------------
+	
+    /**
+     * Start device discover with the BluetoothAdapter
+     */
+    public void startDiscovery() {
+        Log.d("Bluetooth", "startDiscovery()");
+
+
+        // Register for broadcasts when a device is discovered
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        this.registerReceiver(mReceiver, filter);
+
+        // Register for broadcasts when discovery has finished
+        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        this.registerReceiver(mReceiver, filter); 
+
+        
+        // If we're already discovering, stop it
+        if (mBtAdapter.isDiscovering()) {
+            mBtAdapter.cancelDiscovery();
+        }
+
+        // Request discover from BluetoothAdapter
+        mBtAdapter.startDiscovery();
+    }
+    
+    public void endDiscovery() {
+    	Log.d("Bluetooth", "stopDiscovery()");
+    	 if (mBtAdapter != null) {
+             mBtAdapter.cancelDiscovery();
+         }
+    	 
+    	this.unregisterReceiver(mReceiver); //must unregister to prevent null
+    }
+    
+    // The BroadcastReceiver that listens for discovered devices and add the device to the new devices array
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+        	if (intent == null) 
+        		return;
+        	
+            String action = intent.getAction();
+            
+            // When discovery finds a device
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Get the BluetoothDevice object from the Intent
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                // If it's already paired, skip it, because it's been listed already
+                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+                	if(mNewDevices == null){
+                		Log.d("Bluetooth", "Device Found");
+                		//mNewDevices = new ArrayList<BluetoothDevice>();
+                		mNewDevices = new ArrayList<String>();
+                	}
+                	//else mNewDevices.add(device);
+                	else mNewDevices.add(device.getName() + " : " + device.getAddress());
+                }
+            // Do stuff when discovery is finished
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+            	//do stuff
+            }
+        }
+    };
+    
 }
