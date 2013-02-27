@@ -8,7 +8,6 @@ import com.dbz.framework.gl.Animation;
 import com.dbz.framework.gl.LineBatcher;
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
-import com.dbz.framework.gl.ThickLineBatcher;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.Circle;
 import com.dbz.framework.math.Rectangle;
@@ -269,7 +268,7 @@ public class CircuitMicroGame extends MicroGame {
 	// -------------------
 	// --- Draw Method ---
 	// -------------------
-	ThickLineBatcher tlb = new ThickLineBatcher(glGraphics, 100);
+	//ThickLineBatcher tlb = new ThickLineBatcher(glGraphics, 100);
 	LineBatcher lineBatcher = new LineBatcher(glGraphics, 300, 2);
 	@Override
 	public void presentRunning() {
@@ -317,7 +316,12 @@ public class CircuitMicroGame extends MicroGame {
 				spark.frameCounter = 2;
 			 } 
 			 spark.frameCounter--; 
-		} 
+		} else { //else, draw lightning between nodes
+				lineBatcher.beginBatch();
+				lineBatcher.drawLightning(circuitNodes[circuitNodesIndex].lowerLeft, 
+													circuitNodes[circuitNodesIndex+1].lowerLeft, 120, 20);
+				lineBatcher.endBatch();	
+		}
 			//works but animation is slow
 			//batcher.drawSprite(spark.bounds, Assets.circuitSparkAnim.getKeyFrame(spark.stateTime, Animation.ANIMATION_LOOPING));	
 		batcher.endBatch();
