@@ -1,10 +1,10 @@
 package com.dbz.verge.menus;
 
 import java.util.List;
+import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.Intent;
 import android.util.Log;
 
 import com.dbz.framework.input.Input.TouchEvent;
@@ -17,20 +17,27 @@ public class BluetoothScreen extends Menu {
 	// --- Fields ---
 	// --------------
 	
-    BluetoothAdapter btAdapter;
+    BluetoothAdapter btAdapter = game.mBtAdapter;
+    private static final String NAME = "VergeBluetoothConnect";
+    private static final UUID MY_UUID = UUID.fromString("7d2b2c7a-e370-4500-a82a-47e1a76287be");
 
     // -------------------
  	// --- Constructor ---
     // -------------------
     public BluetoothScreen() {
     	
-    	BluetoothAdapter btAdapter = game.mBtAdapter;
+    //	BluetoothAdapter btAdapter = game.mBtAdapter;
 		if(!btAdapter.isEnabled()){
 			btAdapter.enable();
 		}
+		
+		//game.mPairedDevices = btAdapter.getBondedDevices(); //note, doesn't work right away.
+		//bluetooth takes a few seconds to enable, and until its enabled, this will return null. 
+		//for some reason, if i put this in update() the variable btAdapter is null.
+		
 		//game.ensureDiscoverable(); //puts device in discovery but causes paired list to not be displayed?
 		game.startDiscovery(); // right now ending on back press (hardware)
-
+		
 		
     }       
 
@@ -39,6 +46,8 @@ public class BluetoothScreen extends Menu {
  	// ---------------------
     @Override
     public void update(float deltaTime) {
+  
+    	game.mPairedDevices = btAdapter.getBondedDevices();
     	
     	// Gets all TouchEvents and stores them in a list.
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
@@ -55,7 +64,15 @@ public class BluetoothScreen extends Menu {
                 touchPoint.set(event.x, event.y);
                 guiCam.touchToWorld(touchPoint);
                 
-                // put logic here to click on devices and connect to them
+                // put logic here to click on the screen to init a connection with first available device
+                if(game.mNewDevices != null){
+                	BluetoothDevice target = game.mNewDevices.iterator().next(); //get first bluetooth device
+                	Log.d("Bluetooth", target.getName());
+                	
+                	//TODO here do threads to make connection? we know the device we want, just need to 
+                	//connect to it.
+                	
+                }
             
                 // Non-Unique, Super Class Bounds Check.
     	        super.update(touchPoint);
@@ -98,9 +115,8 @@ public class BluetoothScreen extends Menu {
 		lineSpacer += 40;
 		// list of new devices
 		if(game.mNewDevices != null){
-		for(String nd : game.mNewDevices){
-			//AssetsManager.vergeFont.drawTextCentered(batcher, nd.getName() + " : " + nd.getAddress() , 640, 700-lineSpacer, 1.5f);
-			AssetsManager.vergeFont.drawTextCentered(batcher, nd , 640, 700-lineSpacer, 1.5f);
+		for(BluetoothDevice nd : game.mNewDevices){
+			AssetsManager.vergeFont.drawTextCentered(batcher, nd.getName() + " : " + nd.getAddress() , 640, 700-lineSpacer, 1.5f);
 			lineSpacer += 40;
 		}
 		}

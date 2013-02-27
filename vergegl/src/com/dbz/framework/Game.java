@@ -1,7 +1,7 @@
 package com.dbz.framework;
 
 import java.nio.IntBuffer;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -52,7 +52,7 @@ public abstract class Game extends Activity implements Renderer {
 	//made public to avoid getters
     public BluetoothAdapter mBtAdapter;  
     public Set<BluetoothDevice> mPairedDevices;
-    public ArrayList<String> mNewDevices; //list cuz of issues with init hashset
+    public HashSet<BluetoothDevice> mNewDevices; //list cuz of issues with init hashset
 	
 	
 
@@ -72,11 +72,11 @@ public abstract class Game extends Activity implements Renderer {
 		input = new Input(this, glView, 1, 1);
 		PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Game");
-		  
+		
 		//should check if bluetooth is supported first...
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 		mPairedDevices = mBtAdapter.getBondedDevices();
-		
+		  
 	}
 
 	public void onResume() {
@@ -243,20 +243,29 @@ public abstract class Game extends Activity implements Renderer {
 	// -- Bluetooth --
 	// ---------------
 	
+	
     /**
      * Start device discover with the BluetoothAdapter
      */
     public void startDiscovery() {
         Log.d("Bluetooth", "startDiscovery()");
-
-
+        
+        //Might not need all of these, but may come in handy when troubleshooting
         // Register for broadcasts when a device is discovered
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         this.registerReceiver(mReceiver, filter);
-
         // Register for broadcasts when discovery has finished
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        this.registerReceiver(mReceiver, filter); 
+        this.registerReceiver(mReceiver, filter);  
+        // Register for broadcasts when device has connected
+        filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+        this.registerReceiver(mReceiver, filter);
+        // Register for broadcasts when disconnect requested
+        filter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        this.registerReceiver(mReceiver, filter);
+        // Register for broadcasts when disconnected
+        filter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        this.registerReceiver(mReceiver, filter);
 
         
         // If we're already discovering, stop it
@@ -273,8 +282,9 @@ public abstract class Game extends Activity implements Renderer {
     	 if (mBtAdapter != null) {
              mBtAdapter.cancelDiscovery();
          }
-    	 
-    	this.unregisterReceiver(mReceiver); //must unregister to prevent null
+    	 //TODO LATER, PROBABLY SHOULD MOVE THIS SOMEWHERE ELSE... FOR NOW OK, BUT NOT OK IF WE BACK OUT OF BLUETOOTH SCREEN
+    	 // AND EXPECT TO MAINTAIN CONNECTION
+    	this.unregisterReceiver(mReceiver);
     }
     
     // The BroadcastReceiver that listens for discovered devices and add the device to the new devices array
@@ -294,16 +304,25 @@ public abstract class Game extends Activity implements Renderer {
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
                 	if(mNewDevices == null){
                 		Log.d("Bluetooth", "Device Found");
-                		//mNewDevices = new ArrayList<BluetoothDevice>();
-                		mNewDevices = new ArrayList<String>();
+                		mNewDevices = new HashSet<BluetoothDevice>();
                 	}
-                	//else mNewDevices.add(device);
-                	else mNewDevices.add(device.getName() + " : " + device.getAddress());
+                	mNewDevices.add(device);
                 }
-            // Do stuff when discovery is finished
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-            	//do stuff
+            	//done searching
             }
+            else if (BluetoothDevice .ACTION_ACL_CONNECTED.equals(action)) {
+                 //Device is now connected
+            	Log.d("Bluetooth", "connected");
+             }
+             else if (BluetoothDevice .ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
+                 //Device is about to disconnect
+            	 Log.d("Bluetooth", "connecting");
+             }
+             else if (BluetoothDevice .ACTION_ACL_DISCONNECTED.equals(action)) {
+                 //Device has disconnected
+            	 Log.d("Bluetooth", "disconnected");
+             } 
         }
     };
     

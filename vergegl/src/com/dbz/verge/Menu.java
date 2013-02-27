@@ -17,7 +17,7 @@ public abstract class Menu extends Screen {
 	
 	// OpenGL Related Objects.
     public Camera2D guiCam = new Camera2D(glGraphics, 1280, 800);
-    public SpriteBatcher batcher = new SpriteBatcher(glGraphics, 100);
+    public SpriteBatcher batcher = new SpriteBatcher(glGraphics, 200);
     
     // TouchPoint Vector and Bounding Boxes.
     public Vector2 touchPoint = new Vector2();

@@ -65,6 +65,7 @@ public class MainMenu extends Menu {
                 if(OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
                     //  game.setScreen(new HelpScreen(game));
+                    game.setScreen(new BluetoothScreen());
                     return;
                 }
                 
