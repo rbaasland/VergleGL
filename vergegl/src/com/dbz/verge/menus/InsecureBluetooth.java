@@ -170,7 +170,7 @@ public class InsecureBluetooth {
     		Field f_rfcomm_type = BluetoothSocket.class.getDeclaredField("TYPE_RFCOMM");
     		f_rfcomm_type.setAccessible(true);
         	int rfcomm_type = (Integer)f_rfcomm_type.get(null);
-        	socket = constructor.newInstance(new Object[] { rfcomm_type, -1, false, true, device, port, uuid != null ? new ParcelUuid(uuid) : null} );
+        	socket = constructor.newInstance(new Object[] { rfcomm_type, -1, false, encrypt, device, port, uuid != null ? new ParcelUuid(uuid) : null} );
         	return socket;
     	} catch (NoSuchMethodException e) {
     		throw new RuntimeException(e);

@@ -21,6 +21,8 @@ import com.dbz.verge.Menu;
 
 public class BluetoothScreen extends Menu {
 	
+	//TODO need to enable message passing
+	
 	// --------------
 	// --- Fields ---
 	// --------------
@@ -62,11 +64,16 @@ public class BluetoothScreen extends Menu {
     	//Logic: constructor automatically starts "make discoverable" then start the accept thread
     	//if a new device is found while running, stop the accept thread, start the connect thread
     	//right now, this is done in the update() function, when the screen is pressed
-			
-		game.mNewDevices = null; //clear previously found devices before launch
-		game.ensureDiscoverable(); //puts device in discoverable mode
-		game.startDiscovery(); // right now ending on back press (hardware)
-		start(); //start accept thread
+		
+		while(true){ //must wait BT enable() to finish before ensureDiscoverable(). Else we get a force close.
+			if(btAdapter.getState() == BluetoothAdapter.STATE_ON){ 
+				game.mNewDevices = null; //clear previously found devices before launch
+			game.ensureDiscoverable(); //puts device in discoverable mode
+			game.startDiscovery(); // right now ending on back press (hardware)
+			start(); //start accept thread
+			break;
+			}
+		}
 		
     }       
 
@@ -100,7 +107,6 @@ public class BluetoothScreen extends Menu {
 
         }
     }
-    
     
     /////////////////////////////////////////////////////////////
     //Bluetooth connection threads
