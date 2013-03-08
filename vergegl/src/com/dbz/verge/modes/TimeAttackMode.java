@@ -180,7 +180,7 @@ public class TimeAttackMode extends Mode {
 		try {
 			out = new BufferedWriter(new OutputStreamWriter(
 					files.writeFile(file)));
-			out.write("SURIVAL HIGH SCORES");
+			out.write("SURVIVAL HIGH SCORES");
 			out.write("\n");
 			for(int i = 0; i < 5; i++) {
 				out.write(extraHighScores[i]);

@@ -56,7 +56,7 @@ public class MainMenu extends Menu {
                 // High Scores Button Bounds Check.
                 if(OverlapTester.pointInRectangle(highScoresBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-                    game.setScreen(new HighScoreScreen());
+                    game.setScreen(new ScoreScreen());
                     return;
                 }
                 
