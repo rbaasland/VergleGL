@@ -35,7 +35,6 @@ public class BluetoothScreen extends Menu {
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     
-    
     private int mState;
 
     // Constants that indicate the current connection state
@@ -211,7 +210,7 @@ public class BluetoothScreen extends Menu {
 
             // Create a new listening server socket
             try {
-            	socket = com.dbz.verge.menus.InsecureBluetooth.listenUsingRfcommWithServiceRecord(btAdapter, NAME, MY_UUID, false); //disable encryption
+            	socket = btAdapter.listenUsingInsecureRfcommWithServiceRecord(NAME, MY_UUID); //disable encryption
             } catch (IOException e) {
                 Log.e(TAG, "listen() failed", e);
             }
@@ -285,7 +284,7 @@ public class BluetoothScreen extends Menu {
             // given BluetoothDevice
             BluetoothSocket socket = null;
             try {
-            	socket = InsecureBluetooth.createRfcommSocketToServiceRecord(device, MY_UUID, false); //disable encryption
+            	socket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID); //disable encryption
             } catch (IOException e) {
             	Log.e(TAG, "create() failed", e);
             }
