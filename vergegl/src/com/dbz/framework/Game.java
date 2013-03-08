@@ -51,7 +51,7 @@ public abstract class Game extends Activity implements Renderer {
 	
 	//made public to avoid getters
     public BluetoothAdapter mBtAdapter;  
-    public Set<BluetoothDevice> mPairedDevices;
+  //  public Set<BluetoothDevice> mPairedDevices;
     public HashSet<BluetoothDevice> mNewDevices; //list cuz of issues with init hashset
 	
 	
@@ -75,7 +75,7 @@ public abstract class Game extends Activity implements Renderer {
 		
 		//should check if bluetooth is supported first...
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-		mPairedDevices = mBtAdapter.getBondedDevices();
+		//mPairedDevices = mBtAdapter.getBondedDevices();
 		  
 	}
 
@@ -244,6 +244,16 @@ public abstract class Game extends Activity implements Renderer {
 	// ---------------
 	
 	
+    public void ensureDiscoverable() {
+       // if(D) Log.d(TAG, "ensure discoverable");
+        if (mBtAdapter.getScanMode() !=
+            BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 120);
+            startActivity(discoverableIntent);
+        }
+    }
+	
     /**
      * Start device discover with the BluetoothAdapter
      */
@@ -301,7 +311,8 @@ public abstract class Game extends Activity implements Renderer {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // If it's already paired, skip it, because it's been listed already
-                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+               // if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+                if (true){
                 	if(mNewDevices == null){
                 		Log.d("Bluetooth", "Device Found");
                 		mNewDevices = new HashSet<BluetoothDevice>();
