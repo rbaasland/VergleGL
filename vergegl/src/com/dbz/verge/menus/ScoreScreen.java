@@ -11,7 +11,7 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Menu;
 
-public class HighScoreScreen extends Menu {
+public class ScoreScreen extends Menu {
 
 	// --------------
 	// --- Fields ---
@@ -19,8 +19,8 @@ public class HighScoreScreen extends Menu {
 
 	// Bounding Boxes.
 	private Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
-	public static float[] timeHighScores=new float[5];
-	public static int[] surivalHighScores=new int[5];
+	public static float[] timeAttackScores=new float[5];
+	public static int[] survivalScores=new int[5];
 	public final static String file = ".vergehighscores";
 	public static Rectangle highScoreBackground=new Rectangle(0, 200, 80, 170);
 
@@ -28,7 +28,7 @@ public class HighScoreScreen extends Menu {
 	// --- Constructor ---
 	// -------------------
 
-	public HighScoreScreen() {}       
+	public ScoreScreen() {}       
 
 	// ---------------------
 	// --- Update Method ---
@@ -66,10 +66,79 @@ public class HighScoreScreen extends Menu {
 		}
 	}
 
+	// ------------------------------
+	// --- Utility Update Methods ---
+	// ------------------------------
+	
+	public static void loadCurrentHighScores(FileIO files) {
+		BufferedReader in = null;
+		try {
+			in = new BufferedReader(new InputStreamReader(files.readFile(file)));
+			in.readLine();
+			for(int i = 0; i < 5; i++) {
+				survivalScores[i] = Integer.parseInt(in.readLine());
+			}
+			in.readLine();
+			for(int i = 0; i < 5; i++) {
+				timeAttackScores[i] = Float.parseFloat(in.readLine());
+			}
+		} catch (IOException e) {
+		} catch (NumberFormatException e) {
+		} finally {
+			try {
+				if (in != null)
+					in.close();
+			} catch (IOException e) {
+			}
+		}
+	}
+	
 	// ----------------------------
 	// --- Utility Draw Methods ---
 	// ----------------------------
 
+	
+//	public void drawBackground() {
+//		//      batcher.beginBatch(AssetsManager.background);
+//		//     batcher.drawSprite(0, 0, 1280, 800, AssetsManager.backgroundRegion);
+//		//    batcher.endBatch();
+//	}
+//
+//	public void drawObjects() {
+//
+//		// prints out the high scores for survival and time attack;
+//		batcher.beginBatch(AssetsManager.vergeFontTexture);
+//		AssetsManager.vergeFont.drawTextLeft(batcher, "Survival High Scores", 180, 550);
+//		loadCurrentHighScores(game.getFileIO());
+//		for(int i=0;i<5;i++)
+//		{
+//			AssetsManager.vergeFont.drawTextLeft(batcher, ""+surivalHighScores[i], 180, 520-(i*30));
+//		}
+//		AssetsManager.vergeFont.drawTextLeft(batcher, "Time Attack High Scores", 600, 550);
+//		//formats the time attack scores to hours:minutes:seconds
+//		for(int i=0;i<5;i++)
+//		{
+//			int hrs=0;
+//			int mins;
+//			int sec;
+//			int rem=0;
+//			hrs=((int)timeHighScores[i])/3600;
+//			rem=((int)timeHighScores[i])%3600;
+//			mins=rem/60;
+//			rem=rem%60;
+//			sec=rem;
+//
+//			AssetsManager.vergeFont.drawTextLeft(batcher, ""+(hrs/10)%10+hrs%10+" :"+(mins/10)%10+mins%10+" :"+(sec/10)%10+sec%10, 600, 520-(i*30));
+//		}
+//		batcher.endBatch();
+//		// Draws Back Arrow.
+//		batcher.beginBatch(AssetsManager.backArrow);
+//		batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
+//		batcher.endBatch(); 
+//
+//		super.drawObjects();
+//	}
+	
 	public void drawBackground() {
 		//      batcher.beginBatch(AssetsManager.background);
 		//     batcher.drawSprite(0, 0, 1280, 800, AssetsManager.backgroundRegion);
@@ -77,32 +146,27 @@ public class HighScoreScreen extends Menu {
 	}
 
 	public void drawObjects() {
-
-		//prints out the high scores for survival and time attack;
-		batcher.beginBatch(AssetsManager.vergeFontTexture);
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Survival High Scores", 180, 550);
 		loadCurrentHighScores(game.getFileIO());
-		for(int i=0;i<5;i++)
-		{
-			AssetsManager.vergeFont.drawTextLeft(batcher, ""+surivalHighScores[i], 180, 520-(i*30));
-		}
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Time Attack High Scores", 600, 550);
-		//formats the time attack scores to hours:minutes:seconds
-		for(int i=0;i<5;i++)
-		{
-			int hrs=0;
-			int mins;
-			int sec;
-			int rem=0;
-			hrs=((int)timeHighScores[i])/3600;
-			rem=((int)timeHighScores[i])%3600;
-			mins=rem/60;
-			rem=rem%60;
-			sec=rem;
 
-			AssetsManager.vergeFont.drawTextLeft(batcher, ""+(hrs/10)%10+hrs%10+" :"+(mins/10)%10+mins%10+" :"+(sec/10)%10+sec%10, 600, 520-(i*30));
+		// Prints all of the text.
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		
+		// Survival High Scores.
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Survival High Scores", 180, 550);
+		for (int i = 0; i < 5; i++)
+			AssetsManager.vergeFont.drawTextLeft(batcher, ""+survivalScores[i], 180, 520-(i*30));
+		
+		// Time Attack High Scores. (Formatted MM:SS).
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Time Attack High Scores", 600, 550);
+		for (int i = 0; i < 5; i++)
+		{
+			int minutes = ((int)timeAttackScores[i]) / 60;
+			float seconds = timeAttackScores[i] - (minutes * 60);	
+			AssetsManager.vergeFont.drawTextLeft(batcher, String.format("%02d:%05.2f", minutes, seconds), 600, 520-(i*30));
+
 		}
 		batcher.endBatch();
+		
 		// Draws Back Arrow.
 		batcher.beginBatch(AssetsManager.backArrow);
 		batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
@@ -118,31 +182,13 @@ public class HighScoreScreen extends Menu {
 		batcher.endBatch();
 	}
 
+	// --------------------------------
+	// --- Android State Management ---
+	// --------------------------------
+	
 	@Override
 	public void onBackPressed(){
 		game.setScreen(new MainMenu());
-	}
-	public static void loadCurrentHighScores(FileIO files) {
-		BufferedReader in = null;
-		try {
-			in = new BufferedReader(new InputStreamReader(files.readFile(file)));
-			in.readLine();
-			for(int i = 0; i < 5; i++) {
-				surivalHighScores[i] = Integer.parseInt(in.readLine());
-			}
-			in.readLine();
-			for(int i = 0; i < 5; i++) {
-				timeHighScores[i] = Float.parseFloat(in.readLine());
-			}
-		} catch (IOException e) {
-		} catch (NumberFormatException e) {
-		} finally {
-			try {
-				if (in != null)
-					in.close();
-			} catch (IOException e) {
-			}
-		}
 	}
 
 }

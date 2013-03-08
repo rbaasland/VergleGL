@@ -40,8 +40,8 @@ public abstract class Mode extends Screen {
 		Lost
 	}
 	
-	public ModeState modeState = ModeState.Ready;
-	public ModeState previousModeState = ModeState.Ready;
+	public ModeState modeState = ModeState.Transition;
+	public ModeState previousModeState = ModeState.Transition;
 	
     // OpenGL Related Objects
     public Camera2D guiCam = new Camera2D(glGraphics, 854, 480);
@@ -306,12 +306,10 @@ public abstract class Mode extends Screen {
 	public void updateMicroGameWon() {
 		loadComplete = false;
 		currentRound++;
-		updateMeterBarPercentages();
 	}
 	
 	public void updateMicroGameLost() {
 		loadComplete = false;
-		updateMeterBarPercentages();
 	}
 	
 	public void updateWon() {
@@ -394,6 +392,8 @@ public abstract class Mode extends Screen {
 		//here... reference to current screen
 		
 		loadComplete = true;
+		updateMeterBarPercentages();
+
 	}
 
 	public void updateMeterBarPercentages() {
@@ -635,24 +635,24 @@ public abstract class Mode extends Screen {
 		
 		// Draws MicroGame Indicators.
 		if (microGames[microGameIndex].singleTouchEnabled && loadComplete)
-			batcher.drawSprite(612, 368, 75, 75, AssetsManager.singleTouchOnIndicatorRegion);
+			batcher.drawSprite(607, 363, 85, 85, AssetsManager.singleTouchOnIndicatorRegion);	// Originally 612, 368, 75, 75
 		else
-			batcher.drawSprite(612, 368, 75, 75, AssetsManager.singleTouchOffIndicatorRegion);
+			batcher.drawSprite(607, 363, 85, 85, AssetsManager.singleTouchOffIndicatorRegion);
 
 		if (microGames[microGameIndex].multiTouchEnabled && loadComplete)
-			batcher.drawSprite(725, 368, 75, 75, AssetsManager.multiTouchOnIndicatorRegion);
+			batcher.drawSprite(720, 363, 85, 85, AssetsManager.multiTouchOnIndicatorRegion);
 		else
-			batcher.drawSprite(725, 368, 75, 75, AssetsManager.multiTouchOffIndicatorRegion);
+			batcher.drawSprite(720, 363, 85, 85, AssetsManager.multiTouchOffIndicatorRegion);
 
 		if (microGames[microGameIndex].accelerometerEnabled && loadComplete)
-			batcher.drawSprite(612, 267, 75, 75, AssetsManager.accelerometerOnIndicatorRegion);
+			batcher.drawSprite(607, 262, 85, 85, AssetsManager.accelerometerOnIndicatorRegion);
 		else
-			batcher.drawSprite(612, 267, 75, 75, AssetsManager.accelerometerOffIndicatorRegion);
+			batcher.drawSprite(607, 262, 85, 85, AssetsManager.accelerometerOffIndicatorRegion);
 			
 		if (microGames[microGameIndex].gesturesEnabled && loadComplete)
-			batcher.drawSprite(725, 267, 75, 75, AssetsManager.gesturesOnIndicatorRegion);
+			batcher.drawSprite(720, 262, 85, 85, AssetsManager.gesturesOnIndicatorRegion);
 		else
-			batcher.drawSprite(725, 267, 75, 75, AssetsManager.gesturesOffIndicatorRegion);
+			batcher.drawSprite(720, 262, 85, 85, AssetsManager.gesturesOffIndicatorRegion);
 
 		batcher.endBatch();
 	}
