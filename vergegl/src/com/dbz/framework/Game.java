@@ -1,5 +1,7 @@
 package com.dbz.framework;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.IntBuffer;
 import java.util.HashSet;
 import java.util.Set;
@@ -277,6 +279,9 @@ public abstract class Game extends Activity implements Renderer {
         filter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         this.registerReceiver(mReceiver, filter);
 
+       // filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+      //  this.registerReceiver(mReceiver, filter);
+
         
         // If we're already discovering, stop it
         if (mBtAdapter.isDiscovering()) {
@@ -333,7 +338,9 @@ public abstract class Game extends Activity implements Renderer {
              else if (BluetoothDevice .ACTION_ACL_DISCONNECTED.equals(action)) {
                  //Device has disconnected
             	 Log.d("Bluetooth", "disconnected");
-             } 
+             } //else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+            	 	//could be used to bypass pairing confirmation? 		
+            // }
         }
     };
     
