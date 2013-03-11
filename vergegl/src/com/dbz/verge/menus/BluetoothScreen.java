@@ -56,6 +56,10 @@ public class BluetoothScreen extends Menu {
     private static final String TAG = "BluetoothScreen";
     private static final boolean D = true;
 
+    
+    private static final String TEMP_BLUETOOTH_ADAPTER_NAME = "vergeBT"; //temp device name used for connection
+    private String originalBluetoothDeviceName = ""; //ONLY use changeDeviceName to update this variable
+    
     // -------------------
  	// --- Constructor ---
     // -------------------
@@ -65,14 +69,9 @@ public class BluetoothScreen extends Menu {
 		if(!btAdapter.isEnabled()){
 			btAdapter.enable();
 		}
-		
-		//game.mPairedDevices = btAdapter.getBondedDevices(); //note, doesn't work right away.
-		//bluetooth takes a few seconds to enable, thus paired devices will return null until enabled. 
-		
-    	//Logic: constructor automatically starts "make discoverable" then start the accept thread
+		//Logic: constructor automatically starts "make discoverable" then start the accept thread
     	//if a new device is found while running, stop the accept thread, start the connect thread
     	//right now, this is done in the update() function, when the screen is pressed
-		
 		while(true){ //must wait BT enable() to finish before ensureDiscoverable(). Else we get a force close.
 			if(btAdapter.getState() == BluetoothAdapter.STATE_ON){ 
 				game.mNewDevices = null; //clear previously found devices before launch
@@ -82,7 +81,8 @@ public class BluetoothScreen extends Menu {
 			break;
 			}
 		}
-		
+		//game.mPairedDevices = btAdapter.getBondedDevices(); //note, doesn't work right away.
+		//bluetooth takes a few seconds to enable, thus paired devices will return null until enabled. 
     }       
     
     
@@ -112,10 +112,15 @@ public class BluetoothScreen extends Menu {
                 
                 //if currently listening & device found, then start connection
                 if(mState == STATE_LISTEN && game.mNewDevices != null){              	    	
-                	BluetoothDevice target = game.mNewDevices.iterator().next(); //get first bluetooth device
-                	Log.d("Bluetooth", target.getName());
-                	//pair before connect
-                	connect(target, false);  //try connecting to the device, if fails. restart accept thread
+                	for (BluetoothDevice device : game.mNewDevices)
+                	{
+                		if (device.getName().equals(TEMP_BLUETOOTH_ADAPTER_NAME)){
+	                		Log.d("Bluetooth", device.getName());
+	                    	//pair before connect
+	                    	connect(device, false);  //try connecting to the device, if fails. restart accept thread
+                		}
+                	}
+                	
                 }
     	        super.update(touchPoint);
             }
@@ -320,9 +325,10 @@ public class BluetoothScreen extends Menu {
         private String mSocketType;
 
         public AcceptThread(boolean secure) {
+        	
             BluetoothServerSocket tmp = null;
             mSocketType = secure ? "Secure":"Insecure";
-
+            changeDeviceName(btAdapter, TEMP_BLUETOOTH_ADAPTER_NAME);
             // Create a new listening server socket
             try {
                 if (secure) {
@@ -365,6 +371,7 @@ public class BluetoothScreen extends Menu {
                         case STATE_NONE:
                         case STATE_CONNECTED:
                             // Either not ready or already connected. Terminate new socket.
+                        	changeDeviceName(btAdapter, originalBluetoothDeviceName);
                             try {
                                 socket.close();
                             } catch (IOException e) {
@@ -376,7 +383,8 @@ public class BluetoothScreen extends Menu {
                 }
             }
             if (D) Log.i(TAG, "END mAcceptThread, socket Type: " + mSocketType);
-
+            
+            
         }
 
         public void cancel() {
@@ -387,6 +395,7 @@ public class BluetoothScreen extends Menu {
                 Log.e(TAG, "Socket Type" + mSocketType + "close() of server failed", e);
             }
         }
+        
     }
 
 
@@ -473,7 +482,6 @@ public class BluetoothScreen extends Menu {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
-
             // Get the BluetoothSocket input and output streams
             try {
                 tmpIn = socket.getInputStream();
@@ -563,17 +571,16 @@ public class BluetoothScreen extends Menu {
 		lineSpacer += 40;
 		// list of new devices
 		if(game.mNewDevices != null){
-		for(BluetoothDevice nd : game.mNewDevices){
-			AssetsManager.vergeFont.drawTextCentered(batcher, nd.getName() + " : " + nd.getAddress() , 640, 700-lineSpacer, 1.5f);
-			lineSpacer += 40;
-		}
+			for(BluetoothDevice nd : game.mNewDevices){
+				AssetsManager.vergeFont.drawTextCentered(batcher, nd.getName() + " : " + nd.getAddress() , 640, 700-lineSpacer, 1.5f);
+				lineSpacer += 40;
+			}
 		}
 		
 		//Connection Status
 		lineSpacer += 240;
 		if (mState == STATE_CONNECTED){
-			BluetoothDevice connectedDev = game.mNewDevices.iterator().next();
-			AssetsManager.vergeFont.drawTextCentered(batcher, "Connected to " + connectedDev.getName() , 640, 700-lineSpacer, 2f);
+			AssetsManager.vergeFont.drawTextCentered(batcher, "Connected" , 640, 700-lineSpacer, 2f);
 		} else AssetsManager.vergeFont.drawTextCentered(batcher, "Not Connected" , 640, 700-lineSpacer, 2f);
 		
 		//AssetsManager.vergeFont.drawTextCentered(batcher, string, 640, 700, 1.5f);
@@ -586,13 +593,24 @@ public class BluetoothScreen extends Menu {
     @Override
     public void drawBounds() {}
     
+    private synchronized void changeDeviceName(BluetoothAdapter btAdapter, String newName){
+        if(newName.equals(TEMP_BLUETOOTH_ADAPTER_NAME) && originalBluetoothDeviceName.equals("")){ 
+            originalBluetoothDeviceName = btAdapter.getName();
+            btAdapter.setName(TEMP_BLUETOOTH_ADAPTER_NAME);
+        } else if(newName.equals(originalBluetoothDeviceName)){ 
+            btAdapter.setName(originalBluetoothDeviceName);
+            originalBluetoothDeviceName = "";
+        }
+    }
+    
     @Override
     public void onBackPressed(){
-		if(game.mBtAdapter.isEnabled()){
-			//game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging
-		}
 		game.endDiscovery();
 		stop(); //stop all threads
+		changeDeviceName(btAdapter, originalBluetoothDeviceName);
+		if(game.mBtAdapter.isEnabled()){
+			game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging
+		}
 		game.setScreen(new MainMenu());
     }
 

@@ -256,6 +256,15 @@ public abstract class Game extends Activity implements Renderer {
         }
     }
 	
+//    public void disableDiscoverable() {
+//    	if (mBtAdapter.getScanMode() !=
+//                BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+//                Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+//                discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 1);
+//                startActivity(discoverableIntent);
+//            }
+//    }
+    
     /**
      * Start device discover with the BluetoothAdapter
      */
@@ -302,6 +311,7 @@ public abstract class Game extends Activity implements Renderer {
     	this.unregisterReceiver(mReceiver);
     }
     
+    
     // The BroadcastReceiver that listens for discovered devices and add the device to the new devices array
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -317,13 +327,11 @@ public abstract class Game extends Activity implements Renderer {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // If it's already paired, skip it, because it's been listed already
                // if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                if (true){
-                	if(mNewDevices == null){
-                		Log.d("Bluetooth", "Device Found");
-                		mNewDevices = new HashSet<BluetoothDevice>();
-                	}
-                	mNewDevices.add(device);
-                }
+	        	if(mNewDevices == null){
+	        		Log.d("Bluetooth", "Device Found");
+	        		mNewDevices = new HashSet<BluetoothDevice>();
+	        	}
+	        	mNewDevices.add(device);
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
             	//done searching
             }
