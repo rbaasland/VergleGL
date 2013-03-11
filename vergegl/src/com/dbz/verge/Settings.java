@@ -10,16 +10,18 @@ import com.dbz.framework.input.FileIO;
 
 public class Settings {
     public static boolean soundEnabled = true;
-    public final static int[] highscores = new int[] { 100, 80, 50, 30, 10 };
-    public final static String file = ".verge";
+    public final static String settingsFile = ".verge";
+    
+    public final static int[] scores = new int[] { 100, 80, 50, 30, 10 };
+    public final static String scoreFile = ".vergescores";
 
     public static void load(FileIO files) {
         BufferedReader in = null;
         try {
-            in = new BufferedReader(new InputStreamReader(files.readFile(file)));
+            in = new BufferedReader(new InputStreamReader(files.readFile(settingsFile)));
             soundEnabled = Boolean.parseBoolean(in.readLine());
             for(int i = 0; i < 5; i++) {
-                highscores[i] = Integer.parseInt(in.readLine());
+                scores[i] = Integer.parseInt(in.readLine());
             }
         } catch (IOException e) {
             // :( It's ok we have defaults
@@ -38,11 +40,11 @@ public class Settings {
         BufferedWriter out = null;
         try {
             out = new BufferedWriter(new OutputStreamWriter(
-                    files.writeFile(file)));
+                    files.writeFile(settingsFile)));
             out.write(Boolean.toString(soundEnabled));
             out.write("\n");
             for(int i = 0; i < 5; i++) {
-                out.write(Integer.toString(highscores[i]));
+                out.write(Integer.toString(scores[i]));
                 out.write("\n");
             }
 
@@ -58,10 +60,10 @@ public class Settings {
 
     public static void addScore(int score) {
         for(int i=0; i < 5; i++) {
-            if(highscores[i] < score) {
+            if(scores[i] < score) {
                 for(int j= 4; j > i; j--)
-                    highscores[j] = highscores[j-1];
-                highscores[i] = score;
+                    scores[j] = scores[j-1];
+                scores[i] = score;
                 break;
             }
         }

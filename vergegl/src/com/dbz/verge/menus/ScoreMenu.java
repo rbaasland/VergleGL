@@ -11,7 +11,7 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Menu;
 
-public class ScoreScreen extends Menu {
+public class ScoreMenu extends Menu {
 
 	// --------------
 	// --- Fields ---
@@ -19,16 +19,17 @@ public class ScoreScreen extends Menu {
 
 	// Bounding Boxes.
 	private Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
-	public static float[] timeAttackScores=new float[5];
-	public static int[] survivalScores=new int[5];
+	
+	// Scores.
 	public final static String file = ".vergehighscores";
-	public static Rectangle highScoreBackground=new Rectangle(0, 200, 80, 170);
+	public static float[] timeAttackScores = new float[5];
+	public static int[] survivalScores = new int[5];
 
 	// -------------------
 	// --- Constructor ---
 	// -------------------
 
-	public ScoreScreen() {}       
+	public ScoreMenu() {}       
 
 	// ---------------------
 	// --- Update Method ---
@@ -96,53 +97,12 @@ public class ScoreScreen extends Menu {
 	// ----------------------------
 	// --- Utility Draw Methods ---
 	// ----------------------------
-
-	
-//	public void drawBackground() {
-//		//      batcher.beginBatch(AssetsManager.background);
-//		//     batcher.drawSprite(0, 0, 1280, 800, AssetsManager.backgroundRegion);
-//		//    batcher.endBatch();
-//	}
-//
-//	public void drawObjects() {
-//
-//		// prints out the high scores for survival and time attack;
-//		batcher.beginBatch(AssetsManager.vergeFontTexture);
-//		AssetsManager.vergeFont.drawTextLeft(batcher, "Survival High Scores", 180, 550);
-//		loadCurrentHighScores(game.getFileIO());
-//		for(int i=0;i<5;i++)
-//		{
-//			AssetsManager.vergeFont.drawTextLeft(batcher, ""+surivalHighScores[i], 180, 520-(i*30));
-//		}
-//		AssetsManager.vergeFont.drawTextLeft(batcher, "Time Attack High Scores", 600, 550);
-//		//formats the time attack scores to hours:minutes:seconds
-//		for(int i=0;i<5;i++)
-//		{
-//			int hrs=0;
-//			int mins;
-//			int sec;
-//			int rem=0;
-//			hrs=((int)timeHighScores[i])/3600;
-//			rem=((int)timeHighScores[i])%3600;
-//			mins=rem/60;
-//			rem=rem%60;
-//			sec=rem;
-//
-//			AssetsManager.vergeFont.drawTextLeft(batcher, ""+(hrs/10)%10+hrs%10+" :"+(mins/10)%10+mins%10+" :"+(sec/10)%10+sec%10, 600, 520-(i*30));
-//		}
-//		batcher.endBatch();
-//		// Draws Back Arrow.
-//		batcher.beginBatch(AssetsManager.backArrow);
-//		batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
-//		batcher.endBatch(); 
-//
-//		super.drawObjects();
-//	}
 	
 	public void drawBackground() {
-		//      batcher.beginBatch(AssetsManager.background);
-		//     batcher.drawSprite(0, 0, 1280, 800, AssetsManager.backgroundRegion);
-		//    batcher.endBatch();
+		batcher.beginBatch(AssetsManager.background);
+		batcher.drawSprite(0, 0, 1280, 800, AssetsManager.backgroundRegion);
+		batcher.drawSprite(245, 165, 790, 470, AssetsManager.backgroundGreyFillRegion);
+		batcher.endBatch();
 	}
 
 	public void drawObjects() {
@@ -156,7 +116,7 @@ public class ScoreScreen extends Menu {
 		for (int i = 0; i < 5; i++)
 			AssetsManager.vergeFont.drawTextLeft(batcher, ""+survivalScores[i], 180, 520-(i*30));
 		
-		// Time Attack High Scores. (Formatted MM:SS).
+		// Time Attack High Scores. (Formatted MM:SS.MSMS).
 		AssetsManager.vergeFont.drawTextLeft(batcher, "Time Attack High Scores", 600, 550);
 		for (int i = 0; i < 5; i++)
 		{

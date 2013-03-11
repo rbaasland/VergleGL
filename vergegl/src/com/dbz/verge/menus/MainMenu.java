@@ -56,14 +56,14 @@ public class MainMenu extends Menu {
                 // High Scores Button Bounds Check.
                 if(OverlapTester.pointInRectangle(highScoresBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-                    game.setScreen(new ScoreScreen());
+                    game.setScreen(new ScoreMenu());
                     return;
                 }
                 
                 // Help Button Bounds Check.
                 if(OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-                    //  game.setScreen(new HelpScreen(game));
+//                      game.setScreen(new HelpMenu());
                     game.setScreen(new BluetoothScreen());
                     return;
                 }

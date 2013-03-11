@@ -50,7 +50,6 @@ public class SurvivalMode extends Mode {
 	@Override
 	public void updateMicroGameWon() {
 		super.updateMicroGameWon();
-
 		modeState = ModeState.Transition;
 	}
 
@@ -63,7 +62,6 @@ public class SurvivalMode extends Mode {
 		{
 			modeState = ModeState.Lost;
 			validHighScore(currentRound-1);
-
 		}
 		else {
 			currentRound++;

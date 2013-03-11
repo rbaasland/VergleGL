@@ -283,9 +283,7 @@ public abstract class Mode extends Screen {
 	public void updateRunning(float deltaTime) {
 		microGames[microGameIndex].update(deltaTime);
 		
-		if (microGames[microGameIndex].microGameState == MicroGameState.Paused){
-			
-		}
+		if (microGames[microGameIndex].microGameState == MicroGameState.Paused) {}
 		
 		if (microGames[microGameIndex].microGameState == MicroGameState.Won) {
 			totalTimeOver += deltaTime;

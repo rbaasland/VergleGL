@@ -336,10 +336,6 @@ public class GameGridMenu extends Menu {
 	        batcher.endBatch();
 	        
 	        // Draws Page Number.
-//			batcher.beginBatch(Assets.items);
-//			Assets.font.drawText(batcher, String.valueOf(currentPage), 600, 50);
-//			batcher.endBatch();
-			
 			batcher.beginBatch(AssetsManager.vergeFontTexture);
 			AssetsManager.vergeFont.drawTextCentered(batcher, String.valueOf(currentPage), 640, 10, 2.5f);
 			batcher.endBatch();
