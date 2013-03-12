@@ -8,6 +8,7 @@ import com.dbz.framework.gl.SpriteBatcher;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
+import com.dbz.verge.menus.HelpMenu;
 
 public abstract class Menu extends Screen {
 	
@@ -22,12 +23,12 @@ public abstract class Menu extends Screen {
     // TouchPoint Vector and Bounding Boxes.
     public Vector2 touchPoint = new Vector2();
     public Rectangle soundToggleBounds = new Rectangle(1135, 5, 140, 140);
+    public Rectangle helpBounds = new Rectangle(5, 655, 140, 140);
 
     // -------------------
  	// --- Constructor ---
     // -------------------
-    public Menu() {                
-    }       
+    public Menu() {}       
 
     // ---------------------
  	// --- Update Method ---
@@ -40,13 +41,19 @@ public abstract class Menu extends Screen {
     // Later, we can use this to add help button bounds to all MenuScreens.
     public void update(Vector2 touchPoint) {
         // Sound Toggle Bounds Check.
-        if(OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
+        if (OverlapTester.pointInRectangle(soundToggleBounds, touchPoint)) {
             AssetsManager.playSound(AssetsManager.clickSound);
             Settings.soundEnabled = !Settings.soundEnabled;
             if(Settings.soundEnabled) 
                 AssetsManager.music.play();
             else
                 AssetsManager.music.pause();
+        }
+        
+        // Help Bounds Check.
+        if (OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
+            AssetsManager.playSound(AssetsManager.clickSound);
+            game.setScreen(new HelpMenu());
         }
     }
  
@@ -89,11 +96,13 @@ public abstract class Menu extends Screen {
         // Draws Sound Toggle.
         batcher.beginBatch(AssetsManager.soundToggle);
         batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
+        batcher.drawSprite(helpBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
     }
 
     public void drawBounds() {
     	batcher.drawSprite(soundToggleBounds, AssetsManager.boundOverlayRegion); // SoundToggle Bounding Box
+    	batcher.drawSprite(helpBounds, AssetsManager.boundOverlayRegion); // Help Bounding Box
     }
     
     // --------------------------------
@@ -110,5 +119,5 @@ public abstract class Menu extends Screen {
 
     @Override
     public void dispose() {}
-     
+    
 }

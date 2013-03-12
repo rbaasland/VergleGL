@@ -13,6 +13,7 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.menus.GameGridMenu;
+import com.dbz.verge.menus.HelpMenu;
 
 // TODO: Add unique won/lost states for each MicroGame.
 //		 Combine assets into single sprite sheet to allow for single batcher calls.
@@ -46,6 +47,7 @@ public abstract class MicroGame extends Screen {
     public Rectangle pauseToggleBounds = new Rectangle(1140, 660, 140, 140);
     public Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
     public Rectangle soundToggleBounds = new Rectangle(1135, 5, 140, 140);
+    public Rectangle helpBounds = new Rectangle(5, 655, 140, 140);
     
     // Version
     public int version = 0;
@@ -153,6 +155,12 @@ public abstract class MicroGame extends Screen {
 	            else
 	                AssetsManager.music.pause();
 	        }
+	        
+	        // Help Bounds Check.
+	        if (OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
+	            AssetsManager.playSound(AssetsManager.clickSound);
+	            game.setScreen(new HelpMenu());
+	        }
 	    }
 	}
 	
@@ -203,6 +211,12 @@ public abstract class MicroGame extends Screen {
 	                AssetsManager.music.play();
 	            else
 	                AssetsManager.music.pause();
+	        }
+	        
+	        // Help Bounds Check.
+	        if (OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
+	            AssetsManager.playSound(AssetsManager.clickSound);
+	            game.setScreen(new HelpMenu());
 	        }
 	    }
 	}
@@ -444,6 +458,7 @@ public abstract class MicroGame extends Screen {
 		// Draws Sound Toggle.
         batcher.beginBatch(AssetsManager.soundToggle);
         batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
+        batcher.drawSprite(helpBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes
@@ -481,6 +496,7 @@ public abstract class MicroGame extends Screen {
 		// Draws Sound Toggle.
         batcher.beginBatch(AssetsManager.soundToggle);
         batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
+        batcher.drawSprite(helpBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes

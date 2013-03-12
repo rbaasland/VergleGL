@@ -11,7 +11,7 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Menu;
 
-public class ScoreMenu extends Menu {
+public class HighScoreMenu extends Menu {
 
 	// --------------
 	// --- Fields ---
@@ -22,14 +22,14 @@ public class ScoreMenu extends Menu {
 	
 	// Scores.
 	public final static String file = ".vergehighscores";
-	public static float[] timeAttackScores = new float[5];
-	public static int[] survivalScores = new int[5];
+	public static float[] timeAttackHighScores = new float[5];
+	public static int[] survivalHighScores = new int[5];
 
 	// -------------------
 	// --- Constructor ---
 	// -------------------
 
-	public ScoreMenu() {}       
+	public HighScoreMenu() {}       
 
 	// ---------------------
 	// --- Update Method ---
@@ -77,11 +77,11 @@ public class ScoreMenu extends Menu {
 			in = new BufferedReader(new InputStreamReader(files.readFile(file)));
 			in.readLine();
 			for(int i = 0; i < 5; i++) {
-				survivalScores[i] = Integer.parseInt(in.readLine());
+				survivalHighScores[i] = Integer.parseInt(in.readLine());
 			}
 			in.readLine();
 			for(int i = 0; i < 5; i++) {
-				timeAttackScores[i] = Float.parseFloat(in.readLine());
+				timeAttackHighScores[i] = Float.parseFloat(in.readLine());
 			}
 		} catch (IOException e) {
 		} catch (NumberFormatException e) {
@@ -114,14 +114,14 @@ public class ScoreMenu extends Menu {
 		// Survival High Scores.
 		AssetsManager.vergeFont.drawTextLeft(batcher, "Survival High Scores", 180, 550);
 		for (int i = 0; i < 5; i++)
-			AssetsManager.vergeFont.drawTextLeft(batcher, ""+survivalScores[i], 180, 520-(i*30));
+			AssetsManager.vergeFont.drawTextLeft(batcher, ""+survivalHighScores[i], 180, 520-(i*30));
 		
 		// Time Attack High Scores. (Formatted MM:SS.MSMS).
 		AssetsManager.vergeFont.drawTextLeft(batcher, "Time Attack High Scores", 600, 550);
 		for (int i = 0; i < 5; i++)
 		{
-			int minutes = ((int)timeAttackScores[i]) / 60;
-			float seconds = timeAttackScores[i] - (minutes * 60);	
+			int minutes = ((int)timeAttackHighScores[i]) / 60;
+			float seconds = timeAttackHighScores[i] - (minutes * 60);	
 			AssetsManager.vergeFont.drawTextLeft(batcher, String.format("%02d:%05.2f", minutes, seconds), 600, 520-(i*30));
 
 		}

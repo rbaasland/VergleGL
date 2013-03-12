@@ -17,7 +17,7 @@ public class MainMenu extends Menu {
     // Bounding Boxes.
     private Rectangle playBounds = new Rectangle(350, 510, 580, 100);
     private Rectangle highScoresBounds = new Rectangle(350, 350, 580, 100);
-    private Rectangle helpBounds = new Rectangle(350, 190, 580, 100);
+    private Rectangle multiplayerBounds = new Rectangle(350, 190, 580, 100);
 
     // -------------------
  	// --- Constructor ---
@@ -56,14 +56,13 @@ public class MainMenu extends Menu {
                 // High Scores Button Bounds Check.
                 if(OverlapTester.pointInRectangle(highScoresBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-                    game.setScreen(new ScoreMenu());
+                    game.setScreen(new HighScoreMenu());
                     return;
                 }
                 
                 // Help Button Bounds Check.
-                if(OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
+                if(OverlapTester.pointInRectangle(multiplayerBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-//                      game.setScreen(new HelpMenu());
                     game.setScreen(new BluetoothScreen());
                     return;
                 }
@@ -100,7 +99,7 @@ public class MainMenu extends Menu {
       batcher.beginBatch(AssetsManager.boundOverlay);     
       batcher.drawSprite(playBounds, AssetsManager.boundOverlayRegion); 		// Play Button Bounding Box
       batcher.drawSprite(highScoresBounds, AssetsManager.boundOverlayRegion);  // HighScores Button Bounding Box
-      batcher.drawSprite(helpBounds, AssetsManager.boundOverlayRegion); 		// Help Button Bounding Box
+      batcher.drawSprite(multiplayerBounds, AssetsManager.boundOverlayRegion); 		// Help Button Bounding Box
       super.drawBounds();
       batcher.endBatch();
     }

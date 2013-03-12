@@ -34,6 +34,11 @@ public class HelpMenu extends Menu {
 										 "and the timer at the bottom.",
 										 "",
 										 "The type is the way you play." };
+																
+	private final String typesText[][] = { { "Single Touch!", "", "Uses:", "Tap!", "Rapid Touch!", },
+										   { "Multi Touch!", "", "Uses:", "Connect!", "Hold!", },
+										   { "Accelerometer!", "", "Uses:", "Tilt!", "Turn!" },
+										   { "Gestures!", "", "Uses:", "Flick!", "Wipe!" } };
 	
 	private final String survivalModeText[] = { "Survival!",
 												 "",
@@ -50,29 +55,29 @@ public class HelpMenu extends Menu {
 	
 	private final String timeAttackModeText[] = {  "Time Attack!",
 													"",
-													"----",
-													"----",
-													"----",
-													"----",
-													"----",
-													"----",
-													"----",
-													"----",
-													"----", 
-													"----" };
+													"MicroGames come at you in",
+													"a set order.",
+													"",
+													"Beat all MicroGames as fast as",
+													"you can to finish the mode and", 
+													"set your time. Losing a",
+													"MicroGame has a time penalty.",
+													"",
+													"Difficulty and speed increase", 
+													 "as you play."};
 	
 	private final String gameGridModeText[] = {  "Game Grid!",
 												 "",
-												 "----",
-												 "----",
-												 "----",
-												 "----",
-												 "----",
-												 "----",
-												 "----",
-												 "----",
-												 "----", 
-												 "----" };
+												 "Play any of the MicroGames",
+												 "by themselves. Here you are",
+												 "even allowed to change set",
+												 "the level and speed manually.",
+												 "",
+												 "Multiplayer!",
+												 "",
+												 "Coming Soon.",
+												 "", 
+												 "" };
 										
 	// Bounding Boxes.
 	private Rectangle backArrowBounds = new Rectangle(5, 5, 140, 140);
@@ -224,6 +229,16 @@ public class HelpMenu extends Menu {
 		
 		// Prints all of the text.
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		
+		for (int i = 0; i < 5; i++)
+			AssetsManager.vergeFont.drawTextCentered(batcher, typesText[0][i], 500, 545-(i*lineSpacing), 1.30F);
+		for (int i = 0; i < 5; i++)
+			AssetsManager.vergeFont.drawTextCentered(batcher, typesText[1][i], 900, 545-(i*lineSpacing), 1.30F);
+		for (int i = 0; i < 5; i++)
+			AssetsManager.vergeFont.drawTextCentered(batcher, typesText[2][i], 505, 305-(i*lineSpacing), 1.30F);
+		for (int i = 0; i < 5; i++)
+			AssetsManager.vergeFont.drawTextCentered(batcher, typesText[3][i], 900, 305-(i*lineSpacing), 1.30F);
+		
 		AssetsManager.vergeFont.drawTextCentered(batcher, "Types", 640, 10, 2.5f);
 		batcher.endBatch();		
 	}

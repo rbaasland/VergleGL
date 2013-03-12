@@ -13,6 +13,7 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.MicroGame.MicroGameState;
+import com.dbz.verge.menus.HelpMenu;
 import com.dbz.verge.menus.PlayMenu;
 import com.dbz.verge.microgames.BroFistMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
@@ -54,6 +55,7 @@ public abstract class Mode extends Screen {
     public Rectangle pauseToggleBounds = new Rectangle(760, 395, 93, 85);
     public Rectangle backArrowBounds = new Rectangle(3, 3, 93, 85);
     public Rectangle soundToggleBounds = new Rectangle(757, 3, 93, 85);
+    public Rectangle helpBounds = new Rectangle(3, 395, 93, 85);
     
     // 'Meter' Window Bar Percentages.
     public float cmpBar = 0.0f;		// Determined by speed.
@@ -182,6 +184,12 @@ public abstract class Mode extends Screen {
 	            else
 	                AssetsManager.music.pause();
 	        }
+	        
+	        // Help Bounds Check.
+	        if (OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
+	            AssetsManager.playSound(AssetsManager.clickSound);
+	            game.setScreen(new HelpMenu());
+	        }
 	    }
 	}
 		
@@ -231,6 +239,12 @@ public abstract class Mode extends Screen {
 	                AssetsManager.music.play();
 	            else
 	                AssetsManager.music.pause();
+	        }
+	        
+	        // Help Bounds Check.
+	        if (OverlapTester.pointInRectangle(helpBounds, touchPoint)) {
+	            AssetsManager.playSound(AssetsManager.clickSound);
+	            game.setScreen(new HelpMenu());
 	        }
 	    }
 	}
@@ -463,6 +477,7 @@ public abstract class Mode extends Screen {
         // Draws Sound Toggle.
         batcher.beginBatch(AssetsManager.soundToggle);
         batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
+        batcher.drawSprite(helpBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes
@@ -494,6 +509,7 @@ public abstract class Mode extends Screen {
         // Draws Sound Toggle.
         batcher.beginBatch(AssetsManager.soundToggle);
         batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
+        batcher.drawSprite(helpBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes
