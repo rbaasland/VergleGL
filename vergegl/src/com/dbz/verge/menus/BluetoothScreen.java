@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
@@ -46,15 +47,16 @@ public class BluetoothScreen extends Menu {
     private AcceptThread mInsecureAcceptThread;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
+    public ControlThread mControlThread;
     public static int mState;
     public String mConnectedDevice = "";
-    public ArrayList<BluetoothDevice> mUsedDevices = new ArrayList<BluetoothDevice>();
 
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
-    public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
-    public static final int STATE_CONNECTED = 3;  // now connected to a remote device
+    public static final int STATE_READY = 2;	// discovery process complete, device list built
+    public static final int STATE_CONNECTING = 3; // now initiating an outgoing connection
+    public static final int STATE_CONNECTED = 4;  // now connected to a remote device
     
 	// Message types sent from the BluetoothChatService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -76,21 +78,9 @@ public class BluetoothScreen extends Menu {
 		if(!btAdapter.isEnabled()){
 			btAdapter.enable();
 		}
-		//Logic: constructor automatically starts "make discoverable" then start the accept thread
-    	//if a new device is found while running, stop the accept thread, start the connect thread
-    	//right now, this is done in the update() function, when the screen is pressed
-		while(true){ //must wait BT enable() to finish before ensureDiscoverable(). Else we get a force close.
-			if(btAdapter.getState() == BluetoothAdapter.STATE_ON){ 
-				game.mNewDevices = null; //clear previously found devices before launch
-				game.ensureDiscoverable(); //puts device in discoverable mode (user prompt)
-				game.startDiscovery(); // right now ending on back press (hardware)
-				start(); //start accept thread
-			break;
-			}
-		}
 		game.testMessageRead = "";
-		//game.mPairedDevices = btAdapter.getBondedDevices(); //note, doesn't work right away.
-		//bluetooth takes a few seconds to enable, thus paired devices will return null until enabled. 
+		mControlThread = new ControlThread();
+		mControlThread.start();
     }       
     
     
@@ -104,30 +94,9 @@ public class BluetoothScreen extends Menu {
  	// ---------------------
     @Override
     public void update(float deltaTime) {
-  
     	//game.mPairedDevices = btAdapter.getBondedDevices();
     	
-    	//if currently listening & device found, then start connection
-        if(mState == STATE_LISTEN && game.mNewDevices != null){
-        	BluetoothDevice device = null;
-        		synchronized(game.mNewDevices) {
-            		Iterator<BluetoothDevice> it = game.mNewDevices.iterator();
-    				for(BluetoothDevice bt : mUsedDevices)
-    					if (game.mNewDevices.contains(bt)) {
-    						it.next();
-    					}
-    				if (it.hasNext()) {
-	        			device = it.next();
-	        			mUsedDevices.add(device);
-    				}
-        		}
-        		if (device != null) {
-	        		Log.d("Bluetooth", device.getName());
-	            	//pair before connect
-	        		mConnectedDevice = device.getName();
-	            	connect(device, false);  //try connecting to the device, if fails. restart accept thread
-        		}
-        }
+    	
     	
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
         game.getInput().getKeyEvents();
@@ -158,7 +127,7 @@ public class BluetoothScreen extends Menu {
      * Set the current state of the chat connection
      * @param state  An integer defining the current connection state
      */
-    private synchronized void setState(int state) {
+    public static synchronized void setState(int state) {
         if (D) Log.d(TAG, "setState() " + mState + " -> " + state);
         mState = state;
 
@@ -168,14 +137,14 @@ public class BluetoothScreen extends Menu {
 
     /**
      * Return the current connection state. */
-    public synchronized int getState() {
+    public static synchronized int getState() {
         return mState;
     }
 
     /**
      * Start the chat service. Specifically start AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume() */
-    public synchronized void start() {
+    public synchronized void begin() {
         if (D) Log.d(TAG, "start");
 
         // Cancel any thread attempting to make a connection
@@ -185,6 +154,8 @@ public class BluetoothScreen extends Menu {
         if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
 
         setState(STATE_LISTEN);
+        
+        
 
         // Start the thread to listen on a BluetoothServerSocket
       //  if (mSecureAcceptThread == null) {
@@ -216,6 +187,7 @@ public class BluetoothScreen extends Menu {
         // Start the thread to connect with the given device
         mConnectThread = new ConnectThread(device, secure);
         mConnectThread.start();
+        mConnectedDevice = device.getName();
         setState(STATE_CONNECTING);
     }
 
@@ -228,7 +200,7 @@ public class BluetoothScreen extends Menu {
         if (D) Log.d(TAG, "connected, Socket Type:" + socketType);
 
         // Cancel the thread that completed the connection
-        if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;} 
+        if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null; } 
 
         // Cancel any thread currently running a connection
         if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
@@ -253,35 +225,41 @@ public class BluetoothScreen extends Menu {
       //  bundle.putString(BluetoothChat.DEVICE_NAME, device.getName());
       //  msg.setData(bundle);
       //  mHandler.sendMessage(msg);
-
+        mConnectedDevice = device.getName();
         setState(STATE_CONNECTED);
+        synchronized(mControlThread){
+        	mControlThread.notify();
+        }
     }
 
     /**
      * Stop all threads
      */
     public synchronized void stop() {
-        if (D) Log.d(TAG, "stop");
+//        if (D) Log.d(TAG, "stop");
+    	//mControlThread.notify();
+//        if (mConnectThread != null) {
+//            mConnectThread.cancel();
+//            mConnectThread = null;
+//        }
 
-        if (mConnectThread != null) {
-            mConnectThread.cancel();
-            mConnectThread = null;
-        }
-
-        if (mConnectedThread != null) {
-            mConnectedThread.cancel();
-            mConnectedThread = null;
-        }
-
-        if (mSecureAcceptThread != null) {
-            mSecureAcceptThread.cancel();
-            mSecureAcceptThread = null;
-        }
-
-        if (mInsecureAcceptThread != null) {
-            mInsecureAcceptThread.cancel();
-            mInsecureAcceptThread = null;
-        }
+//        if (mConnectedThread != null) {
+//            mConnectedThread.cancel();
+//            mConnectedThread = null;
+//        }
+//
+//        if (mSecureAcceptThread != null) {
+//            mSecureAcceptThread.cancel();
+//            mSecureAcceptThread = null;
+//        }
+//
+//        if (mInsecureAcceptThread != null) {
+//            mInsecureAcceptThread.cancel();
+//            mInsecureAcceptThread = null;
+//        }
+//        if (mControlThread != null) {
+//        	mControlThread = null;
+//        }
         setState(STATE_NONE);
     }
 
@@ -335,6 +313,39 @@ public class BluetoothScreen extends Menu {
         BluetoothChatService.this.start();
     }
 */
+    public class ControlThread extends Thread {
+    	public ControlThread() {
+    		while(true) { //must wait BT enable() to finish before ensureDiscoverable(). Else we get a force close.
+    			if(btAdapter.getState() == BluetoothAdapter.STATE_ON){
+    				synchronized(game.mNewDevices) {
+    					game.mNewDevices.clear(); //clear previously found devices before launch
+    				}
+    				game.ensureDiscoverable(); //puts device in discoverable mode (user prompt)
+    				break;
+    			}
+    		}
+    	}
+    	public synchronized void run() {
+    		while(true){
+	    		begin(); // accept thread
+	    		game.mNewDevices.clear();
+	    		game.startDiscovery(); // right now ending on back press (hardware)
+	    		while(BluetoothScreen.this.getState() != STATE_READY){}
+    			for (BluetoothDevice btd : game.mNewDevices) {
+	        		Log.d("Bluetooth", btd.getName());
+	            	connect(btd, false);  //try connecting to the device, if fails. restart accept thread
+	            	try {
+						wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	            	if (BluetoothScreen.this.getState() == STATE_CONNECTED)
+	            		return;
+    			}
+    		}
+		}
+    }
     /**
      * This thread runs while listening for incoming connections. It behaves
      * like a server-side client. It runs until a connection is accepted
@@ -374,7 +385,7 @@ public class BluetoothScreen extends Menu {
                     // successful connection or an exception
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
-                    Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed", e);
+                    Log.e(TAG, "Socket Type: " + mSocketType + " accept() failed", e);
                     break;
                 }
 
@@ -440,7 +451,7 @@ public class BluetoothScreen extends Menu {
                     tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
                 } else { tmp = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);}
             } catch (IOException e) {
-                Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);
+                Log.e(TAG, "Socket Type: " + mSocketType + " create() failed", e);
             }
             mmSocket = tmp;
         }
@@ -449,8 +460,6 @@ public class BluetoothScreen extends Menu {
             Log.i(TAG, "BEGIN mConnectThread SocketType:" + mSocketType);
             setName("ConnectThread" + mSocketType);
 
-            // Always cancel discovery because it will slow down a connection
-            mAdapter.cancelDiscovery();
 
             // Make a connection to the BluetoothSocket
             try {
@@ -461,11 +470,14 @@ public class BluetoothScreen extends Menu {
                 // Close the socket
                 try {
                     mmSocket.close();
+                    Log.e(TAG, "Closed Socket()");
                 } catch (IOException e2) {
                     Log.e(TAG, "unable to close() " + mSocketType +
                             " socket during connection failure", e2);
                 }
-                //connectionFailed();
+                synchronized(mControlThread){
+                	mControlThread.notify();
+                }
                 return;
             }
 
@@ -530,6 +542,13 @@ public class BluetoothScreen extends Menu {
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                   //  connectionLost();
+//                    synchronized(mControlThread) {
+//	                    if (mControlThread.getState() != Thread.State.WAITING) {
+//	                    	mControlThread = new ControlThread();
+//	                    	mControlThread.start();
+//	                    }
+//                    	mControlThread.notify();
+//                    }
                     break;
                 }
             }
@@ -582,8 +601,8 @@ public class BluetoothScreen extends Menu {
 		AssetsManager.vergeFont.drawTextCentered(batcher, "Device List", 640, 700-lineSpacer, 1.7f);
 		lineSpacer += 40;
 		// list of new devices
-		if(game.mNewDevices != null) {
-			synchronized(game.mNewDevices) {
+		synchronized(game.mNewDevices) {
+		if(!game.mNewDevices.isEmpty()) {
 				for(BluetoothDevice nd : game.mNewDevices){
 					AssetsManager.vergeFont.drawTextCentered(batcher, nd.getName() + " : " + nd.getAddress() , 640, 700-lineSpacer, 1.5f);
 					lineSpacer += 40;
@@ -622,7 +641,7 @@ public class BluetoothScreen extends Menu {
     @Override
     public void onBackPressed(){
 		game.endDiscovery();
-		stop(); //stop all threads
+		this.stop(); //stop all threads
 		if(game.mBtAdapter.isEnabled()){
 			game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging
 		}

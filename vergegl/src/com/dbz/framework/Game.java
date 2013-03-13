@@ -68,9 +68,7 @@ public abstract class Game extends Activity implements Renderer {
 	//made public to avoid getters
     public BluetoothAdapter mBtAdapter;  
   //  public Set<BluetoothDevice> mPairedDevices;
-    public Set<BluetoothDevice> mNewDevices; //list cuz of issues with init hashset
-    public Set<BluetoothDevice> mPreNewDevices = new HashSet<BluetoothDevice>();
-	
+    public Set<BluetoothDevice> mNewDevices = Collections.synchronizedSet(new HashSet<BluetoothDevice>());; //list cuz of issues with init hashset
 	
 
 	@Override 
@@ -364,22 +362,17 @@ public abstract class Game extends Activity implements Renderer {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // If it's already paired, skip it, because it's been listed already
                // if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-	        	if(mNewDevices == null){
+//	        	if(mNewDevices == null){
 	        		Log.d("Bluetooth", "Device Found");
-	        		mNewDevices = Collections.synchronizedSet(new HashSet<BluetoothDevice>());
+//	        		mNewDevices = Collections.synchronizedSet(new HashSet<BluetoothDevice>());
+//	        	}
+	        	if (device != null && device.getName() != null) {
+		        	mNewDevices.add(device);
 	        	}
-	        	mPreNewDevices.add(device);
-	        	mNewDevices.add(device);
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
             	//done searching
-            	if (BluetoothScreen.mState != BluetoothScreen.STATE_CONNECTED) {
-            		if (mNewDevices != null) {
-            			mNewDevices.clear();
-            			mNewDevices.addAll(mPreNewDevices);
-            		}
-            		mPreNewDevices.clear();
-            		startDiscovery();
-            	}
+            	if (BluetoothScreen.getState() == BluetoothScreen.STATE_LISTEN)
+            	BluetoothScreen.setState(BluetoothScreen.STATE_READY);
             }
             else if (BluetoothDevice .ACTION_ACL_CONNECTED.equals(action)) {
                  //Device is now connected
@@ -391,7 +384,6 @@ public abstract class Game extends Activity implements Renderer {
              }
              else if (BluetoothDevice .ACTION_ACL_DISCONNECTED.equals(action)) {
                  //Device has disconnected
-            	 BluetoothScreen.mState = BluetoothScreen.STATE_LISTEN;
             	 Log.d("Bluetooth", "disconnected");
              } //else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
             	 	//could be used to bypass pairing confirmation? 		
