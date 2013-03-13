@@ -473,11 +473,15 @@ public abstract class Mode extends Screen {
         batcher.beginBatch(AssetsManager.backArrow);
         batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
         batcher.endBatch();
+        
+    	// Draws Help Button.
+    	batcher.beginBatch(AssetsManager.background);
+    	batcher.drawSprite(helpBounds, AssetsManager.helpMenuButtonRegion);
+    	batcher.endBatch();
 
         // Draws Sound Toggle.
         batcher.beginBatch(AssetsManager.soundToggle);
         batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
-        batcher.drawSprite(helpBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes
@@ -506,10 +510,14 @@ public abstract class Mode extends Screen {
         batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
         batcher.endBatch();
         
+    	// Draws Help Button.
+    	batcher.beginBatch(AssetsManager.background);
+    	batcher.drawSprite(helpBounds, AssetsManager.helpMenuButtonRegion);
+    	batcher.endBatch();
+        
         // Draws Sound Toggle.
         batcher.beginBatch(AssetsManager.soundToggle);
         batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
-        batcher.drawSprite(helpBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
 	    
 	    // Bounding Boxes

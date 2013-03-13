@@ -93,10 +93,15 @@ public abstract class Menu extends Screen {
     public abstract void drawBackground();
     
     public void drawObjects() {
+    	// Draws Help Button.
+    	batcher.beginBatch(AssetsManager.background);
+    	batcher.drawSprite(helpBounds, AssetsManager.helpMenuButtonRegion);
+    	batcher.endBatch();
+    	
         // Draws Sound Toggle.
         batcher.beginBatch(AssetsManager.soundToggle);
         batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
-        batcher.drawSprite(helpBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
+//        batcher.drawSprite(helpBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
     }
 
