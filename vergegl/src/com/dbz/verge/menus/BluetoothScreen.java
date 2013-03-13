@@ -3,22 +3,13 @@ package com.dbz.verge.menus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import com.dbz.framework.input.Input.TouchEvent;
@@ -109,7 +100,7 @@ public class BluetoothScreen extends Menu {
                 touchPoint.set(event.x, event.y);
                 guiCam.touchToWorld(touchPoint);
                 
-                if(mState == STATE_CONNECTED){
+                if(BluetoothScreen.getState() == STATE_CONNECTED){
                 	testMessage += 1;
                 	mConnectedThread.write(testMessage.toString().getBytes());
                 }
@@ -155,8 +146,6 @@ public class BluetoothScreen extends Menu {
 
         setState(STATE_LISTEN);
         
-        
-
         // Start the thread to listen on a BluetoothServerSocket
       //  if (mSecureAcceptThread == null) {
       //      mSecureAcceptThread = new AcceptThread(true); //commenting out, we only want to connect insecure for now
@@ -177,7 +166,7 @@ public class BluetoothScreen extends Menu {
         if (D) Log.d(TAG, "connect to: " + device);
 
         // Cancel any thread attempting to make a connection
-        if (mState == STATE_CONNECTING) {
+        if (BluetoothScreen.getState() == STATE_CONNECTING) {
             if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
         }
 
@@ -228,7 +217,7 @@ public class BluetoothScreen extends Menu {
         mConnectedDevice = device.getName();
         setState(STATE_CONNECTED);
         synchronized(mControlThread){
-        	mControlThread.notify();
+        	mControlThread.notifyAll();
         }
     }
 
@@ -236,30 +225,34 @@ public class BluetoothScreen extends Menu {
      * Stop all threads
      */
     public synchronized void stop() {
-//        if (D) Log.d(TAG, "stop");
-    	//mControlThread.notify();
-//        if (mConnectThread != null) {
-//            mConnectThread.cancel();
-//            mConnectThread = null;
-//        }
-
-//        if (mConnectedThread != null) {
-//            mConnectedThread.cancel();
-//            mConnectedThread = null;
-//        }
-//
-//        if (mSecureAcceptThread != null) {
-//            mSecureAcceptThread.cancel();
-//            mSecureAcceptThread = null;
-//        }
-//
-//        if (mInsecureAcceptThread != null) {
-//            mInsecureAcceptThread.cancel();
-//            mInsecureAcceptThread = null;
-//        }
-//        if (mControlThread != null) {
-//        	mControlThread = null;
-//        }
+        if (D) Log.d(TAG, "stop");
+        synchronized(mControlThread) {
+        	mControlThread.notifyAll();
+        }
+    
+        if (mConnectThread != null) {
+            mConnectThread.cancel();
+            mConnectThread = null;
+        }
+    
+        if (mConnectedThread != null) {
+            mConnectedThread.cancel();
+            mConnectedThread = null;
+        }
+    
+        if (mSecureAcceptThread != null) {
+            mSecureAcceptThread.cancel();
+            mSecureAcceptThread = null;
+        }
+    
+        if (mInsecureAcceptThread != null) {
+            mInsecureAcceptThread.cancel();
+            mInsecureAcceptThread = null;
+        }
+    
+        if (mControlThread != null) {
+        	mControlThread = null;
+        }
         setState(STATE_NONE);
     }
 
@@ -273,7 +266,7 @@ public class BluetoothScreen extends Menu {
         ConnectedThread r;
         // Synchronize a copy of the ConnectedThread
         synchronized (this) {
-            if (mState != STATE_CONNECTED) return;
+            if (BluetoothScreen.getState() != STATE_CONNECTED) return;
             r = mConnectedThread;
         }
         // Perform the write unsynchronized
@@ -317,30 +310,30 @@ public class BluetoothScreen extends Menu {
     	public ControlThread() {
     		while(true) { //must wait BT enable() to finish before ensureDiscoverable(). Else we get a force close.
     			if(btAdapter.getState() == BluetoothAdapter.STATE_ON){
-    				synchronized(game.mNewDevices) {
-    					game.mNewDevices.clear(); //clear previously found devices before launch
-    				}
+    				game.mNewDevices.clear(); //clear previously found devices before launch
     				game.ensureDiscoverable(); //puts device in discoverable mode (user prompt)
     				break;
     			}
     		}
     	}
-    	public synchronized void run() {
+    	public void run() {
     		while(true){
 	    		begin(); // accept thread
 	    		game.mNewDevices.clear();
 	    		game.startDiscovery(); // right now ending on back press (hardware)
-	    		while(BluetoothScreen.this.getState() != STATE_READY){}
+	    		while(BluetoothScreen.getState() != STATE_READY){}
     			for (BluetoothDevice btd : game.mNewDevices) {
 	        		Log.d("Bluetooth", btd.getName());
 	            	connect(btd, false);  //try connecting to the device, if fails. restart accept thread
 	            	try {
-						wait();
+	            		synchronized(BluetoothScreen.this) {
+	            			BluetoothScreen.this.wait();
+	            		}
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-	            	if (BluetoothScreen.this.getState() == STATE_CONNECTED)
+	            	if (BluetoothScreen.getState() == STATE_CONNECTED)
 	            		return;
     			}
     		}
@@ -379,7 +372,7 @@ public class BluetoothScreen extends Menu {
             BluetoothSocket socket = null;
 
             // Listen to the server socket if we're not connected
-            while (mState != STATE_CONNECTED) {
+            while (BluetoothScreen.getState() != STATE_CONNECTED) {
                 try {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
@@ -392,7 +385,7 @@ public class BluetoothScreen extends Menu {
                 // If a connection was accepted
                 if (socket != null) {
                     synchronized (BluetoothScreen.this) {
-                        switch (mState) {
+                        switch (BluetoothScreen.getState()) {
                         case STATE_LISTEN:
                         case STATE_CONNECTING:
                             // Situation normal. Start the connected thread.
@@ -475,8 +468,11 @@ public class BluetoothScreen extends Menu {
                     Log.e(TAG, "unable to close() " + mSocketType +
                             " socket during connection failure", e2);
                 }
-                synchronized(mControlThread){
-                	mControlThread.notify();
+                // TODO 
+                if (mControlThread != null) {
+	                synchronized(mControlThread){
+	                	mControlThread.notifyAll();
+	                }
                 }
                 return;
             }
@@ -612,13 +608,13 @@ public class BluetoothScreen extends Menu {
 		
 		//Connection Status
 		lineSpacer += 240;
-		if (mState == STATE_LISTEN) {
+		if (BluetoothScreen.getState() == STATE_LISTEN) {
 			AssetsManager.vergeFont.drawTextCentered(batcher, "Searching..." , 640, 700-lineSpacer, 2f);
 			lineSpacer += 40;
-		} else if (mState == STATE_CONNECTING) {
+		} else if (BluetoothScreen.getState() == STATE_CONNECTING) {
 			AssetsManager.vergeFont.drawTextCentered(batcher, "Connecting to " + mConnectedDevice , 640, 700-lineSpacer, 2f);
 			lineSpacer += 40;
-		} else if (mState == STATE_CONNECTED) {
+		} else if (BluetoothScreen.getState() == STATE_CONNECTED) {
 			AssetsManager.vergeFont.drawTextCentered(batcher, "Connected to " + mConnectedDevice , 640, 700-lineSpacer, 2f);
 			lineSpacer += 80;
 			if (game.testMessageRead != "") {

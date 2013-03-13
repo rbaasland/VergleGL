@@ -1,7 +1,5 @@
 package com.dbz.framework;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.IntBuffer;
 import java.util.Collections;
 import java.util.HashSet;
@@ -27,6 +25,7 @@ import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+
 import com.dbz.framework.audio.Audio;
 import com.dbz.framework.gl.GLGraphics;
 import com.dbz.framework.gl.Screen;
