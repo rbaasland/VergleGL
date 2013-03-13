@@ -39,6 +39,7 @@ public class AssetsManager {
     public static Texture background;
     public static TextureRegion backgroundRegion;
     public static TextureRegion backgroundGreyFillRegion;
+    public static TextureRegion helpMenuButtonRegion;
     
     public static Texture mainMenuButtons;
     public static TextureRegion mainMenuButtonsRegion;
@@ -144,6 +145,7 @@ public class AssetsManager {
         background = new Texture("background.png");
         backgroundRegion = new TextureRegion(background, 0, 0, 1280, 800);
         backgroundGreyFillRegion = new TextureRegion(background, 1312, 32, 96, 96);
+        helpMenuButtonRegion = new TextureRegion(background, 20, 820, 140, 140);
         
         mainMenuButtons = new Texture("mainmenubuttons.png");
         mainMenuButtonsRegion = new TextureRegion(mainMenuButtons, 0, 0, 1280, 800);
