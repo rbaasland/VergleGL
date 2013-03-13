@@ -49,7 +49,7 @@ public class TimeAttackMode extends Mode {
 
 		totalTime += microGames[microGameIndex].totalRunningTime;
 
-		if (currentRound > 3)
+		if (currentRound > winsRequired)
 		{
 			modeState = ModeState.Won;
 			validHighScore(totalTime);

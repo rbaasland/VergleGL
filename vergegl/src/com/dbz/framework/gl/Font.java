@@ -1,6 +1,7 @@
 package com.dbz.framework.gl;
 
 // TODO: Add more font formatting functions, such as right and left adjusted.
+// TODO: Remove drawText(), and fix all of the formats. All of them are slightly off one way or another.
 public class Font {
     public final Texture texture;
     public final int glyphWidth;
@@ -97,6 +98,25 @@ public class Font {
             TextureRegion glyph = glyphs[c];
             batcher.drawSprite(x, y, glyphWidth, glyphHeight, glyph);
             x += glyphWidth;
+        }
+    }
+    
+    // Draws the text right formatted at provided x. (Left Bottom Point) [SCALABLE]
+    public void drawTextLeft(SpriteBatcher batcher, String text, float x, float y, float scale) {
+    	int len = text.length();
+    	float scaledWidth = glyphWidth * scale;
+    	float scaledHeight = glyphHeight * scale;
+    	
+        y += (0.5 * glyphHeight);
+    	
+        for(int i = 0; i < len; i++) {
+            int c = text.charAt(i) - ' ';
+            if(c < 0 || c > glyphs.length - 1) 
+                continue;
+            
+            TextureRegion glyph = glyphs[c];
+            batcher.drawSprite(x, y, scaledWidth, scaledHeight, glyph);
+            x += scaledWidth;
         }
     }
 }

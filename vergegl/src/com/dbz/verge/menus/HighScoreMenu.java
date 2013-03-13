@@ -110,19 +110,22 @@ public class HighScoreMenu extends Menu {
 
 		// Prints all of the text.
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
+
+		// High Scores Heading.
+		AssetsManager.vergeFont.drawTextCentered(batcher, "High Scores", 640, 490, 3.0f);
 		
 		// Survival High Scores.
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Survival High Scores", 180, 550);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Survival", 270, 450, 2.0f);
 		for (int i = 0; i < 5; i++)
-			AssetsManager.vergeFont.drawTextLeft(batcher, ""+survivalHighScores[i], 180, 520-(i*30));
+			AssetsManager.vergeFont.drawTextLeft(batcher, (i+1)+". "+survivalHighScores[i], 270, 390-(i*50), 2.0f);
 		
 		// Time Attack High Scores. (Formatted MM:SS.MSMS).
-		AssetsManager.vergeFont.drawTextLeft(batcher, "Time Attack High Scores", 600, 550);
+		AssetsManager.vergeFont.drawTextLeft(batcher, "Time Attack", 640, 450, 2.0f);
 		for (int i = 0; i < 5; i++)
 		{
 			int minutes = ((int)timeAttackHighScores[i]) / 60;
 			float seconds = timeAttackHighScores[i] - (minutes * 60);	
-			AssetsManager.vergeFont.drawTextLeft(batcher, String.format("%02d:%05.2f", minutes, seconds), 600, 520-(i*30));
+			AssetsManager.vergeFont.drawTextLeft(batcher, String.format("%d. %02d:%05.2f", i+1, minutes, seconds), 640, 390-(i*50), 2.0f);
 
 		}
 		batcher.endBatch();
