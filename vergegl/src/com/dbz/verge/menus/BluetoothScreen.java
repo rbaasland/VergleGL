@@ -192,8 +192,10 @@ public class BluetoothScreen extends Menu {
 	 */
 	public synchronized void stop() {
 		if (D) Log.d(TAG, "stop");
-		synchronized(BluetoothScreen.this.mControlThread) {
-			BluetoothScreen.this.mControlThread.notifyAll();
+		if(BluetoothScreen.this.mControlThread != null){
+			synchronized(BluetoothScreen.this.mControlThread) {
+				BluetoothScreen.this.mControlThread.notifyAll();
+			}
 		}
 
 		if (mConnectThread != null) {
@@ -474,7 +476,11 @@ public class BluetoothScreen extends Menu {
 
 					// Send the obtained bytes to the UI Activity
 					game.mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-				} catch (IOException e) {Log.e(TAG, "disconnected", e); break; } //break out of loop on disconnect	
+				} catch (IOException e) {Log.e(TAG, "disconnected", e);
+					onBackPressed();
+					break;
+				
+				} //break out of loop on disconnect	
 			}
 		}
 

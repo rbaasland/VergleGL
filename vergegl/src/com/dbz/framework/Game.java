@@ -281,6 +281,7 @@ public abstract class Game extends Activity implements Renderer {
      */
     public void startDiscovery() {
         Log.d("Bluetooth", "startDiscovery()");
+        isReceiverRunning = true;
         
         //Might not need all of these, but may come in handy when troubleshooting
         // Register for broadcasts when a device is discovered
@@ -313,13 +314,15 @@ public abstract class Game extends Activity implements Renderer {
     }
     
     public void endDiscovery() {
+    	
     	Log.d("Bluetooth", "stopDiscovery()");
     	 if (mBtAdapter != null) {
              mBtAdapter.cancelDiscovery();
          }
-    	 //TODO LATER, PROBABLY SHOULD MOVE THIS SOMEWHERE ELSE... FOR NOW OK, BUT NOT OK IF WE BACK OUT OF BLUETOOTH SCREEN
-    	 // AND EXPECT TO MAINTAIN CONNECTION
-    	this.unregisterReceiver(mReceiver);
+    	 if(isReceiverRunning) {
+    		 this.unregisterReceiver(mReceiver);
+    		 isReceiverRunning = false;
+    	 }
     }
     
     // The Handler that gets information back from the BluetoothChatService
@@ -346,6 +349,7 @@ public abstract class Game extends Activity implements Renderer {
     };
     
     
+    public static boolean isReceiverRunning = false;
     // The BroadcastReceiver that listens for discovered devices and add the device to the new devices array
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
