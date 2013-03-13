@@ -3,6 +3,7 @@ package com.dbz.framework;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.IntBuffer;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,8 @@ import android.content.IntentFilter;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
@@ -30,6 +33,7 @@ import com.dbz.framework.gl.Screen;
 import com.dbz.framework.input.FileIO;
 import com.dbz.framework.input.Input;
 import com.dbz.verge.AssetsManager;
+import com.dbz.verge.menus.BluetoothScreen;
 
 public abstract class Game extends Activity implements Renderer {
 	enum GameState {
@@ -51,10 +55,21 @@ public abstract class Game extends Activity implements Renderer {
 	long startTime = System.nanoTime();
 	WakeLock wakeLock;
 	
+	// Message types sent from the BluetoothChatService Handler
+    public static final int MESSAGE_STATE_CHANGE = 1;
+    public static final int MESSAGE_READ = 2;
+    public static final int MESSAGE_WRITE = 3;
+    public static final int MESSAGE_DEVICE_NAME = 4;
+    public static final int MESSAGE_TOAST = 5;
+    
+    public String testMessageRead = "";
+    public String testMessageWrite = "";
+    
 	//made public to avoid getters
     public BluetoothAdapter mBtAdapter;  
   //  public Set<BluetoothDevice> mPairedDevices;
-    public HashSet<BluetoothDevice> mNewDevices; //list cuz of issues with init hashset
+    public Set<BluetoothDevice> mNewDevices; //list cuz of issues with init hashset
+    public Set<BluetoothDevice> mPreNewDevices = new HashSet<BluetoothDevice>();
 	
 	
 
@@ -74,7 +89,6 @@ public abstract class Game extends Activity implements Renderer {
 		input = new Input(this, glView, 1, 1);
 		PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Game");
-		
 		//should check if bluetooth is supported first...
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 		//mPairedDevices = mBtAdapter.getBondedDevices();
@@ -311,6 +325,29 @@ public abstract class Game extends Activity implements Renderer {
     	this.unregisterReceiver(mReceiver);
     }
     
+    // The Handler that gets information back from the BluetoothChatService
+    public final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case MESSAGE_STATE_CHANGE:
+                break;
+            case MESSAGE_WRITE:
+                byte[] writeBuf = (byte[]) msg.obj;
+                // construct a string from the buffer
+                testMessageWrite = new String(writeBuf);
+                break;
+            case MESSAGE_READ:
+                byte[] readBuf = (byte[]) msg.obj;
+                // construct a string from the valid bytes in the buffer
+                testMessageRead = new String(readBuf, 0, msg.arg1);
+                break;
+            case MESSAGE_DEVICE_NAME:
+                break;
+            }
+        }
+    };
+    
     
     // The BroadcastReceiver that listens for discovered devices and add the device to the new devices array
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -329,11 +366,20 @@ public abstract class Game extends Activity implements Renderer {
                // if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
 	        	if(mNewDevices == null){
 	        		Log.d("Bluetooth", "Device Found");
-	        		mNewDevices = new HashSet<BluetoothDevice>();
+	        		mNewDevices = Collections.synchronizedSet(new HashSet<BluetoothDevice>());
 	        	}
+	        	mPreNewDevices.add(device);
 	        	mNewDevices.add(device);
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
             	//done searching
+            	if (BluetoothScreen.mState != BluetoothScreen.STATE_CONNECTED) {
+            		if (mNewDevices != null) {
+            			mNewDevices.clear();
+            			mNewDevices.addAll(mPreNewDevices);
+            		}
+            		mPreNewDevices.clear();
+            		startDiscovery();
+            	}
             }
             else if (BluetoothDevice .ACTION_ACL_CONNECTED.equals(action)) {
                  //Device is now connected
@@ -345,6 +391,7 @@ public abstract class Game extends Activity implements Renderer {
              }
              else if (BluetoothDevice .ACTION_ACL_DISCONNECTED.equals(action)) {
                  //Device has disconnected
+            	 BluetoothScreen.mState = BluetoothScreen.STATE_LISTEN;
             	 Log.d("Bluetooth", "disconnected");
              } //else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
             	 	//could be used to bypass pairing confirmation? 		
