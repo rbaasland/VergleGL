@@ -101,7 +101,6 @@ public abstract class Menu extends Screen {
         // Draws Sound Toggle.
         batcher.beginBatch(AssetsManager.soundToggle);
         batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
-//        batcher.drawSprite(helpBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
         batcher.endBatch();
     }
 
