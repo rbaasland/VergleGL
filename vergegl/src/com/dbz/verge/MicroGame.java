@@ -264,7 +264,7 @@ public abstract class MicroGame extends Screen {
 		        	
 		        	if(game.getCurrentScreen() instanceof Mode){ //TODO fix issue w/ microgame inside a mode so we don't use code smell
 		        		AssetsManager.playSound(AssetsManager.clickSound);
-			            game.setScreen(new com.dbz.verge.menus.PlayMenu());
+			            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
 			            
 		        	} else {	
 		        		AssetsManager.playSound(AssetsManager.clickSound);
@@ -302,7 +302,7 @@ public abstract class MicroGame extends Screen {
 		        	
 		        	if(game.getCurrentScreen() instanceof Mode){ //TODO fix issue w/ microgame inside a mode so we don't use code smell
 		        		AssetsManager.playSound(AssetsManager.clickSound);
-			            game.setScreen(new com.dbz.verge.menus.PlayMenu());
+			            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
 			            
 		        	} else {	
 		        		AssetsManager.playSound(AssetsManager.clickSound);

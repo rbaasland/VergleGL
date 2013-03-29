@@ -10,7 +10,7 @@ import com.dbz.verge.Menu;
 import com.dbz.verge.modes.SurvivalMode;
 import com.dbz.verge.modes.TimeAttackMode;
 
-public class PlayMenu extends Menu {
+public class SinglePlayerMenu extends Menu {
 	
 	// --------------
 	// --- Fields ---
@@ -26,7 +26,7 @@ public class PlayMenu extends Menu {
  	// --- Constructor ---
     // -------------------
     
-    public PlayMenu() {}       
+    public SinglePlayerMenu() {}       
 
     // ---------------------
  	// --- Update Method ---

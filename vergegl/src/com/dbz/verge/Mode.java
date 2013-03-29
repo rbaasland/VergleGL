@@ -14,7 +14,7 @@ import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.MicroGame.MicroGameState;
 import com.dbz.verge.menus.HelpMenu;
-import com.dbz.verge.menus.PlayMenu;
+import com.dbz.verge.menus.SinglePlayerMenu;
 import com.dbz.verge.microgames.BroFistMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
@@ -171,7 +171,7 @@ public abstract class Mode extends Screen {
 	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new PlayMenu());
+	            game.setScreen(new SinglePlayerMenu());
 	            return;     
 	        }
 	        
@@ -227,7 +227,7 @@ public abstract class Mode extends Screen {
 	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new PlayMenu());
+	            game.setScreen(new SinglePlayerMenu());
 	            return;
 	        }
 	        
@@ -346,7 +346,7 @@ public abstract class Mode extends Screen {
 	        /// Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new PlayMenu());
+	            game.setScreen(new SinglePlayerMenu());
 	            return;     
 	        }
 	    }
@@ -374,7 +374,7 @@ public abstract class Mode extends Screen {
 	        /// Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new PlayMenu());
+	            game.setScreen(new SinglePlayerMenu());
 	            return;     
 	        }
 	    }
@@ -730,7 +730,7 @@ public abstract class Mode extends Screen {
 		case Ready:
 		case Won:
 		case Lost:
-			game.setScreen(new PlayMenu());
+			game.setScreen(new SinglePlayerMenu());
 			break;
 
 		default:
