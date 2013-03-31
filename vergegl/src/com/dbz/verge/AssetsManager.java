@@ -148,7 +148,7 @@ public class AssetsManager {
         helpMenuButtonRegion = new TextureRegion(background, 20, 820, 140, 140);
         
         mainMenuButtons = new Texture("mainmenubuttons.png");
-        mainMenuButtonsRegion = new TextureRegion(mainMenuButtons, 0, 0, 1280, 800);
+        mainMenuButtonsRegion = new TextureRegion(mainMenuButtons, 0, 0, 1024, 800);
         
         playMenuButtons = new Texture("playmenubuttons.png");
         playMenuButtonsRegion = new TextureRegion(playMenuButtons, 0, 0, 1280, 800);

@@ -130,6 +130,7 @@ public class GameGridMenu extends Menu {
                 	else if (currentPage == 2) {
                 		selectedMicroGame = new DirtBikeMicroGame();
                 		selectedMicroGameIcon = AssetsManager.dirtBikeIconRegion;
+                		selectedMicroGame.version = 0;
                 	}
                 	overlayPresent = true;
                 	return;
@@ -172,8 +173,12 @@ public class GameGridMenu extends Menu {
                 	if (currentPage == 1){
                 		selectedMicroGame = new CircuitMicroGame();
                 		selectedMicroGameIcon = AssetsManager.circuitIconRegion;
-                		overlayPresent = true;
+                	} else if (currentPage == 2) {
+                		selectedMicroGame = new DirtBikeMicroGame();
+                		selectedMicroGameIcon = AssetsManager.dirtBikeIconRegion;
+                		selectedMicroGame.version = 1;
                 	}
+                	overlayPresent = true;
                 	return;
                 }
                 
@@ -193,7 +198,7 @@ public class GameGridMenu extends Menu {
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
                     currentPage = 1;
-                    game.setScreen(new PlayMenu());
+                    game.setScreen(new SinglePlayerMenu());
                     return;
                 }
                 
@@ -432,7 +437,7 @@ public class GameGridMenu extends Menu {
     		overlayPresent = false;
     	else {
     		currentPage = 1;
-    		game.setScreen(new PlayMenu());	
+    		game.setScreen(new SinglePlayerMenu());	
     	}
     }
     
