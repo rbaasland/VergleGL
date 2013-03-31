@@ -6,6 +6,7 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Menu;
+import com.dbz.verge.Settings;
 
 public class HelpMenu extends Menu {
 
@@ -204,10 +205,13 @@ public class HelpMenu extends Menu {
 		batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
 		batcher.endBatch(); 
 
-		super.drawObjects();
+        // Draws Sound Toggle.
+        batcher.beginBatch(AssetsManager.soundToggle);
+        batcher.drawSprite(soundToggleBounds, Settings.soundEnabled?AssetsManager.soundOnRegion:AssetsManager.soundOffRegion);
+        batcher.endBatch();
 	}
 	
-	public void drawIntroPage() {	
+	public void drawIntroPage() {
 		// Prints all of the text.
 		batcher.beginBatch(AssetsManager.vergeFontTexture);
 		

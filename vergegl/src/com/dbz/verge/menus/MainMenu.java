@@ -15,14 +15,14 @@ public class MainMenu extends Menu {
 	// --------------
     
     // Bounding Boxes.
-    private Rectangle playBounds = new Rectangle(350, 510, 580, 100);
-    private Rectangle highScoresBounds = new Rectangle(350, 350, 580, 100);
-    private Rectangle multiplayerBounds = new Rectangle(350, 190, 580, 100);
+    private Rectangle singlePlayerBounds = new Rectangle(350, 510, 580, 100);
+    private Rectangle multiPlayerBounds = new Rectangle(350, 350, 580, 100);
+    private Rectangle highScoresBounds = new Rectangle(350, 190, 580, 100);
 
     // -------------------
  	// --- Constructor ---
     // -------------------
-    public MainMenu() {}       
+    public MainMenu() {}
 
     // ---------------------
  	// --- Update Method ---
@@ -46,10 +46,17 @@ public class MainMenu extends Menu {
                 // Sends the vector to the OpenGL Camera for handling.
                 guiCam.touchToWorld(touchPoint);
                 
-                // Play Button Bounds Check.
-                if(OverlapTester.pointInRectangle(playBounds, touchPoint)) {
+                // Singleplayer Bounds Check.
+                if(OverlapTester.pointInRectangle(singlePlayerBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-                    game.setScreen(new PlayMenu());
+                    game.setScreen(new SinglePlayerMenu());
+                    return;
+                }
+                
+                // Multiplayer Button Bounds Check.
+                if(OverlapTester.pointInRectangle(multiPlayerBounds, touchPoint)) {
+                    AssetsManager.playSound(AssetsManager.clickSound);
+                    game.setScreen(new BluetoothScreen());
                     return;
                 }
                 
@@ -60,12 +67,7 @@ public class MainMenu extends Menu {
                     return;
                 }
                 
-                // Help Button Bounds Check.
-                if(OverlapTester.pointInRectangle(multiplayerBounds, touchPoint)) {
-                    AssetsManager.playSound(AssetsManager.clickSound);
-                    game.setScreen(new BluetoothScreen());
-                    return;
-                }
+
                 
                 // Non-Unique, Super Class Bounds Check.
     	        super.update(touchPoint);
@@ -88,7 +90,7 @@ public class MainMenu extends Menu {
     public void drawObjects() {
         // Draws Main Menu Buttons.
         batcher.beginBatch(AssetsManager.mainMenuButtons);
-        batcher.drawSprite(0, 0, 1280, 800, AssetsManager.mainMenuButtonsRegion);
+        batcher.drawSprite(0, 0, 1024, 800, AssetsManager.mainMenuButtonsRegion);
         batcher.endBatch();
         
         super.drawObjects();
@@ -97,9 +99,9 @@ public class MainMenu extends Menu {
     @Override
     public void drawBounds() {
       batcher.beginBatch(AssetsManager.boundOverlay);     
-      batcher.drawSprite(playBounds, AssetsManager.boundOverlayRegion); 		// Play Button Bounding Box
+      batcher.drawSprite(singlePlayerBounds, AssetsManager.boundOverlayRegion); 		// Play Button Bounding Box
       batcher.drawSprite(highScoresBounds, AssetsManager.boundOverlayRegion);  // HighScores Button Bounding Box
-      batcher.drawSprite(multiplayerBounds, AssetsManager.boundOverlayRegion); 		// Help Button Bounding Box
+      batcher.drawSprite(multiPlayerBounds, AssetsManager.boundOverlayRegion); 		// Help Button Bounding Box
       super.drawBounds();
       batcher.endBatch();
     }

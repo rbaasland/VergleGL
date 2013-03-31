@@ -197,7 +197,7 @@ public class GameGridMenu extends Menu {
                 if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
                     currentPage = 1;
-                    game.setScreen(new PlayMenu());
+                    game.setScreen(new SinglePlayerMenu());
                     return;
                 }
                 
@@ -436,7 +436,7 @@ public class GameGridMenu extends Menu {
     		overlayPresent = false;
     	else {
     		currentPage = 1;
-    		game.setScreen(new PlayMenu());	
+    		game.setScreen(new SinglePlayerMenu());	
     	}
     }
     
