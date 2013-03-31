@@ -5,13 +5,20 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.List;
 import java.util.Random;
 
 import android.util.Log;
 
+import com.dbz.framework.BluetoothManager;
+import com.dbz.framework.BluetoothManager.*;
+import com.dbz.framework.gl.Screen;
 import com.dbz.framework.input.FileIO;
+import com.dbz.framework.input.Input.TouchEvent;
+import com.dbz.framework.math.OverlapTester;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Mode;
+import com.dbz.verge.Mode.ModeState;
 
 // TODO: Implement better random number generation?
 //		...Add all MicroGames to this and TimeAttack
@@ -35,12 +42,29 @@ public class SurvivalMode extends Mode {
 	public static String[] extraHighScores=new String[]{"","","","",""};
 	public final static String file = ".vergehighscores";
 	
+	public static boolean isMultiplayer = false;
+	
+	public String otherPlayerIsReady = "NO";
+	
+	public BluetoothManager bluetoothManager;
+	
 	// -------------------
 	// --- Constructor ---
 	// -------------------
 	public SurvivalMode() {
 		indexHistory = new int[microGames.length];
 		clearIndexHistory();
+		if (isMultiplayer) {
+			bluetoothManager = new BluetoothManager();
+			if(!bluetoothManager.btAdapter.isEnabled()){
+				bluetoothManager.btAdapter.enable();
+			}
+			
+			Screen.game.messageRead = "";
+			bluetoothManager.mControlThread = bluetoothManager.new ControlThread();
+			bluetoothManager.mControlThread.start();
+		}
+			
 	}
 
 	// ----------------------
@@ -68,7 +92,73 @@ public class SurvivalMode extends Mode {
 			modeState = ModeState.Transition;
 		}
 	}
+	
+	// Prepares the next MicroGame for launching.
+	public void updateTransition(float deltaTime) {
+		// Collects total time spent in Transition state.
+		totalTransitionTime += deltaTime;
+		
+		if (isMultiplayer) {
+			if(BluetoothManager.mState == BluetoothManager.STATE_CONNECTED) {
+				otherPlayerIsReady = game.messageRead;
+				Log.d("SurvivalModeMultiplayer", otherPlayerIsReady);
+				if (!otherPlayerIsReady.equals("YES"))
+					totalTransitionTime = 0;
+				
+				if (!loadComplete) {
+					loadNextMicroGame();
+					bluetoothManager.mConnectedThread.write("YES".toString().getBytes());
+				}
+				// After the time limit has past and load has completed, switch to running state.
+				else if (totalTransitionTime >= transitionTimeLimit && otherPlayerIsReady.equals("YES")) {
+					game.messageRead = "NO";
+					totalTransitionTime = 0;
+					modeState = ModeState.Running;
+					previousModeState = modeState; // TODO: seems counter intuitive, but it tells game how to handle pause
+					return;
+				}
+			}
+		} else {
+			if (!loadComplete)
+				loadNextMicroGame();
+			// After the time limit has past and load has completed, switch to running state.
+			else if (totalTransitionTime >= transitionTimeLimit) {
+				totalTransitionTime = 0;
+				modeState = ModeState.Running;
+				previousModeState = modeState; // TODO: seems counter intuitive, but it tells game how to handle pause
+				return;
+			}
+		}
+		
+		// Gets all TouchEvents and stores them in a list.
+	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+	    
+	    // Cycles through and tests all touch events.
+	    int len = touchEvents.size();
+	    for(int i = 0; i < len; i++) {
+	    	// Gets a single TouchEvent from the list.
+	        TouchEvent event = touchEvents.get(i);
+	        
+	        // Skip handling if the TouchEvent isn't TOUCH_UP.
+	        if(event.type != TouchEvent.TOUCH_UP)
+	            continue;
 
+	        // Sets the x and y coordinates of the TouchEvent to our touchPoint vector.
+	        touchPoint.set(event.x, event.y);
+	        // Sends the vector to the OpenGL Camera for handling.
+	        guiCam.touchToWorld(touchPoint);
+	        
+	        // Pause Toggle Bounds Check.
+	        if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
+	            AssetsManager.playSound(AssetsManager.clickSound);
+	            totalTransitionTime = 0;
+	            previousModeState = modeState; //transition
+	            modeState = ModeState.Paused;
+	            return;
+	        }  
+	    }
+	}
+	
 	// ------------------------------
 	// --- Utility Update Methods ---
 	// ------------------------------

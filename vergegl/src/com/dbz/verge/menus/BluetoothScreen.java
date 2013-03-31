@@ -13,8 +13,11 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import com.dbz.framework.input.Input.TouchEvent;
+import com.dbz.framework.math.OverlapTester;
+import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Menu;
+import com.dbz.verge.modes.SurvivalMode;
 
 public class BluetoothScreen extends Menu {
 
@@ -42,10 +45,10 @@ public class BluetoothScreen extends Menu {
 	public static final int MESSAGE_TOAST = 5;
 
 	// Connection Threads
-	private AcceptThread mSecureAcceptThread;		// for secure connections
-	private AcceptThread mInsecureAcceptThread;		// for insecure connections 
-	private ConnectThread mConnectThread;			// for connection to accept thread's open socket
-	private ConnectedThread mConnectedThread;		// handles message passing between devices post connection 
+	public AcceptThread mSecureAcceptThread;		// for secure connections
+	public AcceptThread mInsecureAcceptThread;		// for insecure connections 
+	public ConnectThread mConnectThread;			// for connection to accept thread's open socket
+	public ConnectedThread mConnectedThread;		// handles message passing between devices post connection 
 	public ControlThread mControlThread;			// controls the flow of connections between devices in range of the adapter
 
 	public static int mState;				//current state of bluetooth connection
@@ -54,8 +57,8 @@ public class BluetoothScreen extends Menu {
 	// Debugging
 	private static final String TAG = "BluetoothScreen";
 	private static final boolean D = true;
-	public Integer testMessage = 0;
 	
+	public Rectangle multiplayerBounds = new Rectangle(0,0,100,100);
 	
 	// -------------------
 	// --- Constructor ---
@@ -66,7 +69,7 @@ public class BluetoothScreen extends Menu {
 			btAdapter.enable();
 		}
 		
-		game.testMessageRead = "";
+		game.messageRead = "";
 		mControlThread = new ControlThread();
 		mControlThread.start();
 	}       
@@ -89,11 +92,17 @@ public class BluetoothScreen extends Menu {
 				touchPoint.set(event.x, event.y);
 				guiCam.touchToWorld(touchPoint);
 
-				if(BluetoothScreen.getState() == STATE_CONNECTED){
-					testMessage += 1;
-					mConnectedThread.write(testMessage.toString().getBytes());
+//				if(BluetoothScreen.getState() == STATE_CONNECTED){
+//					mConnectedThread.write(testMessage.toString().getBytes());
+//				}
+				//super.update(touchPoint);
+			}
+			if(BluetoothScreen.getState() == STATE_CONNECTED){
+				if (OverlapTester.pointInRectangle(multiplayerBounds, touchPoint)) {
+					SurvivalMode multiplayerSurvivalMode = new SurvivalMode();
+					multiplayerSurvivalMode.isMultiplayer = true;
+					game.setScreen(multiplayerSurvivalMode);
 				}
-				super.update(touchPoint);
 			}
 		}
 	}   
@@ -509,9 +518,9 @@ public class BluetoothScreen extends Menu {
 
 	@Override
 	public void drawBackground() {
-		// batcher.beginBatch(AssetsManager.background);
-		// batcher.drawSprite(0, 0, 1280, 800, AssetsManager.backgroundRegion);
-		// batcher.endBatch();
+		batcher.beginBatch(AssetsManager.background);
+		batcher.drawSprite(0, 0, 1280, 800, AssetsManager.backgroundRegion);
+		batcher.endBatch();
 	}
 
 	@Override
@@ -543,16 +552,18 @@ public class BluetoothScreen extends Menu {
 		} else if (BluetoothScreen.getState() == STATE_CONNECTED) {
 			AssetsManager.vergeFont.drawTextCentered(batcher, "Connected to " + mConnectedDevice , 640, 700-lineSpacer, 2f);
 			lineSpacer += 80;
-			if (game.testMessageRead != "") {
-				AssetsManager.vergeFont.drawTextCentered(batcher, mConnectedDevice + " sent " + game.testMessageRead + " message" , 640, 700-lineSpacer, 1.8f);
+			if (game.messageRead != "") {
+				AssetsManager.vergeFont.drawTextCentered(batcher, mConnectedDevice + " sent " + game.messageRead + " message" , 640, 700-lineSpacer, 1.8f);
 				lineSpacer += 40;
 			}
 		}
-
 		//AssetsManager.vergeFont.drawTextCentered(batcher, string, 640, 700, 1.5f);
 		batcher.endBatch();
-
-		super.drawObjects(); //pause button and stuff
+		
+		batcher.beginBatch(AssetsManager.boundOverlay);
+		batcher.drawSprite(multiplayerBounds, AssetsManager.boundOverlayRegion);
+		batcher.endBatch();
+		
 	}
 
 
@@ -564,9 +575,9 @@ public class BluetoothScreen extends Menu {
 	public void onBackPressed(){
 		game.endDiscovery();
 		this.stop(); //stop all threads
-		if(game.mBtAdapter.isEnabled()){
-			game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging
-		}
+//		if(game.mBtAdapter.isEnabled()){
+//			game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging
+//		}
 		game.setScreen(new MainMenu());
 	}
 

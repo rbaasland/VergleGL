@@ -32,7 +32,6 @@ import com.dbz.framework.gl.Screen;
 import com.dbz.framework.input.FileIO;
 import com.dbz.framework.input.Input;
 import com.dbz.verge.AssetsManager;
-import com.dbz.verge.menus.BluetoothScreen;
 
 public abstract class Game extends Activity implements Renderer {
 	enum GameState {
@@ -61,8 +60,8 @@ public abstract class Game extends Activity implements Renderer {
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST = 5;
     
-    public String testMessageRead = "";
-    public String testMessageWrite = "";
+    public String messageRead = "";
+    public String messageWrite = "";
     
 	//made public to avoid getters
     public BluetoothAdapter mBtAdapter;  
@@ -335,12 +334,12 @@ public abstract class Game extends Activity implements Renderer {
             case MESSAGE_WRITE:
                 byte[] writeBuf = (byte[]) msg.obj;
                 // construct a string from the buffer
-                testMessageWrite = new String(writeBuf);
+                messageWrite = new String(writeBuf);
                 break;
             case MESSAGE_READ:
                 byte[] readBuf = (byte[]) msg.obj;
                 // construct a string from the valid bytes in the buffer
-                testMessageRead = new String(readBuf, 0, msg.arg1);
+                messageRead = new String(readBuf, 0, msg.arg1);
                 break;
             case MESSAGE_DEVICE_NAME:
                 break;
@@ -366,7 +365,7 @@ public abstract class Game extends Activity implements Renderer {
                 // If it's already paired, skip it, because it's been listed already
                // if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
 //	        	if(mNewDevices == null){
-	        		Log.d("Bluetooth", "Device Found");
+	        		Log.d("BluetoothDiscovery", "Device Found");
 //	        		mNewDevices = Collections.synchronizedSet(new HashSet<BluetoothDevice>());
 //	        	}
 	        	if (device != null && device.getName() != null) {
@@ -374,20 +373,20 @@ public abstract class Game extends Activity implements Renderer {
 	        	}
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
             	//done searching
-            	if (BluetoothScreen.getState() == BluetoothScreen.STATE_LISTEN)
-            	BluetoothScreen.setState(BluetoothScreen.STATE_READY);
+            	if (BluetoothManager.getState() == BluetoothManager.STATE_LISTEN)
+            	BluetoothManager.setState(BluetoothManager.STATE_READY);
             }
             else if (BluetoothDevice .ACTION_ACL_CONNECTED.equals(action)) {
                  //Device is now connected
-            	Log.d("Bluetooth", "connected");
+            	Log.d("BluetoothDiscovery", "connected");
              }
              else if (BluetoothDevice .ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
                  //Device is about to disconnect
-            	 Log.d("Bluetooth", "connecting");
+            	 Log.d("BluetoothDiscovery", "connecting");
              }
              else if (BluetoothDevice .ACTION_ACL_DISCONNECTED.equals(action)) {
                  //Device has disconnected
-            	 Log.d("Bluetooth", "disconnected");
+            	 Log.d("BluetoothDiscovery", "disconnected");
              } //else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
             	 	//could be used to bypass pairing confirmation? 		
             // }

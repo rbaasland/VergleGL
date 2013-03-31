@@ -7,6 +7,7 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Menu;
+import com.dbz.verge.modes.SurvivalMode;
 
 public class MainMenu extends Menu {
 	
@@ -49,6 +50,7 @@ public class MainMenu extends Menu {
                 // Singleplayer Bounds Check.
                 if(OverlapTester.pointInRectangle(singlePlayerBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
+                    SurvivalMode.isMultiplayer = false;
                     game.setScreen(new SinglePlayerMenu());
                     return;
                 }
@@ -56,7 +58,8 @@ public class MainMenu extends Menu {
                 // Multiplayer Button Bounds Check.
                 if(OverlapTester.pointInRectangle(multiPlayerBounds, touchPoint)) {
                     AssetsManager.playSound(AssetsManager.clickSound);
-                    game.setScreen(new BluetoothScreen());
+					SurvivalMode.isMultiplayer = true;
+					game.setScreen(new SurvivalMode());
                     return;
                 }
                 
