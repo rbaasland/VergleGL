@@ -50,7 +50,7 @@ public class DirtBikeMicroGame extends MicroGame {
 	//Bounds for obstacles
 	private Rectangle obstaclesBounds = new Rectangle(1000,225,200,160);
 	private Rectangle obstacles2Bounds = new Rectangle(3000,225,50,200);
-	private Rectangle flagBounds = new Rectangle(3500,225,155,230);
+	private Rectangle flagBounds = new Rectangle(5000,225,155,230);
 	private Rectangle[] obstacles = {obstaclesBounds, obstacles2Bounds};
 	
 	
@@ -59,7 +59,7 @@ public class DirtBikeMicroGame extends MicroGame {
 	private Rectangle dirtBikeFWheelBounds = new Rectangle(235,275,100,100);
 	private Rectangle dirtBikeFrameBounds = new Rectangle(0,260,250,220);
 	private Rectangle gasBounds = new Rectangle(980,20,160,160);
-	private Rectangle jumpBounds = new Rectangle(140,20,160,160);
+	private Rectangle jumpBounds = new Rectangle(0,0,1280,800);
 	
 	//Bounds for alternate
 	private Rectangle manBounds = new Rectangle(0,250,75,110);
@@ -176,14 +176,14 @@ public class DirtBikeMicroGame extends MicroGame {
 	        if (version == 0) {        
 				//TODO: weird... the logic for touch_up only seems to work for the DINC, not the DINC 2
 		        	//bug, when jumping while hitting the gas the bike doesn't move forward. AND works ok on jons phone.
-		        if (targetTouchDragged(event, touchPoint, gasBounds)) {
+		        /*if (targetTouchDragged(event, touchPoint, gasBounds)) {
 		        	//used to ensure touch up on gas only affects gas
 		        	if(event.type == TouchEvent.TOUCH_UP){ 
 		        		gasOn=false;
 		        		return;
 		        	}
 					gasOn=true;	
-		        }
+		        } */
 		        
 		        
 		        if(!disableJumpButton)
@@ -297,18 +297,23 @@ public class DirtBikeMicroGame extends MicroGame {
 			trainBounds2.lowerLeft.x = trainBounds.lowerLeft.x + trainBounds.width + trainDisance;
 				
 	}
-	
+
 	public void moveDirtBike() {
-		if ((dirtBikeFrameBounds.lowerLeft.x + dirtBikeFrameBounds.width) < 500) {
-		    dirtBikeFrameBounds.lowerLeft.x += 16 * speedScalar[level-1];
-		    dirtBikeFWheelBounds.lowerLeft.x += 16 * speedScalar[level-1];
-		    dirtBikeRWheelBounds.lowerLeft.x += 16 * speedScalar[level-1];
-	    } else {
-		    obstaclesBounds.lowerLeft.x -= 16 * speedScalar[level-1];
-		    obstacles2Bounds.lowerLeft.x -= 16 * speedScalar[level-1];
-		    flagBounds.lowerLeft.x -= 16 * speedScalar[level-1];
-	    }
-	    rotation -= 80;
+		if (dirtBikeFrameBounds.lowerLeft.x >= 0 && (dirtBikeFrameBounds.lowerLeft.x + dirtBikeFrameBounds.width <= 1280)) {
+			dirtBikeFrameBounds.lowerLeft.x += (int) game.getInput().getAccelY() * 2 * speedScalar[speed - 1];
+		    dirtBikeFWheelBounds.lowerLeft.x += (int) game.getInput().getAccelY() * 2 * speedScalar[speed - 1];
+		    dirtBikeRWheelBounds.lowerLeft.x += (int) game.getInput().getAccelY() * 2 * speedScalar[speed - 1];
+		}
+		if (dirtBikeFrameBounds.lowerLeft.x <= 0) {
+			dirtBikeFrameBounds.lowerLeft.x = 0;
+		    dirtBikeRWheelBounds.lowerLeft.x = 40;
+		    dirtBikeFWheelBounds.lowerLeft.x = 235;
+		}
+		
+	    obstaclesBounds.lowerLeft.x -= 16 * speedScalar[level-1];
+	    obstacles2Bounds.lowerLeft.x -= 16 * speedScalar[level-1];
+		flagBounds.lowerLeft.x -= 16 * speedScalar[level-1];
+		rotation -= 80;
 	}
 
 	public void moveMan() {
@@ -423,8 +428,8 @@ public class DirtBikeMicroGame extends MicroGame {
 			batcher.drawSprite(dirtBikeFrameBounds, dirtBikeFrameRegion);
 			batcher.drawSprite(dirtBikeRWheelBounds.lowerLeft.x,dirtBikeRWheelBounds.lowerLeft.y,dirtBikeRWheelBounds.width,dirtBikeRWheelBounds.height,rotation, dirtBikeWheelRegion);
 			batcher.drawSprite(dirtBikeFWheelBounds.lowerLeft.x,dirtBikeFWheelBounds.lowerLeft.y,dirtBikeFWheelBounds.width,dirtBikeFWheelBounds.height,rotation, dirtBikeWheelRegion);
-			batcher.drawSprite(gasBounds, dirtBikeGasPedalRegion);
-			batcher.drawSprite(jumpBounds, dirtBikeJumpButtonRegion);
+			//batcher.drawSprite(gasBounds, dirtBikeGasPedalRegion);
+			//batcher.drawSprite(jumpBounds, dirtBikeJumpButtonRegion);
 			if(levelObstacles[level-1] != 0)
 				batcher.drawSprite(obstaclesBounds, dirtBikeObstacleOneRegion);
 			if(levelObstacles[level-1] == 2)
