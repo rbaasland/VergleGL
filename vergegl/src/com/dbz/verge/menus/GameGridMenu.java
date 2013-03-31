@@ -13,6 +13,7 @@ import com.dbz.verge.microgames.BroFistMicroGame;
 import com.dbz.verge.microgames.CircuitMicroGame;
 import com.dbz.verge.microgames.DirtBikeMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
+import com.dbz.verge.microgames.FishingMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
 import com.dbz.verge.microgames.TossMicroGame;
