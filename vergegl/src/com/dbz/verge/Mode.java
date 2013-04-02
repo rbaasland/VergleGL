@@ -41,7 +41,9 @@ public abstract class Mode extends Screen {
 		Lost
 	}
 	
-	public ModeState modeState = ModeState.Transition;
+	public static boolean modeActive = false; // Used to determine if mode is running (see MicroGame.java)
+	
+	public static ModeState modeState = ModeState.Transition; //static so microgame can change ModeState
 	public ModeState previousModeState = ModeState.Transition;
 	
     // OpenGL Related Objects
@@ -98,6 +100,10 @@ public abstract class Mode extends Screen {
 	// --- Constructor ---
     // -------------------
 	public Mode() {
+		
+		modeActive = true;
+		modeState = ModeState.Transition; //make sure static var is set correctly
+		
 		// Initialize MicroGame set.
 		microGames = new MicroGame[] { new BroFistMicroGame(), new FlyMicroGame(), new FireMicroGame(),
 										   new TrafficMicroGame(), new CircuitMicroGame(), new LazerBallMicroGame(),
@@ -698,10 +704,14 @@ public abstract class Mode extends Screen {
 	}
 
 	@Override
-	public void resume() {}
+	public void resume() {
+		modeActive = true;
+	}
 
 	@Override
-	public void dispose() {}
+	public void dispose() {
+		modeActive = false;
+	}
 	
 	@Override
 	public void onBackPressed(){

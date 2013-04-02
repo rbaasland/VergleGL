@@ -117,7 +117,7 @@ public class HelpMenu extends Menu {
 				// Back Arrow Bounds Check.
 				if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 					AssetsManager.playSound(AssetsManager.clickSound);
-					game.setScreen(new MainMenu());
+					game.returnToPreviousScreen();
 					return;
 				}
 				
@@ -293,7 +293,7 @@ public class HelpMenu extends Menu {
 	
 	@Override
 	public void onBackPressed(){
-		game.setScreen(new MainMenu());
+		game.returnToPreviousScreen();
 	}
 
 }

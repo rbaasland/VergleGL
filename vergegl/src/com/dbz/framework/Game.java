@@ -48,6 +48,7 @@ public abstract class Game extends Activity implements Renderer {
 	Input input;
 	FileIO fileIO;
 	Screen screen;
+	Screen prevScreen; //used to hold previous screen (needed for Help Menu back buttons from any non-microgame screen)
 	GameState state = GameState.Initialized;
 	Object stateChanged = new Object();
 	long startTime = System.nanoTime();
@@ -191,10 +192,28 @@ public abstract class Game extends Activity implements Renderer {
 			throw new IllegalArgumentException("Screen must not be null");
 
 		this.screen.pause();
-		this.screen.dispose();
+		this.screen.dispose(); //may cause problems with setPrevScreen if assets are destroyed here
+		this.prevScreen = this.screen;
 		screen.resume();
 		screen.update(0);
 		this.screen = screen;
+	}
+	
+	/** Sets the current screen back to the previous screen 
+	 * Problems may occur if needed resources are destroyed in the dispose() method*/
+	public void returnToPreviousScreen() {
+		if (prevScreen == null)
+			throw new NullPointerException ("Previous Screen must not be null");
+
+		Screen swapScreen;
+		this.screen.pause();
+		this.screen.dispose();
+		swapScreen = this.prevScreen; //swap screens
+		this.prevScreen = this.screen;
+		this.screen = swapScreen;
+		
+		this.screen.resume();
+		this.screen.update(0);
 	}
 
 	public Screen getCurrentScreen() {

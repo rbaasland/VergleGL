@@ -12,6 +12,7 @@ import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
+import com.dbz.verge.Mode.ModeState;
 import com.dbz.verge.menus.GameGridMenu;
 import com.dbz.verge.menus.HelpMenu;
 
@@ -80,7 +81,10 @@ public abstract class MicroGame extends Screen {
     // -------------------
 	// --- Constructor ---
     // -------------------
-	public MicroGame() {}
+	public MicroGame() {
+		
+		
+	}
 
 	// ----------------------
 	// --- Update Methods ---
@@ -231,9 +235,14 @@ public abstract class MicroGame extends Screen {
 		if(pauseEnabled) {
 			// ... Pause Toggle Bounds Check.
 			if(OverlapTester.pointInRectangle(pauseToggleBounds, touchPoint)) {
+				if(Mode.modeActive){
+					AssetsManager.playSound(AssetsManager.clickSound);
+					Mode.modeState = ModeState.Paused;
+				} else { 
 		            AssetsManager.playSound(AssetsManager.clickSound);
 		            microGameState = MicroGameState.Paused;
 		            return;
+				}
 		    }
 		}
 	}
@@ -262,7 +271,7 @@ public abstract class MicroGame extends Screen {
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		        	
-		        	if(game.getCurrentScreen() instanceof Mode){ //TODO fix issue w/ microgame inside a mode so we don't use code smell
+		        	if(Mode.modeActive){ 
 		        		AssetsManager.playSound(AssetsManager.clickSound);
 			            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
 			            
@@ -300,7 +309,7 @@ public abstract class MicroGame extends Screen {
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		        	
-		        	if(game.getCurrentScreen() instanceof Mode){ //TODO fix issue w/ microgame inside a mode so we don't use code smell
+		        	if(Mode.modeActive){ 
 		        		AssetsManager.playSound(AssetsManager.clickSound);
 			            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
 			            
