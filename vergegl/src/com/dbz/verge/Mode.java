@@ -574,32 +574,15 @@ public abstract class Mode extends Screen {
 		
 		// Draws the mid game status report.
 		presentStatusReport(170);
-		//show connecting state
+		
+		// Draw bluetooth connection status
 		if(Mode.isMultiplayer)
-			presentConnectionStatus(170-150);
+			drawConnectionStatus(20);
+		
 		// Draws the pause symbol.
 //		batcher.beginBatch(AssetsManager.pauseToggle);
 //		batcher.drawSprite(pauseToggleBounds, AssetsManager.pauseRegion);
 //		batcher.endBatch();
-	}
-	
-	String dots = "";
-	public void presentConnectionStatus(int startY) {
-		batcher.beginBatch(AssetsManager.vergeFontTexture);
-		
-		//start progress string //TODO fix dots
-		if(totalTransitionTime <= 1)
-			dots = ".";
-		else if( totalTransitionTime <= 2)
-			dots+= ".";
-		else if( totalTransitionTime <= 3)
-			dots+= ".";
-		
-		if(BluetoothManager.connectionStatus.equals("Searching") || BluetoothManager.connectionStatus.equals("Connecting"))
-			AssetsManager.vergeFont.drawTextLeft(batcher, BluetoothManager.connectionStatus + dots, 315, startY); //dots if searching or connecting
-		else AssetsManager.vergeFont.drawTextLeft(batcher, BluetoothManager.connectionStatus, 315, startY); //else no dots
-
-		batcher.endBatch();
 	}
 	
 	public void presentRunning(float deltaTime) {
@@ -733,6 +716,29 @@ public abstract class Mode extends Screen {
 			batcher.drawSprite(720, 262, 85, 85, AssetsManager.gesturesOnIndicatorRegion);
 		else
 			batcher.drawSprite(720, 262, 85, 85, AssetsManager.gesturesOffIndicatorRegion);
+
+		batcher.endBatch();
+	}
+	
+	//connection status variables
+	String progressDots = "";
+	int delayCounter = 0;
+	int delayCounterMax = 10; 
+	
+	/** Used to display bluetooth connection status to screen*/
+	public void drawConnectionStatus(int startY) {
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		
+		//if searching or connecting, append progress string
+		if(BluetoothManager.connectionStatus.equals("Searching") || BluetoothManager.connectionStatus.equals("Connecting")){
+			if(delayCounter++ == delayCounterMax){ //dot is drawn every 10 frames
+				progressDots+= ".";
+				delayCounter = 0;
+				if(progressDots.length() == 4)
+					progressDots = "";
+			}
+			AssetsManager.vergeFont.drawTextLeft(batcher, BluetoothManager.connectionStatus + progressDots, 315, startY);	
+		} else AssetsManager.vergeFont.drawTextLeft(batcher, BluetoothManager.connectionStatus, 315, startY); //else no dots
 
 		batcher.endBatch();
 	}
