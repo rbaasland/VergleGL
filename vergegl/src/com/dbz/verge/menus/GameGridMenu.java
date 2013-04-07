@@ -113,7 +113,7 @@ public class GameGridMenu extends Menu {
                 		selectedMicroGameIcon = AssetsManager.broFistIconRegion;
                 	}
                 	else if (currentPage == 2) {
-                		selectedMicroGame = new FishingMicroGame();
+                		selectedMicroGame = new AquariumMicroGame();
                 		selectedMicroGameIcon = AssetsManager.aquariumIconRegion;
                 	}
                 	overlayPresent = true;
@@ -188,8 +188,12 @@ public class GameGridMenu extends Menu {
                 	if (currentPage == 1){
                 		selectedMicroGame = new LazerBallMicroGame();
                 		selectedMicroGameIcon = AssetsManager.lazerBallIconRegion;
-                		overlayPresent = true;
+                	} else if (currentPage == 2) {
+                		selectedMicroGame = new FishingMicroGame();
+                		selectedMicroGameIcon = AssetsManager.fishingIconRegion;
+                		selectedMicroGame.version = 1;
                 	}
+            		overlayPresent = true;
                 	return;
                 }
                 
