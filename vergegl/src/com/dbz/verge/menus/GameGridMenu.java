@@ -113,7 +113,7 @@ public class GameGridMenu extends Menu {
                 		selectedMicroGameIcon = AssetsManager.broFistIconRegion;
                 	}
                 	else if (currentPage == 2) {
-                		selectedMicroGame = new AquariumMicroGame();
+                		selectedMicroGame = new FishingMicroGame();
                 		selectedMicroGameIcon = AssetsManager.aquariumIconRegion;
                 	}
                 	overlayPresent = true;
