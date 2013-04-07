@@ -17,8 +17,9 @@ import com.dbz.verge.microgames.FishingMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
 import com.dbz.verge.microgames.TossMicroGame;
-import com.dbz.verge.microgames.TrafficMicroGame;
+import com.dbz.verge.microgames.InvasionMicroGame;
 import com.dbz.verge.microgames.AquariumMicroGame;
+import com.dbz.verge.microgames.TrafficMicroGame;
 
 // TODO: Keep naming conventions standard between Bounds and Asset Regions.
 //		 Fix the issue where the LVL text will shift over by a few pixels when you switch through them.
@@ -188,8 +189,12 @@ public class GameGridMenu extends Menu {
                 	if (currentPage == 1){
                 		selectedMicroGame = new LazerBallMicroGame();
                 		selectedMicroGameIcon = AssetsManager.lazerBallIconRegion;
-                		overlayPresent = true;
+                	} else if (currentPage == 2) {
+                		selectedMicroGame = new FishingMicroGame();
+                		selectedMicroGameIcon = AssetsManager.fishingIconRegion;
+                		selectedMicroGame.version = 1;
                 	}
+            		overlayPresent = true;
                 	return;
                 }
                 

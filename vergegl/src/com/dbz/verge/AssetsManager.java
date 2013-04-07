@@ -95,6 +95,7 @@ public class AssetsManager {
     public static TextureRegion aquariumIconRegion;
     public static TextureRegion dirtBikeIconRegion;
     public static TextureRegion tossIconRegion;
+    public static TextureRegion fishingIconRegion;
     
     public static Texture soundToggle;
     public static TextureRegion soundOnRegion;
@@ -201,6 +202,7 @@ public class AssetsManager {
         gameGridIconsPageTwo = new Texture("gamegridicons2.png");
         gameGridIconsPageTwoRegion = new TextureRegion(gameGridIconsPageTwo, 0, 0, 1024, 800);
         aquariumIconRegion = new TextureRegion(gameGridIconsPageTwo, 280, 180, 240, 220);
+        fishingIconRegion = new TextureRegion(gameGridIconsPageTwo,760,520,240,220);
         dirtBikeIconRegion = new TextureRegion(gameGridIconsPageTwo, 520, 180, 240, 220);
         tossIconRegion = new TextureRegion(gameGridIconsPageTwo, 760, 180, 240, 220);
         
