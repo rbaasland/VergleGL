@@ -42,11 +42,7 @@ public class SurvivalMode extends Mode {
 	public static String[] extraHighScores=new String[]{"","","","",""};
 	public final static String file = ".vergehighscores";
 	
-	public static boolean isMultiplayer = false;
-	
 	public String otherPlayerIsReady = "NO";
-	
-	public BluetoothManager bluetoothManager;
 	
 	// -------------------
 	// --- Constructor ---
@@ -54,17 +50,6 @@ public class SurvivalMode extends Mode {
 	public SurvivalMode() {
 		indexHistory = new int[microGames.length];
 		clearIndexHistory();
-		if (isMultiplayer) {
-			bluetoothManager = new BluetoothManager();
-			if(!bluetoothManager.btAdapter.isEnabled()){
-				bluetoothManager.btAdapter.enable();
-			}
-			
-			Screen.game.messageRead = "";
-			bluetoothManager.mControlThread = bluetoothManager.new ControlThread();
-			bluetoothManager.mControlThread.start();
-		}
-			
 	}
 
 	// ----------------------
@@ -84,6 +69,9 @@ public class SurvivalMode extends Mode {
 		lives--;
 		if (lives <= 0)
 		{
+			if (Mode.isMultiplayer) {
+				bluetoothManager.mConnectedThread.write("LOST".toString().getBytes());
+			}
 			modeState = ModeState.Lost;
 			validHighScore(currentRound-1);
 		}
@@ -98,10 +86,15 @@ public class SurvivalMode extends Mode {
 		// Collects total time spent in Transition state.
 		totalTransitionTime += deltaTime;
 		
-		if (isMultiplayer) {
+		if (Mode.isMultiplayer) {
 			if(BluetoothManager.mState == BluetoothManager.STATE_CONNECTED) {
 				otherPlayerIsReady = game.messageRead;
 				Log.d("SurvivalModeMultiplayer", otherPlayerIsReady);
+				if (otherPlayerIsReady.equals("LOST")) {
+					modeState = ModeState.Won;
+					validHighScore(currentRound-1);
+				}
+				
 				if (!otherPlayerIsReady.equals("YES"))
 					totalTransitionTime = 0;
 				
@@ -117,6 +110,7 @@ public class SurvivalMode extends Mode {
 					previousModeState = modeState; // TODO: seems counter intuitive, but it tells game how to handle pause
 					return;
 				}
+				
 			}
 		} else {
 			if (!loadComplete)

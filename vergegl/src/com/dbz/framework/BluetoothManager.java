@@ -3,7 +3,6 @@ package com.dbz.framework;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
@@ -12,12 +11,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
-import com.dbz.framework.input.Input.TouchEvent;
-import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
-import com.dbz.verge.AssetsManager;
-import com.dbz.verge.Menu;
-import com.dbz.verge.modes.SurvivalMode;
 import com.dbz.framework.gl.Screen;
 
 
@@ -60,20 +54,27 @@ public class BluetoothManager {
 		private static final boolean D = true;
 		
 		public Rectangle multiplayerBounds = new Rectangle(0,0,100,100);
+	    public static String connectionStatus = "Searching";
 		
 		// -------------------
 		// --- Constructor ---
 		// -------------------
 		
 		public BluetoothManager() {
-//			if(!btAdapter.isEnabled()){
-//				btAdapter.enable();
-//			}
-//			
 			Screen.game.messageRead = "";
-//			mControlThread = new ControlThread();
-//			mControlThread.start();
-		}       
+		}  
+		
+		/** Init bluetooth manager for use in mode */
+		public void startThreads(){
+
+			if(!btAdapter.isEnabled()){
+				btAdapter.enable();
+			}
+			
+			Screen.game.messageRead = "";
+			mControlThread = new ControlThread();
+			mControlThread.start();
+		}
 
 		// ---------------------
 		// --- Update Method ---
@@ -301,8 +302,9 @@ public class BluetoothManager {
 							}
 						} catch (InterruptedException e) {e.printStackTrace();}
 
-						if (BluetoothManager.getState() == STATE_CONNECTED) //if our state is connected when control is returned to this thread, return. 
+						if (BluetoothManager.getState() == STATE_CONNECTED) {//if our state is connected when control is returned to this thread, return. 
 							return;
+						}
 					}
 				}
 			}
@@ -354,6 +356,7 @@ public class BluetoothManager {
 							case STATE_LISTEN:
 							case STATE_CONNECTING:
 								// Situation normal. Start the connected thread.
+								//Screen.game.cancelDiscovery();
 								connected(socket, socket.getRemoteDevice(), mSocketType);
 								break;
 							case STATE_NONE:
@@ -375,7 +378,8 @@ public class BluetoothManager {
 			public void cancel() {
 				if (D) Log.d(TAG, "Socket Type" + mSocketType + "cancel " + this);
 				try {
-					mmServerSocket.close();
+					if(mmServerSocket != null)
+						mmServerSocket.close();
 				} catch (IOException e) {Log.e(TAG, "Socket Type" + mSocketType + "close() of server failed", e);}
 			}
 
@@ -415,6 +419,7 @@ public class BluetoothManager {
 				try {
 					// This is a blocking call and will only return on a
 					// successful connection or an exception
+					//Screen.game.cancelDiscovery();
 					mmSocket.connect();
 				} catch (IOException e) {
 					// Close the socket
@@ -444,7 +449,8 @@ public class BluetoothManager {
 
 			public void cancel() {
 				try {
-					mmSocket.close();
+					if(mmSocket != null)
+						mmSocket.close();
 				} catch (IOException e) {Log.e(TAG, "close() of connect " + mSocketType + " socket failed", e);}
 			}
 		}
@@ -460,6 +466,7 @@ public class BluetoothManager {
 
 			public ConnectedThread(BluetoothSocket socket, String socketType) {
 				Log.d(TAG, "create ConnectedThread: " + socketType);
+				BluetoothManager.connectionStatus = "Connected";
 				mmSocket = socket;
 				InputStream tmpIn = null;
 				OutputStream tmpOut = null;
@@ -487,11 +494,8 @@ public class BluetoothManager {
 						// Send the obtained bytes to the UI Activity
 						Screen.game.mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 					} catch (IOException e) {Log.e(TAG, "disconnected", e);
-						//TODO
-						Screen.game.endDiscovery();
-//						this.stop(); //stop all threads
-//						if(Screen.game.mBtAdapter.isEnabled()){
-//							Screen.game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging
+						//TODO Possible to synchronize device events here when the thread ends. i.e. both go back to some screen.
+							//ideally: when one player pauses and exits while other player is waiting for them to respond to continue game
 //						}
 						break;
 					
@@ -513,7 +517,8 @@ public class BluetoothManager {
 
 			public void cancel() {
 				try {
-					mmSocket.close();
+					if(mmSocket != null)
+						mmSocket.close();
 				} catch (IOException e) {Log.e(TAG, "close() of connect socket failed", e);}
 			}
 		}
@@ -560,15 +565,14 @@ public class BluetoothManager {
 //			
 //		}
 
-
-//		public void onBackPressed(){
-//			game.endDiscovery();
-//			this.stop(); //stop all threads
-////			if(game.mBtAdapter.isEnabled()){
-////				game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging
-////			}
-//			game.setScreen(new MainMenu());
-//		}
+		/** Ends discovery and stops all running threads*/
+		public void endThreads(){
+			Screen.game.endDiscovery();
+			this.stop(); //stop all threads
+//			if(game.mBtAdapter.isEnabled()){
+//				game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging
+//			}
+		}
 		
 }
 

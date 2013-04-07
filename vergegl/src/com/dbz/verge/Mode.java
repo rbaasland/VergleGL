@@ -4,6 +4,10 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.util.Log;
+
+import com.dbz.framework.BluetoothManager;
+import com.dbz.framework.BluetoothManager.ControlThread;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.FPSCounter;
 import com.dbz.framework.gl.Screen;
@@ -13,7 +17,9 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.MicroGame.MicroGameState;
+import com.dbz.verge.menus.GameGridMenu;
 import com.dbz.verge.menus.HelpMenu;
+import com.dbz.verge.menus.MainMenu;
 import com.dbz.verge.menus.SinglePlayerMenu;
 import com.dbz.verge.microgames.BroFistMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
@@ -22,6 +28,7 @@ import com.dbz.verge.microgames.TossMicroGame;
 import com.dbz.verge.microgames.TrafficMicroGame;
 import com.dbz.verge.microgames.CircuitMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
+import com.dbz.verge.modes.SurvivalMode;
 
 // TODO: Make game speed level affect the transition and MicroGame win/loss state time.
 //		 Extract Bounding Boxes draw calls (in each present()) to their own method.
@@ -96,6 +103,10 @@ public abstract class Mode extends Screen {
     
     public boolean loadComplete = false;
     
+    public static boolean isMultiplayer = false;
+    
+	public BluetoothManager bluetoothManager;
+    
     // -------------------
 	// --- Constructor ---
     // -------------------
@@ -109,6 +120,11 @@ public abstract class Mode extends Screen {
 										   new TrafficMicroGame(), new CircuitMicroGame(), new LazerBallMicroGame(),
 										   new TossMicroGame() };
 		updateMeterBarPercentages();
+		
+		if (Mode.isMultiplayer) {
+			bluetoothManager = new BluetoothManager();
+			bluetoothManager.startThreads();
+		}
 
 		// Disables BackArrow and Pause UI elements for all MicroGames in the set.
 //		for (int i = 0; i < microGames.length; i++) {
@@ -177,7 +193,10 @@ public abstract class Mode extends Screen {
 	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new SinglePlayerMenu());
+	            if (Mode.isMultiplayer){
+	            	game.setScreen(new MainMenu());
+	            	bluetoothManager.endThreads(); //end discovery, stop all threads
+	            } else game.setScreen(new SinglePlayerMenu());
 	            return;     
 	        }
 	        
@@ -233,7 +252,11 @@ public abstract class Mode extends Screen {
 	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new SinglePlayerMenu());
+	            if (Mode.isMultiplayer) {
+	            	bluetoothManager.endThreads();
+	            	game.setScreen(new MainMenu());
+	            }
+	            else game.setScreen(new SinglePlayerMenu());
 	            return;
 	        }
 	        
@@ -349,11 +372,15 @@ public abstract class Mode extends Screen {
 	        // Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
-	        /// Back Arrow Bounds Check.
+	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new SinglePlayerMenu());
-	            return;     
+	            if (Mode.isMultiplayer){
+	            	game.setScreen(new MainMenu());
+	            	bluetoothManager.endThreads(); //end discovery, stop all threads
+	            }
+	            else game.setScreen(new SinglePlayerMenu());
+	            return;
 	        }
 	    }
 	}
@@ -377,11 +404,15 @@ public abstract class Mode extends Screen {
 	        // Sends the vector to the OpenGL Camera for handling.
 	        guiCam.touchToWorld(touchPoint);
 	        
-	        /// Back Arrow Bounds Check.
+	        // Back Arrow Bounds Check.
 	        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 	            AssetsManager.playSound(AssetsManager.clickSound);
-	            game.setScreen(new SinglePlayerMenu());
-	            return;     
+	            if (Mode.isMultiplayer){
+	            	game.setScreen(new MainMenu());
+            		bluetoothManager.endThreads(); //end discovery, stop all threads
+	            }
+	            else game.setScreen(new SinglePlayerMenu());
+	            return;
 	        }
 	    }
 	}
@@ -543,11 +574,32 @@ public abstract class Mode extends Screen {
 		
 		// Draws the mid game status report.
 		presentStatusReport(170);
-		
+		//show connecting state
+		if(Mode.isMultiplayer)
+			presentConnectionStatus(170-150);
 		// Draws the pause symbol.
 //		batcher.beginBatch(AssetsManager.pauseToggle);
 //		batcher.drawSprite(pauseToggleBounds, AssetsManager.pauseRegion);
 //		batcher.endBatch();
+	}
+	
+	String dots = "";
+	public void presentConnectionStatus(int startY) {
+		batcher.beginBatch(AssetsManager.vergeFontTexture);
+		
+		//start progress string //TODO fix dots
+		if(totalTransitionTime <= 1)
+			dots = ".";
+		else if( totalTransitionTime <= 2)
+			dots+= ".";
+		else if( totalTransitionTime <= 3)
+			dots+= ".";
+		
+		if(BluetoothManager.connectionStatus.equals("Searching") || BluetoothManager.connectionStatus.equals("Connecting"))
+			AssetsManager.vergeFont.drawTextLeft(batcher, BluetoothManager.connectionStatus + dots, 315, startY); //dots if searching or connecting
+		else AssetsManager.vergeFont.drawTextLeft(batcher, BluetoothManager.connectionStatus, 315, startY); //else no dots
+
+		batcher.endBatch();
 	}
 	
 	public void presentRunning(float deltaTime) {
@@ -740,7 +792,10 @@ public abstract class Mode extends Screen {
 		case Ready:
 		case Won:
 		case Lost:
-			game.setScreen(new SinglePlayerMenu());
+			if (Mode.isMultiplayer){
+				game.setScreen(new MainMenu());
+				bluetoothManager.endThreads(); //end discovery, stop all threads
+			} else game.setScreen(new SinglePlayerMenu());
 			break;
 
 		default:

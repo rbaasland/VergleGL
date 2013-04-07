@@ -270,13 +270,14 @@ public abstract class MicroGame extends Screen {
 	        if (backArrowEnabled) { 
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
-		        	
+		        	AssetsManager.playSound(AssetsManager.clickSound);
 		        	if(Mode.modeActive){ 
-		        		AssetsManager.playSound(AssetsManager.clickSound);
-			            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
-			            
+		        		if(Mode.isMultiplayer){
+		        			game.setScreen(new com.dbz.verge.menus.MainMenu());
+		        		} else {
+				            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
+		        		}     
 		        	} else {	
-		        		AssetsManager.playSound(AssetsManager.clickSound);
 		        		game.setScreen(new GameGridMenu());
 		        		return;    
 		        	}
@@ -308,16 +309,17 @@ public abstract class MicroGame extends Screen {
 	        if (backArrowEnabled) { 
 	        	// ... Back Arrow Bounds Check.
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
-		        	
+		        	AssetsManager.playSound(AssetsManager.clickSound);
 		        	if(Mode.modeActive){ 
-		        		AssetsManager.playSound(AssetsManager.clickSound);
-			            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
-			            
+		        		if(Mode.isMultiplayer){
+		        			game.setScreen(new com.dbz.verge.menus.MainMenu());
+		        		} else {
+				            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
+		        		}     
 		        	} else {	
-		        		AssetsManager.playSound(AssetsManager.clickSound);
 		        		game.setScreen(new GameGridMenu());
 		        		return;    
-		        	}  
+		        	}
 		        }
 	        }
 	    }
