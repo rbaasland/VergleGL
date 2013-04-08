@@ -798,10 +798,11 @@ public abstract class Mode extends Screen {
 		case Ready:
 		case Won:
 		case Lost:
-			if (Mode.isMultiplayer){
+			if (Mode.isMultiplayer) {
 				game.setScreen(new MainMenu());
 				bluetoothManager.endThreads(); //end discovery, stop all threads
-			} else game.setScreen(new SinglePlayerMenu());
+			} else 
+				game.setScreen(new SinglePlayerMenu());
 			break;
 
 		default:
