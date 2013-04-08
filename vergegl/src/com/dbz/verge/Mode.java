@@ -322,6 +322,15 @@ public abstract class Mode extends Screen {
 	    }
 	}
 	
+	public void updateMicroGameWon() {
+		loadComplete = false;
+		currentRound++;
+	}
+	
+	public void updateMicroGameLost() {
+		loadComplete = false;
+	}
+	
 	// Launches the MicroGame and waits for it to finish.
 	public void updateRunning(float deltaTime) {
 		microGames[microGameIndex].update(deltaTime);
@@ -343,16 +352,7 @@ public abstract class Mode extends Screen {
 			}
 		}
 	}
-	
-	public void updateMicroGameWon() {
-		loadComplete = false;
-		currentRound++;
-	}
-	
-	public void updateMicroGameLost() {
-		loadComplete = false;
-	}
-	
+
 	public void updateWon() {
 		// Gets all TouchEvents and stores them in a list.
 	    List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
@@ -642,6 +642,11 @@ public abstract class Mode extends Screen {
 	// TODO: Call shared lines via super.presentStatusReport() (???)
 	public abstract void presentStatusReport(int startY);
 	
+	float searchingBarWidthMax = 239;
+	float searchingBarWidthCur = 0;
+	int searchDelayCounter = 0;
+	int searchDelayCounterMax = 10; 
+	
 	public void drawWindowContent() {
 		// Draws background and 'Meters' window content.
 		batcher.beginBatch(AssetsManager.transition);
@@ -716,7 +721,21 @@ public abstract class Mode extends Screen {
 			batcher.drawSprite(720, 262, 85, 85, AssetsManager.gesturesOnIndicatorRegion);
 		else
 			batcher.drawSprite(720, 262, 85, 85, AssetsManager.gesturesOffIndicatorRegion);
-
+		
+		//Multiplayer Searching for device status bar. 
+		if(isMultiplayer && BluetoothManager.getState() != BluetoothManager.STATE_CONNECTED) {
+			batcher.drawSprite(315, 20, 239, 26, AssetsManager.meterGreenBarEmptyRegion);
+			
+			if(searchDelayCounter++ == searchDelayCounterMax){ //update bar every 10 frames
+				searchDelayCounter = 0;
+				searchingBarWidthCur += searchingBarWidthMax/120.f; //Step of next visible bar //TODO make bar based on discovery time later
+				
+				if(searchingBarWidthCur >= searchingBarWidthMax)
+					searchingBarWidthCur = 0;
+			}
+			batcher.drawSprite(315, 20, searchingBarWidthCur, 26, AssetsManager.meterGreenBarFillRegion);
+		
+		}
 		batcher.endBatch();
 	}
 	
@@ -777,21 +796,22 @@ public abstract class Mode extends Screen {
 		switch (modeState){
 
 		case Transition: //cases to pause
+			previousModeState = modeState;
 			modeState = ModeState.Paused;
 			break;
 		case Running:
+			previousModeState = modeState;
 			modeState = ModeState.Paused;
 			break;
 
 		//The if-else-if here needed because the microgames are screens w/in a screen
-			//to ensure the game resumes at the correct point, we add 2 sub-cases 
-			//in respect to previous gameState
+		//to ensure the game resumes at the correct point, we add 2 sub-cases 
+		//in respect to previous gameState
 
 		case Paused:   //cases to resume
 			if(previousModeState == ModeState.Running)
 				modeState = ModeState.Running;
-
-			else if(previousModeState == ModeState.Transition || previousModeState == ModeState.Ready)
+			else if(previousModeState == ModeState.Transition)
 					modeState = ModeState.Transition;
 			break;
 
