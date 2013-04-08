@@ -272,11 +272,12 @@ public abstract class MicroGame extends Screen {
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		        	AssetsManager.playSound(AssetsManager.clickSound);
 		        	if(Mode.modeActive){ 
-		        		if(Mode.isMultiplayer){
-		        			game.setScreen(new com.dbz.verge.menus.MainMenu());
-		        		} else {
-				            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
-		        		}     
+//		        		if(Mode.isMultiplayer){
+//		        			game.setScreen(new com.dbz.verge.menus.MainMenu());
+//		        			bluetoothManager.endThreads(); //end discovery, stop all threads
+//		        		} else {
+//				            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
+//		        		}     
 		        	} else {	
 		        		game.setScreen(new GameGridMenu());
 		        		return;    
@@ -311,11 +312,12 @@ public abstract class MicroGame extends Screen {
 		        if(OverlapTester.pointInRectangle(backArrowBounds, touchPoint)) {
 		        	AssetsManager.playSound(AssetsManager.clickSound);
 		        	if(Mode.modeActive){ 
-		        		if(Mode.isMultiplayer){
-		        			game.setScreen(new com.dbz.verge.menus.MainMenu());
-		        		} else {
-				            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
-		        		}     
+//		        		if(Mode.isMultiplayer){
+//		        			game.setScreen(new com.dbz.verge.menus.MainMenu());
+//		        			bluetoothManager.endThreads(); //end discovery, stop all threads
+//		        		} else {
+//				            game.setScreen(new com.dbz.verge.menus.SinglePlayerMenu());
+//		        		}     
 		        	} else {	
 		        		game.setScreen(new GameGridMenu());
 		        		return;    
@@ -554,7 +556,7 @@ public abstract class MicroGame extends Screen {
 		batcher.endBatch();
 		
 		// If Back Arrow is enabled...
-		if (backArrowEnabled) {
+		if (backArrowEnabled && !Mode.modeActive) {
 			// ... Draws the Back Arrow.
 	        batcher.beginBatch(AssetsManager.backArrow);
 	        batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);
@@ -574,7 +576,7 @@ public abstract class MicroGame extends Screen {
 		batcher.endBatch();
 		
 		// If Back Arrow is enabled...
-		if (backArrowEnabled) {
+		if (backArrowEnabled && !Mode.modeActive) {
 			// ... Draws the Back Arrow.
 			batcher.beginBatch(AssetsManager.backArrow);
 			batcher.drawSprite(backArrowBounds, AssetsManager.backArrowRegion);

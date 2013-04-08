@@ -62,6 +62,7 @@ public class BluetoothManager {
 		
 		public BluetoothManager() {
 			Screen.game.messageRead = "";
+			connectionStatus = "Searching";
 		}  
 		
 		/** Init bluetooth manager for use in mode */
@@ -74,40 +75,7 @@ public class BluetoothManager {
 			Screen.game.messageRead = "";
 			mControlThread = new ControlThread();
 			mControlThread.start();
-		}
-
-		// ---------------------
-		// --- Update Method ---
-		// ---------------------
-		
-//		@Override
-//		public void update(float deltaTime) {  //only used to send messages back and forth between devices on touch
-//			
-//			List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
-//			game.getInput().getKeyEvents();
-//
-//			int len = touchEvents.size();
-//			for(int i = 0; i < len; i++) {
-//				TouchEvent event = touchEvents.get(i);    
-//
-//				if(event.type == TouchEvent.TOUCH_UP) {
-//					touchPoint.set(event.x, event.y);
-//					guiCam.touchToWorld(touchPoint);
-//
-////					if(BluetoothManager.getState() == STATE_CONNECTED){
-////						mConnectedThread.write(testMessage.toString().getBytes());
-////					}
-//					//super.update(touchPoint);
-//				}
-//				if(BluetoothManager.getState() == STATE_CONNECTED){
-//					if (OverlapTester.pointInRectangle(multiplayerBounds, touchPoint)) {
-//						SurvivalMode multiplayerSurvivalMode = new SurvivalMode();
-//						multiplayerSurvivalMode.isMultiplayer = true;
-//						game.setScreen(multiplayerSurvivalMode);
-//					}
-//				}
-//			}
-//		}   
+		} 
 
 		// ----------------------------
 		// -----Thread Wrappers--------
@@ -523,51 +491,11 @@ public class BluetoothManager {
 			}
 		}
 		
-//		public void drawObjects() {
-//			int lineSpacer = 40;
-//
-//			//here we want to display all available adapters
-//			batcher.beginBatch(AssetsManager.vergeFontTexture);
-//			AssetsManager.vergeFont.drawTextCentered(batcher, "Device List", 640, 700-lineSpacer, 1.7f);
-//			lineSpacer += 40;
-//			// list of new devices
-//			synchronized(game.mNewDevices) {
-//				if(!game.mNewDevices.isEmpty()) {
-//					for(BluetoothDevice nd : game.mNewDevices){
-//						AssetsManager.vergeFont.drawTextCentered(batcher, nd.getName() + " : " + nd.getAddress() , 640, 700-lineSpacer, 1.5f);
-//						lineSpacer += 40;
-//					}
-//				}
-//			}
-//
-//			//Connection Status
-//			lineSpacer += 240;
-//			if (BluetoothManager.getState() == STATE_LISTEN) {
-//				AssetsManager.vergeFont.drawTextCentered(batcher, "Searching..." , 640, 700-lineSpacer, 2f);
-//				lineSpacer += 40;
-//			} else if (BluetoothManager.getState() == STATE_CONNECTING) {
-//				AssetsManager.vergeFont.drawTextCentered(batcher, "Connecting to " + mConnectedDevice , 640, 700-lineSpacer, 2f);
-//				lineSpacer += 40;
-//			} else if (BluetoothManager.getState() == STATE_CONNECTED) {
-//				AssetsManager.vergeFont.drawTextCentered(batcher, "Connected to " + mConnectedDevice , 640, 700-lineSpacer, 2f);
-//				lineSpacer += 80;
-//				if (game.messageRead != "") {
-//					AssetsManager.vergeFont.drawTextCentered(batcher, mConnectedDevice + " sent " + game.messageRead + " message" , 640, 700-lineSpacer, 1.8f);
-//					lineSpacer += 40;
-//				}
-//			}
-//			//AssetsManager.vergeFont.drawTextCentered(batcher, string, 640, 700, 1.5f);
-//			batcher.endBatch();
-//			
-//			batcher.beginBatch(AssetsManager.boundOverlay);
-//			batcher.drawSprite(multiplayerBounds, AssetsManager.boundOverlayRegion);
-//			batcher.endBatch();
-//			
-//		}
-
 		/** Ends discovery and stops all running threads*/
 		public void endThreads(){
 			Screen.game.endDiscovery();
+			if ( mConnectedThread != null )
+				mConnectedThread.write("NO".toString().getBytes());
 			this.stop(); //stop all threads
 //			if(game.mBtAdapter.isEnabled()){
 //				game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging

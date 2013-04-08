@@ -349,7 +349,7 @@ public abstract class Game extends Activity implements Renderer {
 	            mBtAdapter.cancelDiscovery();
 	      }
     }
-    
+    // TODO
     // The Handler that gets information back from the BluetoothChatService
     public final Handler mHandler = new Handler() {
         @Override
@@ -407,17 +407,16 @@ public abstract class Game extends Activity implements Renderer {
             else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                  //Device is now connected
             	Log.d("BluetoothDiscovery", "connected");
-            	BluetoothManager.connectionStatus = "Connected";
              }
              else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
                  //Device is about to disconnect
-            	 Log.d("BluetoothDiscovery", "connecting");
-            	 BluetoothManager.connectionStatus = "Connecting";
+//            	 Log.d("BluetoothDiscovery", "connecting");
+//            	 BluetoothManager.connectionStatus = "Connecting";
              }
              else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                  //Device has disconnected
             	 Log.d("BluetoothDiscovery", "disconnected");
-            	 BluetoothManager.connectionStatus = "Disconnected";
+            	 BluetoothManager.connectionStatus = "Disconnected - Game Over!";
              } //else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
             	 	//could be used to bypass pairing confirmation? 		
             // }

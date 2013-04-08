@@ -67,11 +67,10 @@ public class SurvivalMode extends Mode {
 		super.updateMicroGameLost();
 
 		lives--;
-		if (lives <= 0)
-		{
-			if (Mode.isMultiplayer) {
+		if (lives <= 0) {
+			if (Mode.isMultiplayer)
 				bluetoothManager.mConnectedThread.write("LOST".toString().getBytes());
-			}
+			
 			modeState = ModeState.Lost;
 			validHighScore(currentRound-1);
 		}
@@ -95,6 +94,7 @@ public class SurvivalMode extends Mode {
 					validHighScore(currentRound-1);
 				}
 				
+				// TODO Redundant?
 				if (!otherPlayerIsReady.equals("YES"))
 					totalTransitionTime = 0;
 				
