@@ -71,8 +71,6 @@ public class MainMenu extends Menu {
                     return;
                 }
                 
-
-                
                 // Non-Unique, Super Class Bounds Check.
     	        super.update(touchPoint);
             }

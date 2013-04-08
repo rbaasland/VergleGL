@@ -77,8 +77,7 @@ public class GameGridMenu extends Menu {
     // -------------------
  	// --- Constructor ---
     // -------------------
-    public GameGridMenu() {
-    }       
+    public GameGridMenu() {}       
 
     // ---------------------
  	// --- Update Method ---
@@ -109,21 +108,26 @@ public class GameGridMenu extends Menu {
                 // First MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(firstMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
+                	overlayPresent = true;
                 	if (currentPage == 1) {
                 		selectedMicroGame = new BroFistMicroGame();
                 		selectedMicroGameIcon = AssetsManager.broFistIconRegion;
-                	}
-                	else if (currentPage == 2) {
+                	} else if (currentPage == 2) {
                 		selectedMicroGame = new AquariumMicroGame();
                 		selectedMicroGameIcon = AssetsManager.aquariumIconRegion;
+                	} else if (currentPage == 3) {
+                		selectedMicroGame = new InvasionMicroGame();
+                		selectedMicroGameIcon = AssetsManager.broFistIconRegion;
+                	} else {
+                		overlayPresent = false;
                 	}
-                	overlayPresent = true;
                 	return;
                 }
                 
                 // Second MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(secondMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
+                	overlayPresent = true;
                 	if (currentPage == 1) {
                 		selectedMicroGame = new FlyMicroGame();
                 		selectedMicroGameIcon = AssetsManager.flyIconRegion;
@@ -132,14 +136,16 @@ public class GameGridMenu extends Menu {
                 		selectedMicroGame = new DirtBikeMicroGame();
                 		selectedMicroGameIcon = AssetsManager.dirtBikeIconRegion;
                 		selectedMicroGame.version = 0;
+                	} else {
+                		overlayPresent = false;
                 	}
-                	overlayPresent = true;
                 	return;
                 }
                 
                 // Third MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(thirdMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
+            		overlayPresent = true;
                 	if (currentPage == 1) {
                 		selectedMicroGame = new FireMicroGame();
                 		selectedMicroGameIcon = AssetsManager.fireIconRegion;
@@ -147,14 +153,16 @@ public class GameGridMenu extends Menu {
                 	else if (currentPage == 2) {
                 		selectedMicroGame = new TossMicroGame();
                 		selectedMicroGameIcon = AssetsManager.tossIconRegion;
+                	} else {
+                		overlayPresent = false;
                 	}
-                	overlayPresent = true;
                 	return;
                 }
                 
                 // Fourth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(fourthMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
+            		overlayPresent = true;
                 	if (currentPage == 1){
                 		selectedMicroGame = new TrafficMicroGame();
                 		selectedMicroGameIcon = AssetsManager.trafficIconRegion;
@@ -163,14 +171,16 @@ public class GameGridMenu extends Menu {
                 		selectedMicroGame = new TrafficMicroGame();
                 		selectedMicroGameIcon = AssetsManager.trafficIconRegion;
                 		selectedMicroGame.version = 1;
+                	} else {
+                		overlayPresent = false;
                 	}
-                	overlayPresent = true;
                 	return;
                 }
                 
                 // Fifth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(fifthMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
+            		overlayPresent = true;
                 	if (currentPage == 1){
                 		selectedMicroGame = new CircuitMicroGame();
                 		selectedMicroGameIcon = AssetsManager.circuitIconRegion;
@@ -178,14 +188,16 @@ public class GameGridMenu extends Menu {
                 		selectedMicroGame = new DirtBikeMicroGame();
                 		selectedMicroGameIcon = AssetsManager.dirtBikeIconRegion;
                 		selectedMicroGame.version = 1;
+                	} else {
+                		overlayPresent = false;
                 	}
-                	overlayPresent = true;
                 	return;
                 }
                 
                 // Sixth MicroGame Bounds Check.
                 if (OverlapTester.pointInRectangle(sixthMicroGameBounds, touchPoint)) {
                 	AssetsManager.playSound(AssetsManager.clickSound);
+            		overlayPresent = true;
                 	if (currentPage == 1){
                 		selectedMicroGame = new LazerBallMicroGame();
                 		selectedMicroGameIcon = AssetsManager.lazerBallIconRegion;
@@ -193,8 +205,9 @@ public class GameGridMenu extends Menu {
                 		selectedMicroGame = new FishingMicroGame();
                 		selectedMicroGameIcon = AssetsManager.fishingIconRegion;
                 		selectedMicroGame.version = 1;
+                	} else {
+                		overlayPresent = false;
                 	}
-            		overlayPresent = true;
                 	return;
                 }
                 

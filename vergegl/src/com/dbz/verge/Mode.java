@@ -25,9 +25,9 @@ import com.dbz.verge.microgames.BroFistMicroGame;
 import com.dbz.verge.microgames.FireMicroGame;
 import com.dbz.verge.microgames.FlyMicroGame;
 import com.dbz.verge.microgames.TossMicroGame;
-import com.dbz.verge.microgames.InvasionMicroGame;
 import com.dbz.verge.microgames.CircuitMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
+import com.dbz.verge.microgames.TrafficMicroGame;
 import com.dbz.verge.modes.SurvivalMode;
 
 // TODO: Make game speed level affect the transition and MicroGame win/loss state time.
@@ -117,7 +117,7 @@ public abstract class Mode extends Screen {
 		
 		// Initialize MicroGame set.
 		microGames = new MicroGame[] { new BroFistMicroGame(), new FlyMicroGame(), new FireMicroGame(),
-										   new InvasionMicroGame(), new CircuitMicroGame(), new LazerBallMicroGame(),
+										   new TrafficMicroGame(), new CircuitMicroGame(), new LazerBallMicroGame(),
 										   new TossMicroGame() };
 		updateMeterBarPercentages();
 		
