@@ -95,6 +95,7 @@ public class SurvivalMode extends Mode {
 					validHighScore(currentRound-1);
 				}
 				
+				// TODO Redundant?
 				if (!otherPlayerIsReady.equals("YES"))
 					totalTransitionTime = 0;
 				

@@ -36,7 +36,7 @@ public class GameGridMenu extends Menu {
 	
 	// Page Variables.
     private static int currentPage = 1;
-    private static final int NUM_OF_PAGES = 2;
+    private static final int NUM_OF_PAGES = 3;
     
     // Bounding Boxes.
     private Rectangle firstMicroGameBounds = new Rectangle(315, 435, 170, 170);
@@ -112,12 +112,13 @@ public class GameGridMenu extends Menu {
                 	if (currentPage == 1) {
                 		selectedMicroGame = new BroFistMicroGame();
                 		selectedMicroGameIcon = AssetsManager.broFistIconRegion;
+                		overlayPresent = true;
                 	}
                 	else if (currentPage == 2) {
                 		selectedMicroGame = new AquariumMicroGame();
                 		selectedMicroGameIcon = AssetsManager.aquariumIconRegion;
+                		overlayPresent = true;
                 	}
-                	overlayPresent = true;
                 	return;
                 }
                 
@@ -127,13 +128,14 @@ public class GameGridMenu extends Menu {
                 	if (currentPage == 1) {
                 		selectedMicroGame = new FlyMicroGame();
                 		selectedMicroGameIcon = AssetsManager.flyIconRegion;
+                		overlayPresent = true;
                 	}
                 	else if (currentPage == 2) {
                 		selectedMicroGame = new DirtBikeMicroGame();
                 		selectedMicroGameIcon = AssetsManager.dirtBikeIconRegion;
                 		selectedMicroGame.version = 0;
+                		overlayPresent = true;
                 	}
-                	overlayPresent = true;
                 	return;
                 }
                 
@@ -143,12 +145,13 @@ public class GameGridMenu extends Menu {
                 	if (currentPage == 1) {
                 		selectedMicroGame = new FireMicroGame();
                 		selectedMicroGameIcon = AssetsManager.fireIconRegion;
+                		overlayPresent = true;
                 	}
                 	else if (currentPage == 2) {
                 		selectedMicroGame = new TossMicroGame();
                 		selectedMicroGameIcon = AssetsManager.tossIconRegion;
+                		overlayPresent = true;
                 	}
-                	overlayPresent = true;
                 	return;
                 }
                 
@@ -158,13 +161,14 @@ public class GameGridMenu extends Menu {
                 	if (currentPage == 1){
                 		selectedMicroGame = new TrafficMicroGame();
                 		selectedMicroGameIcon = AssetsManager.trafficIconRegion;
+                		overlayPresent = true;
                 	}
                 	else if (currentPage == 2) {
                 		selectedMicroGame = new TrafficMicroGame();
                 		selectedMicroGameIcon = AssetsManager.trafficIconRegion;
                 		selectedMicroGame.version = 1;
+                		overlayPresent = true;
                 	}
-                	overlayPresent = true;
                 	return;
                 }
                 
@@ -174,12 +178,13 @@ public class GameGridMenu extends Menu {
                 	if (currentPage == 1){
                 		selectedMicroGame = new CircuitMicroGame();
                 		selectedMicroGameIcon = AssetsManager.circuitIconRegion;
+                		overlayPresent = true;
                 	} else if (currentPage == 2) {
                 		selectedMicroGame = new DirtBikeMicroGame();
                 		selectedMicroGameIcon = AssetsManager.dirtBikeIconRegion;
                 		selectedMicroGame.version = 1;
+                		overlayPresent = true;
                 	}
-                	overlayPresent = true;
                 	return;
                 }
                 
@@ -189,12 +194,13 @@ public class GameGridMenu extends Menu {
                 	if (currentPage == 1){
                 		selectedMicroGame = new LazerBallMicroGame();
                 		selectedMicroGameIcon = AssetsManager.lazerBallIconRegion;
+                		overlayPresent = true;
                 	} else if (currentPage == 2) {
                 		selectedMicroGame = new FishingMicroGame();
                 		selectedMicroGameIcon = AssetsManager.fishingIconRegion;
                 		selectedMicroGame.version = 1;
+                		overlayPresent = true;
                 	}
-            		overlayPresent = true;
                 	return;
                 }
                 

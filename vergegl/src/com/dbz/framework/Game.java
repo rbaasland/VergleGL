@@ -407,12 +407,11 @@ public abstract class Game extends Activity implements Renderer {
             else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                  //Device is now connected
             	Log.d("BluetoothDiscovery", "connected");
-            	BluetoothManager.connectionStatus = "Connected";
              }
              else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
                  //Device is about to disconnect
-            	 Log.d("BluetoothDiscovery", "connecting");
-            	 BluetoothManager.connectionStatus = "Connecting";
+//            	 Log.d("BluetoothDiscovery", "connecting");
+//            	 BluetoothManager.connectionStatus = "Connecting";
              }
              else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                  //Device has disconnected
