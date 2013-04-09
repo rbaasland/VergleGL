@@ -262,7 +262,6 @@ public abstract class Game extends Activity implements Renderer {
 		
 	}
 
-
 	@Override  //used for hardware back button
 	public void onBackPressed() {
     	AssetsManager.playSound(AssetsManager.clickSound);
