@@ -351,6 +351,10 @@ public class GameGridMenu extends Menu {
 	    		batcher.beginBatch(AssetsManager.gameGridIconsPageTwo);
 	    		batcher.drawSprite(0, 0, 1024, 800, AssetsManager.gameGridIconsPageTwoRegion);
 	    		batcher.endBatch();
+	    	} else if (currentPage == 3) {
+//	    		batcher.beginBatch(AssetsManager.gameGridIconsPageOne);
+//	        	batcher.drawSprite(0, 0, 1024, 800, AssetsManager.gameGridIconsPageOneRegion);
+//	        	batcher.endBatch();
 	    	}
 	        
 	    	// Draw Page Arrows.
@@ -416,8 +420,11 @@ public class GameGridMenu extends Menu {
 		
 		if (currentPage == 1)
 			batcher.beginBatch(AssetsManager.gameGridIconsPageOne);
-		else
+		else if (currentPage == 2)
 			batcher.beginBatch(AssetsManager.gameGridIconsPageTwo);
+		else if (currentPage == 3)
+			batcher.beginBatch(AssetsManager.gameGridIconsPageOne);
+
 		batcher.drawSprite(selectedIconBounds, selectedMicroGameIcon);
 		batcher.endBatch();
     }

@@ -27,6 +27,11 @@ public class Lazer {
 		bounds.lowerLeft.add(velocity);
 	}
 
+	public void reverseAcceleration() {
+		acceleration.x = -acceleration.x;
+		acceleration.y = -acceleration.y;
+	}
+	
 	// TODO: Do something about this...
 	public void draw(SpriteBatcher batcher) { 
 		batcher.drawSprite(bounds, InvasionMicroGame.trafficBlackCarRegion); 

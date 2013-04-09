@@ -8,6 +8,7 @@ import com.dbz.framework.math.Vector2;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.microgames.InvasionMicroGame;
 
+// TODO: Implement vector drawing.
 // TODO: Implement mass, force to replace current acceleration?
 // TODO: Pull out into GameObject class.
 public class Ship {	// TODO: Add collision inside of GameObjects.

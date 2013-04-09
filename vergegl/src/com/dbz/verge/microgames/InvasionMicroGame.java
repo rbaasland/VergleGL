@@ -57,8 +57,12 @@ public class InvasionMicroGame extends MicroGame {
 	// Bounds for touch detection.
 	private static final Rectangle lazerButtonBoundsOne = new Rectangle(0, 0, 1280, 640);
 	private static final Rectangle lazerButtonBoundsTwo = new Rectangle(0, 0, 1120, 800);
+	
+	private static final Rectangle topWall = new Rectangle(0, 800, 1280, 20);
 	private static final Rectangle leftWall = new Rectangle(-20, 0, 20, 800);
 	private static final Rectangle rightWall = new Rectangle(1280, 0, 20, 800);
+	private static final Rectangle bottomWall = new Rectangle(-20, 0, 1280, 20);
+	
 	private Rectangle backgroundBounds = new Rectangle(0, 0, 1280, 800);
 	private Rectangle backgroundBounds2 = new Rectangle(0, 800, 1280, 800);
 
@@ -153,9 +157,7 @@ public class InvasionMicroGame extends MicroGame {
         			lazerIndex = 0;
         		lazers[lazerIndex] = playerShip.fireLazer();
         		lazerIndex++;
-        		
-//        		lazerList.add(playerShip.fireLazer());
-        		return;
+           		return;
         	}
 
 			// Non-Unique, Super Class Bounds (TOUCH_UP) Check.
@@ -212,7 +214,7 @@ public class InvasionMicroGame extends MicroGame {
 	}
 
 	public void updatePlayerShip(float deltaTime) {
-		if (!wallCollisionTest()) {			
+		if (!playerShipWallCollisionTest()) {			
 			float x = game.getInput().getAccelY() / 4;
 			
 			// Case 0: Turn from Right to Left.
@@ -258,7 +260,7 @@ public class InvasionMicroGame extends MicroGame {
 	public void updateLazers() {
 		for (int i = 0; i < MAX_LAZERS; i++) {
 			if (lazers[i] != null) {
-				if (lazers[i].active)
+				if (lazers[i].active  && !lazerWallCollisionTest(lazers[i]))
 					lazers[i].update();
 				else
 					lazers[i] = null;
@@ -326,7 +328,7 @@ public class InvasionMicroGame extends MicroGame {
 		return collision;
 	}
 
-	public boolean wallCollisionTest() {
+	public boolean playerShipWallCollisionTest() {
 		boolean collision = false;
 		
 		// Case 5: Any object goes off screen.
@@ -344,6 +346,31 @@ public class InvasionMicroGame extends MicroGame {
 		}
 		
 		return collision;
+	}
+	
+	public boolean enemyShipWallCollisionTest() {
+		boolean collision = false;
+		
+		// Case 5: Any object goes off screen.
+		if (collision(playerShip.bounds, leftWall)) {
+			playerShip.bounds.lowerLeft.x = leftWall.lowerLeft.x + leftWall.width + 1;
+			playerShip.setAcceleration(0, 0);
+			playerShip.setVelocity(0, 0);
+			collision = true;
+		}
+		else if (collision(playerShip.bounds, rightWall)) {
+			playerShip.bounds.lowerLeft.x = rightWall.lowerLeft.x - playerShip.bounds.width - 1;
+			playerShip.setAcceleration(0, 0);
+			playerShip.setVelocity(0, 0);
+			collision = true;
+		}
+		
+		return collision;
+	}
+	
+	public boolean lazerWallCollisionTest(Lazer lazer) {
+		return collision(lazer.bounds, topWall) || collision(lazer.bounds, bottomWall) || 
+			   collision(lazer.bounds, leftWall) || collision(lazer.bounds, rightWall);
 	}
 	
 	// Checks for collision.
@@ -410,8 +437,11 @@ public class InvasionMicroGame extends MicroGame {
 		batcher.beginBatch(AssetsManager.boundOverlay);
 		
 		// Lazer Button Bounds.
-		batcher.drawSprite(lazerButtonBoundsOne, AssetsManager.boundOverlayRegion);
-		batcher.drawSprite(lazerButtonBoundsTwo, AssetsManager.boundOverlayRegion);
+//		batcher.drawSprite(lazerButtonBoundsOne, AssetsManager.boundOverlayRegion);
+//		batcher.drawSprite(lazerButtonBoundsTwo, AssetsManager.boundOverlayRegion);
+		
+		batcher.drawSprite(topWall, AssetsManager.boundOverlayRegion);
+		batcher.drawSprite(bottomWall, AssetsManager.boundOverlayRegion);
 
 		batcher.endBatch();
 	}
