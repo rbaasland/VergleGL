@@ -396,12 +396,13 @@ public abstract class Game extends Activity implements Renderer {
 //	        	}
 	        	if (device != null && device.getName() != null) {
 		        	mNewDevices.add(device);
-		        	BluetoothManager.connectionStatus = "Found " + device.getName();
+		        	if(BluetoothManager.getState() != BluetoothManager.STATE_CONNECTED)
+		        		BluetoothManager.connectionStatus = "Found " + device.getName();
 	        	}
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
             	//done searching
             	if (BluetoothManager.getState() == BluetoothManager.STATE_LISTEN)
-            	BluetoothManager.setState(BluetoothManager.STATE_READY);
+            		BluetoothManager.setState(BluetoothManager.STATE_READY);
             }
             else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                  //Device is now connected
@@ -409,13 +410,13 @@ public abstract class Game extends Activity implements Renderer {
              }
              else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
                  //Device is about to disconnect
-//            	 Log.d("BluetoothDiscovery", "connecting");
+            	 Log.d("BluetoothDiscovery", "connecting");
 //            	 BluetoothManager.connectionStatus = "Connecting";
              }
              else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                  //Device has disconnected
             	 Log.d("BluetoothDiscovery", "disconnected");
-            	 BluetoothManager.connectionStatus = "Disconnected - Game Over!";
+//            	 BluetoothManager.connectionStatus = "Disconnected - Game Over!";
              } //else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
             	 	//could be used to bypass pairing confirmation? 		
             // }

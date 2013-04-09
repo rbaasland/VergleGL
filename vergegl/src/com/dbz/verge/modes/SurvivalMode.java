@@ -89,10 +89,6 @@ public class SurvivalMode extends Mode {
 			
 			if (BluetoothManager.getState() != BluetoothManager.STATE_CONNECTED){
 				bluetoothCurrentTime += deltaTime; //original
-//				if(BluetoothManager.getState() == BluetoothManager.STATE_LISTEN)
-//					bluetoothCurrentTime += deltaTime / (BluetoothManager.getEstimatedConnectionTime() / BluetoothManager.defaultDiscoveryTime);
-//				else 
-//					bluetoothCurrentTime = 0;
 			}
 			
 			if(BluetoothManager.mState == BluetoothManager.STATE_CONNECTED) {

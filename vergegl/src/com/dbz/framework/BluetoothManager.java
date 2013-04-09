@@ -251,6 +251,7 @@ public class BluetoothManager {
 			public ControlThread() {
 				while(true) { //must wait BT enable() to finish before ensureDiscoverable(). Else we get a force close.
 					if(btAdapter.getState() == BluetoothAdapter.STATE_ON){
+						BluetoothManager.connectionStatus = "Searching";
 						Screen.game.mNewDevices.clear(); //clear previously found devices before launch
 						Screen.game.ensureDiscoverable(); //puts device in discoverable mode (user prompt)
 						break;
@@ -260,6 +261,7 @@ public class BluetoothManager {
 			public void run() {
 				while(true){
 					begin(); // accept thread
+					BluetoothManager.connectionStatus = "Searching";
 					Screen.game.mNewDevices.clear();
 					Screen.game.startDiscovery(); // right now ending on back press (hardware)
 					while(BluetoothManager.getState() != STATE_READY){}
@@ -467,6 +469,7 @@ public class BluetoothManager {
 					} catch (IOException e) {Log.e(TAG, "disconnected", e);
 						//TODO Possible to synchronize device events here when the thread ends. i.e. both go back to some screen.
 							//ideally: when one player pauses and exits while other player is waiting for them to respond to continue game
+						BluetoothManager.connectionStatus = "Disconnected - Game Over!";
 //						}
 						break;
 					
@@ -504,17 +507,6 @@ public class BluetoothManager {
 //				game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging
 //			}
 		}
-		
-	    /** Returns the estimated completion time of the bluetooth connection*/
-	    public static float getEstimatedConnectionTime(){
-	    	float totalTime = 0;
-	    	
-	    	if(Screen.game.mNewDevices == null)
-	    		totalTime = defaultDiscoveryTime;
-	    	else totalTime = defaultDiscoveryTime + (estimatedConnectionTimePerDevice * Screen.game.mNewDevices.size());
-	    	
-	    	return totalTime;
-	    }
 		
 }
 

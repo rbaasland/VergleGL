@@ -4,10 +4,7 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.util.Log;
-
 import com.dbz.framework.BluetoothManager;
-import com.dbz.framework.BluetoothManager.ControlThread;
 import com.dbz.framework.gl.Camera2D;
 import com.dbz.framework.gl.FPSCounter;
 import com.dbz.framework.gl.Screen;
@@ -17,7 +14,6 @@ import com.dbz.framework.math.OverlapTester;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.MicroGame.MicroGameState;
-import com.dbz.verge.menus.GameGridMenu;
 import com.dbz.verge.menus.HelpMenu;
 import com.dbz.verge.menus.MainMenu;
 import com.dbz.verge.menus.SinglePlayerMenu;
@@ -28,7 +24,6 @@ import com.dbz.verge.microgames.TossMicroGame;
 import com.dbz.verge.microgames.CircuitMicroGame;
 import com.dbz.verge.microgames.LazerBallMicroGame;
 import com.dbz.verge.microgames.TrafficMicroGame;
-import com.dbz.verge.modes.SurvivalMode;
 
 // TODO: Make game speed level affect the transition and MicroGame win/loss state time.
 //		 Extract Bounding Boxes draw calls (in each present()) to their own method.
@@ -103,11 +98,10 @@ public abstract class Mode extends Screen {
     
     public boolean loadComplete = false;
     
-    public static boolean isMultiplayer = false;
-    
-	public BluetoothManager bluetoothManager;
-	
-	public float bluetoothCurrentTime = 0;
+    // Bluetooth variables
+    public static boolean isMultiplayer = false; // used to check if multiplayer mode is active
+	public BluetoothManager bluetoothManager; // reference to start/end blueooth connection threads
+	public float bluetoothCurrentTime = 0; // used to track the search/discovery time of search/connect screen
     
     // -------------------
 	// --- Constructor ---
@@ -646,9 +640,6 @@ public abstract class Mode extends Screen {
 	public abstract void presentStatusReport(int startY);
 	
 	float searchingBarWidthMax = 239;
-	float searchingBarWidthCur = 0;
-	int searchDelayCounter = 0;
-	int searchDelayCounterMax = 10; 
 	
 	public void drawWindowContent() {
 		// Draws background and 'Meters' window content.
@@ -726,10 +717,10 @@ public abstract class Mode extends Screen {
 			batcher.drawSprite(720, 262, 85, 85, AssetsManager.gesturesOffIndicatorRegion);
 		
 		//Multiplayer Searching for device status bar. 
-		if(isMultiplayer && BluetoothManager.getState() != BluetoothManager.STATE_CONNECTED) {
+		if(isMultiplayer && BluetoothManager.getState() != BluetoothManager.STATE_CONNECTED) { //display search progress bar when multiplayer & not connected
 			batcher.drawSprite(315, 20, 239, 26, AssetsManager.meterGreenBarEmptyRegion);
 			
-			float totalTime = BluetoothManager.getEstimatedConnectionTime(); //get estimated total time
+			float totalTime = BluetoothManager.defaultDiscoveryTime; // 12 seconds
 			
 				if(bluetoothCurrentTime >= totalTime)
 					bluetoothCurrentTime = 0;
