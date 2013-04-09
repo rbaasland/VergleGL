@@ -1,22 +1,26 @@
 package com.dbz.verge.microgames.objects;
 
+import android.util.Log;
+
 import com.dbz.framework.gl.SpriteBatcher;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.microgames.InvasionMicroGame;
 
+// TODO: Implement mass, force to replace current acceleration?
 // TODO: Pull out into GameObject class.
 public class Ship {	// TODO: Add collision inside of GameObjects.
 	// Physics.
-	// private static final Vector2 FRICTION = new Vector2(0, 0);	// TODO: Implement in World with Vector2f.
+	 private static final float FRICTION = 0.9f;	// TODO: Implement in World with Vector2f. Understand More.
 																	// *Won't be needed in Space.*
-	// private static final Vector2 GRAVITY = new Vector2(0, 9.8); // TODO: Implement in World with Vector2f.
-	private static final Vector2 MAX_ACCELERATION = new Vector2(10, 0);
-	private static final Vector2 MAX_DECELERATION = new Vector2(-10, 0);
-	private static final Vector2 MAX_VELOCITY = new Vector2(10, 0);
-	private Vector2 acceleration = new Vector2(0, 0);
-	private Vector2 velocity = new Vector2(0, 0);
+	// private static final Vector2 GRAVITY = new Vector2(0, 9.8); // TODO: Implement in World
+	private static final Vector2 MAX_ACCELERATION = new Vector2(10.0f, 10.0f);
+	private static final Vector2 MAX_DECELERATION = new Vector2(-10.0f, -10.0f);
+	private static final Vector2 MAX_VELOCITY = new Vector2(20.0f, 20.0f);
+	private Vector2 acceleration = new Vector2(0.0f, 0.0f);
+	private Vector2 velocity = new Vector2(0.0f, 0.0f);
+	private float mass = 1.0f;
 	private int width = 80, height = 170;
 	public Rectangle bounds;
 
@@ -33,7 +37,7 @@ public class Ship {	// TODO: Add collision inside of GameObjects.
 	}
 	
 	public void update(float deltaTime) {
-		applyAcceleration();
+		applyPhysics();
 		
 		// Updates Ship Game Logic.
 		if (health <= 0)
@@ -44,14 +48,16 @@ public class Ship {	// TODO: Add collision inside of GameObjects.
 			updateAI(deltaTime);
 	}
 	
-	public void updateAI(float deltaTime) {}
+	public void updateAI(float deltaTime) {
+//		addAcceleration(0.0f, -0.01f);
+	}
 	
-	public void setAcceleration(int x, int y) {
+	public void setAcceleration(float x, float y) {
 		acceleration.x = x;
 		acceleration.y = y;
 	}
 	
-	public void addAcceleration(int x, int y) {
+	public void addAcceleration(float x, float y) {
 		acceleration.x += x;
 		acceleration.y += y;
 		
@@ -66,6 +72,8 @@ public class Ship {	// TODO: Add collision inside of GameObjects.
 			acceleration.x = MAX_DECELERATION.x;
 		if (acceleration.y < MAX_DECELERATION.y)
 			acceleration.y = MAX_DECELERATION.y;
+		
+		Log.d("AccelerationX", "Y: "+ acceleration.y);
 	}
 
 	public void reverseAcceleration() {
@@ -73,8 +81,13 @@ public class Ship {	// TODO: Add collision inside of GameObjects.
 		acceleration.y = -acceleration.y;
 	}
 	
-	private void applyAcceleration() {	// TODO: Move above Acceleration setters?
+	public float getAccelerationX() {
+		return acceleration.x;
+	}
+	
+	private void applyPhysics() {	// TODO: Move above Acceleration setters?
 		velocity.add(acceleration);
+		velocity.mul(FRICTION);	// TODO: Make 0.1 - 1.0 (higher = more friction)
 		
 		// Caps the Velocity at the Max Velocity.
 		if (velocity.x > MAX_VELOCITY.x)
@@ -91,7 +104,7 @@ public class Ship {	// TODO: Add collision inside of GameObjects.
 		bounds.lowerLeft.add(velocity);
 	}
 	
-	public void setVelocity(int x, int y) {
+	public void setVelocity(float x, float y) {
 		velocity.x = x;
 		velocity.y = y;
 	}
@@ -101,7 +114,6 @@ public class Ship {	// TODO: Add collision inside of GameObjects.
 		
 		if (lazerAmmo >= 0) {
 			lazer = new Lazer(bounds);
-//			InvasionMicroGame.lazerList.add();	 // TODO: Do something about this..
 			AssetsManager.playSound(AssetsManager.hitSound);
 			lazerAmmo--;
 		} 

@@ -1,10 +1,11 @@
 package com.dbz.verge.microgames;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
+
+import android.util.Log;
 
 import com.dbz.framework.gl.Texture;
 import com.dbz.framework.gl.TextureRegion;
@@ -54,29 +55,30 @@ public class InvasionMicroGame extends MicroGame {
 	private int backgroundSpeedY;
 
 	// Bounds for touch detection.
+	private static final Rectangle lazerButtonBoundsOne = new Rectangle(0, 0, 1280, 640);
+	private static final Rectangle lazerButtonBoundsTwo = new Rectangle(0, 0, 1120, 800);
+	private static final Rectangle leftWall = new Rectangle(-20, 0, 20, 800);
+	private static final Rectangle rightWall = new Rectangle(1280, 0, 20, 800);
 	private Rectangle backgroundBounds = new Rectangle(0, 0, 1280, 800);
 	private Rectangle backgroundBounds2 = new Rectangle(0, 800, 1280, 800);
-	
-	private Rectangle leftWall = new Rectangle(-20, 0, 20, 800);		// TODO: STATIC CONSTS?
-	private Rectangle rightWall = new Rectangle(1280, 0, 20, 800);
-	
-	private Rectangle lazerButtonBoundsOne = new Rectangle(0, 0, 1280, 640); // TODO: Refactor names
-	private Rectangle lazerButtonBoundsTwo = new Rectangle(0, 0, 1120, 800);
+
+	// Game Variables.
+	public static final int MAX_ENEMY_SHIPS = 1;
+	public int enemyShipsActive = 0;
+	public int enemyShipIndex = 0;
+
+	public static final int MAX_LAZERS = 10;
+	public int lazerIndex = 0;
 	
 	// Game Objects.
-	public static final int MAX_ENEMY_SHIPS = 2;
-	public static final int MAX_LAZERS = 100;
-	public int totalEnemyShips = 0;
-	public int totalLazers = 0;
-	
 	public Ship playerShip = new Ship(480, 0);
-//	public ArrayList<Ship> enemyShipList = new ArrayList<Ship>();
-//	public ArrayList<Lazer> lazerList = new ArrayList<Lazer>();
 	public Ship enemyShips[] = new Ship[MAX_ENEMY_SHIPS];
 	public Lazer lazers[] = new Lazer[MAX_LAZERS];
 	
-	// Game Variables.
-	public int maxEnemyShips = 2;
+	// TESTING // TODO: REMOVE. Would be Vectors.
+//	public float peakAcceleration = 0.0f;
+	public boolean rightPeak = false;
+	public boolean leftPeak = false;
 	
 	// -------------------
 	// --- Constructor ---
@@ -89,11 +91,6 @@ public class InvasionMicroGame extends MicroGame {
 		singleTouchEnabled = true;
 		
 		playerShip.playerControlled = true;
-		enemyShips[0] = new Ship(480, 600);
-		totalEnemyShips++;
-		
-//		enemyShipList.add(new Ship(480, 600));
-
 	}
 
 	@Override
@@ -120,11 +117,10 @@ public class InvasionMicroGame extends MicroGame {
 	// ---------------------
 
 	@Override
-	public void updateRunning(float deltaTime) {
-//		if (enemyShipList.size() != maxEnemyShips)
-		
+	public void updateRunning(float deltaTime) {		
 //		updateBackground();
-		updateShips(deltaTime);
+		updatePlayerShip(deltaTime);
+		updateEnemyShips(deltaTime);
 		updateLazers();
 		objectCollisionsTest();
 		
@@ -152,9 +148,11 @@ public class InvasionMicroGame extends MicroGame {
 	        // Lazer Bounds (TOUCH_DOWN) Check.
         	if (targetTouchDown(event, touchPoint, lazerButtonBoundsOne) || 
         		targetTouchDown(event, touchPoint, lazerButtonBoundsTwo)) {
-        				// TODO: Handle Array Out of Bounds Exception when more than 100.
-        		lazers[totalLazers] = playerShip.fireLazer();
-        		totalLazers++;
+        		
+        		if (lazerIndex >= MAX_LAZERS)
+        			lazerIndex = 0;
+        		lazers[lazerIndex] = playerShip.fireLazer();
+        		lazerIndex++;
         		
 //        		lazerList.add(playerShip.fireLazer());
         		return;
@@ -178,7 +176,7 @@ public class InvasionMicroGame extends MicroGame {
 	}
 
 	// Shuffle car lanes and put in queue
-	public void randomizeCarsLanes() {
+	public void randomizeCarsLanes() {	//TODO: ???
 		
 		for (int i = 0; i < lanePosition.length; i++) {
 			int randTemp = rand.nextInt(lanePosition.length - 1);
@@ -188,6 +186,14 @@ public class InvasionMicroGame extends MicroGame {
 		}
 		for (int i = 0; i < lanePosition.length; i++)
 			lanes.add(lanePosition[i]);
+	}
+	
+	public void generateEnemyShip() {
+		if (enemyShipIndex >= MAX_ENEMY_SHIPS)
+			enemyShipIndex = 0;
+		enemyShips[enemyShipIndex] = new Ship(480, 600);
+		enemyShipsActive++;
+		enemyShipIndex++;
 	}
 	
 	// Moves the background
@@ -205,34 +211,52 @@ public class InvasionMicroGame extends MicroGame {
 		
 	}
 
-	public void updateShips(float deltaTime) {
-		if (!wallCollisionTest()) {
-			int x = (int)((game.getInput().getAccelY() * speedScalar[speed - 1]) / 5);
-			playerShip.addAcceleration(x, 0);
+	public void updatePlayerShip(float deltaTime) {
+		if (!wallCollisionTest()) {			
+			float x = game.getInput().getAccelY() / 4;
+			
+			// Case 0: Turn from Right to Left.
+			if (x < playerShip.getAccelerationX() && !rightPeak) {
+				rightPeak = true;
+				leftPeak = false;
+				playerShip.reverseAcceleration();
+			}
+			
+			// Case 1: Turn from Left to Right.
+			else if (x > playerShip.getAccelerationX() && !leftPeak) {
+				leftPeak = true;
+				rightPeak = false;
+				playerShip.reverseAcceleration();
+			}
+					
+			// If Accelerometer is centered (generally), then clear acceleration.
+			if (x > -0.75f && x < 0.75f)
+				playerShip.setAcceleration(0.0f, 0.0f);
+			else 
+				playerShip.addAcceleration(x*2.0f, 0.0f);
 		}
 		
 		playerShip.update(deltaTime);
+	}
+	
+	public void updateEnemyShips(float deltaTime) {
+		if (enemyShipsActive < MAX_ENEMY_SHIPS)
+			generateEnemyShip();
 		
-		for (int i = 0; i < totalEnemyShips; i++) {
+		for (int i = 0; i < MAX_ENEMY_SHIPS; i++) {
 			if (enemyShips[i] != null) {
 				if (enemyShips[i].active)
 					enemyShips[i].update(deltaTime);
-				else
+				else {
 					enemyShips[i] = null;
+					enemyShipsActive--;
+				}
 			}
 		}
-			
-		
-//		for (Ship enemyShip : enemyShipList) {	// TODO: Error Here On Replay.
-//			if (enemyShip.active) 
-//				enemyShip.update(deltaTime);
-//			else
-//				enemyShipList.remove(enemyShip);	// TODO: Avoid calling Garbage Collector?
-//		}											// TODO: Reuse Ships?
 	}
-
+	
 	public void updateLazers() {
-		for (int i = 0; i < totalLazers; i++) {	// TODO: Use Max Lazers?
+		for (int i = 0; i < MAX_LAZERS; i++) {
 			if (lazers[i] != null) {
 				if (lazers[i].active)
 					lazers[i].update();
@@ -240,21 +264,13 @@ public class InvasionMicroGame extends MicroGame {
 					lazers[i] = null;
 			}
 		}
-		
-//		for (Lazer lazer : lazerList) {
-//			if (lazer.active)
-//				lazer.update();
-//			else
-//				lazerList.remove(lazer);	// TODO: Avoid calling Garbage Collector?
-//		}									// TODO: Reuse Lazers?
 	}
 	
-	// TODO: A single shot will be detected as multiple collisions since the enemyShip's bounds are still there...
-	public boolean objectCollisionsTest() {	// TODO: Make Rectangle Bounds for Outside of Screen.
+	public boolean objectCollisionsTest() {
 		boolean collision = false;
 		
 		// Case 0 & 1: Player or Enemy hit by Lazer.
-		for (int i = 0; i < totalLazers; i++) {
+		for (int i = 0; i < MAX_LAZERS; i++) {
 			if (lazers[i] != null) {
 				// Case 0: Player hit by Lazer.
 				if (collision(playerShip.bounds, lazers[i].bounds)) {
@@ -265,7 +281,7 @@ public class InvasionMicroGame extends MicroGame {
 					collision = true;
 				}
 				
-				for (int j = 0; j < totalEnemyShips; j++) {
+				for (int j = 0; j < MAX_ENEMY_SHIPS; j++) {
 					if (enemyShips[j] != null) {
 						// Case 1: Enemy hit by Lazer.
 						if (collision(enemyShips[j].bounds, lazers[i].bounds)) {
@@ -280,7 +296,7 @@ public class InvasionMicroGame extends MicroGame {
 		}
 		
 		// Case 2 & 3: Player or Enemy hit by Enemy.
-		for (int i = 0; i < totalEnemyShips; i++) {
+		for (int i = 0; i < MAX_ENEMY_SHIPS; i++) {
 			if (enemyShips[i] != null) {
 				// Case 2: Player hit by Enemy.
 				if (collision(playerShip.bounds, enemyShips[i].bounds)) {
@@ -291,7 +307,7 @@ public class InvasionMicroGame extends MicroGame {
 					collision = true;
 				}
 	
-				for (int j = 0; j < totalEnemyShips; j++) {
+				for (int j = 0; j < MAX_ENEMY_SHIPS; j++) {
 					if (enemyShips[j] != null) {
 						// Case 3: Enemy hit by Enemy
 						if (enemyShips[i] != enemyShips[j]) {
@@ -306,50 +322,6 @@ public class InvasionMicroGame extends MicroGame {
 				}
 			}
 		}
-		
-//		for (Lazer lazer : lazerList) {
-//			// Case 0: Player hit by Lazer.
-//			if (collision(playerShip.bounds, lazer.bounds)) {
-//				AssetsManager.playSound(AssetsManager.explosionSound);
-//				microGameState = MicroGameState.Lost;
-//				playerShip.health -= lazer.damage;
-//				lazer.active = false;
-//				collision = true;
-//			}
-//
-//			for (Ship enemyShip: enemyShipList) {
-//				// Case 1: Enemy hit by Lazer.
-//				if (collision(enemyShip.bounds, lazer.bounds)) {
-//					AssetsManager.playSound(AssetsManager.explosionSound);
-//					enemyShip.health -= lazer.damage;
-//					lazer.active = false;
-//					collision = true;
-//				}	
-//			}
-//		}
-//		
-//		// Case 2 & 3: Player or Enemy hit by Enemy.
-//		for (Ship enemyShip : enemyShipList) {
-//			// Case 2: Player hit by Enemy.
-//			if (collision(playerShip.bounds, enemyShip.bounds)) {
-//				AssetsManager.playSound(AssetsManager.explosionSound);
-//				microGameState = MicroGameState.Lost;
-//				playerShip.health = 0;
-//				enemyShip.health = 0;
-//				collision = true;
-//			}
-//
-//			for (Ship otherEnemyShip: enemyShipList) {
-//				// Case 3: Enemy hit by Enemy
-//				if (enemyShip != otherEnemyShip)
-//					if (collision(enemyShip.bounds, otherEnemyShip.bounds)) {
-//						AssetsManager.playSound(AssetsManager.explosionSound);
-//						enemyShip.health = 0;
-//						otherEnemyShip.health = 0;
-//						collision = true;
-//					}
-//			}
-//		}
 		
 		return collision;
 	}
@@ -420,25 +392,20 @@ public class InvasionMicroGame extends MicroGame {
 		// Draw Player Ship.
 		playerShip.draw(batcher);
 		
-		for (int i = 0; i < totalEnemyShips; i++)
+		// Draw Enemy Ships.
+		for (int i = 0; i < MAX_ENEMY_SHIPS; i++)
 			if (enemyShips[i] != null)
 				enemyShips[i].draw(batcher);
 		
-		for (int i = 0; i < totalLazers; i++)
+		// Draw Lazers.
+		for (int i = 0; i < MAX_LAZERS; i++)
 			if (lazers[i] != null)
 				lazers[i].draw(batcher);
-		
-//		// Draw Enemy Ships.
-//		for (Ship enemyShip : enemyShipList)
-//			enemyShip.draw(batcher);
-//		
-//		// Draw Lazers.
-//		for (Lazer lazer : lazerList)
-//			lazer.draw(batcher);
+
 	}
 
 	@Override
-	public void drawRunningBounds() {// TODO: Add Proper Running Bounds.
+	public void drawRunningBounds() { // TODO: Add Proper Running Bounds.
 		// Bounding Boxes
 		batcher.beginBatch(AssetsManager.boundOverlay);
 		
