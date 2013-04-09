@@ -106,6 +106,8 @@ public abstract class Mode extends Screen {
     public static boolean isMultiplayer = false;
     
 	public BluetoothManager bluetoothManager;
+	
+	public float bluetoothCurrentTime = 0;
     
     // -------------------
 	// --- Constructor ---
@@ -282,6 +284,7 @@ public abstract class Mode extends Screen {
 	public void updateTransition(float deltaTime) {
 		// Collects total time spent in Transition state.
 		totalTransitionTime += deltaTime;
+		
 
 		if (!loadComplete)
 			loadNextMicroGame();
@@ -577,7 +580,7 @@ public abstract class Mode extends Screen {
 		
 		// Draw bluetooth connection status
 		if(Mode.isMultiplayer)
-			drawConnectionStatus(20);
+			drawConnectionStatus(24);
 		
 		// Draws the pause symbol.
 //		batcher.beginBatch(AssetsManager.pauseToggle);
@@ -726,16 +729,16 @@ public abstract class Mode extends Screen {
 		if(isMultiplayer && BluetoothManager.getState() != BluetoothManager.STATE_CONNECTED) {
 			batcher.drawSprite(315, 20, 239, 26, AssetsManager.meterGreenBarEmptyRegion);
 			
-			if(searchDelayCounter++ == searchDelayCounterMax){ //update bar every 10 frames
-				searchDelayCounter = 0;
-				searchingBarWidthCur += searchingBarWidthMax/120.f; //Step of next visible bar //TODO make bar based on discovery time later
-				
-				if(searchingBarWidthCur >= searchingBarWidthMax)
-					searchingBarWidthCur = 0;
-			}
-			batcher.drawSprite(315, 20, searchingBarWidthCur, 26, AssetsManager.meterGreenBarFillRegion);
+			float totalTime = BluetoothManager.getEstimatedConnectionTime(); //get estimated total time
+			
+				if(bluetoothCurrentTime >= totalTime)
+					bluetoothCurrentTime = 0;
+					
+			batcher.drawSprite(315, 24, bluetoothCurrentTime/totalTime * searchingBarWidthMax, 26, AssetsManager.meterGreenBarFillRegion);
+			batcher.drawSprite(309, 22, 250, 31, AssetsManager.meterBarOutlineRegion);
 		
 		}
+		
 		batcher.endBatch();
 	}
 	

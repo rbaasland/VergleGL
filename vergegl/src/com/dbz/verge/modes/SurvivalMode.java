@@ -86,6 +86,15 @@ public class SurvivalMode extends Mode {
 		totalTransitionTime += deltaTime;
 		
 		if (Mode.isMultiplayer) {
+			
+			if (BluetoothManager.getState() != BluetoothManager.STATE_CONNECTED){
+				bluetoothCurrentTime += deltaTime; //original
+//				if(BluetoothManager.getState() == BluetoothManager.STATE_LISTEN)
+//					bluetoothCurrentTime += deltaTime / (BluetoothManager.getEstimatedConnectionTime() / BluetoothManager.defaultDiscoveryTime);
+//				else 
+//					bluetoothCurrentTime = 0;
+			}
+			
 			if(BluetoothManager.mState == BluetoothManager.STATE_CONNECTED) {
 				otherPlayerIsReady = game.messageRead;
 				Log.d("SurvivalModeMultiplayer", otherPlayerIsReady);
@@ -94,7 +103,7 @@ public class SurvivalMode extends Mode {
 					validHighScore(currentRound-1);
 				}
 				
-				// TODO Redundant?
+				// TODO Redundant to else if on line 112?
 				if (!otherPlayerIsReady.equals("YES"))
 					totalTransitionTime = 0;
 				

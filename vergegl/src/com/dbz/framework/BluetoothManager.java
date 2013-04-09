@@ -55,7 +55,10 @@ public class BluetoothManager {
 		
 		public Rectangle multiplayerBounds = new Rectangle(0,0,100,100);
 	    public static String connectionStatus = "Searching";
-		
+	    
+	    public static final float defaultDiscoveryTime = 12; //in general, startDiscovery() takes 12 seconds to complete
+	    public static final float estimatedConnectionTimePerDevice = 1; //assuming time to attempt connection with a device is 1 second
+	    
 		// -------------------
 		// --- Constructor ---
 		// -------------------
@@ -501,6 +504,17 @@ public class BluetoothManager {
 //				game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging
 //			}
 		}
+		
+	    /** Returns the estimated completion time of the bluetooth connection*/
+	    public static float getEstimatedConnectionTime(){
+	    	float totalTime = 0;
+	    	
+	    	if(Screen.game.mNewDevices == null)
+	    		totalTime = defaultDiscoveryTime;
+	    	else totalTime = defaultDiscoveryTime + (estimatedConnectionTimePerDevice * Screen.game.mNewDevices.size());
+	    	
+	    	return totalTime;
+	    }
 		
 }
 
