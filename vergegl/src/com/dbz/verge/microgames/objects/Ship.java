@@ -66,13 +66,13 @@ public class Ship {	// TODO: Add collision inside of GameObjects.
 	public void updateAI(float deltaTime) {
 		aiFireTimer += deltaTime;
 		
-		if (aiFireTimer >= aiFireSpeed) {
-			aiFireLazer = true;
-			aiFireTimer = 0;
-		}
-		
+//		if (aiFireTimer >= aiFireSpeed) {
+//			aiFireLazer = true;
+//			aiFireTimer = 0;
+//		}
+//		
 //		setAcceleration(0.0f, -1.0f);
-		setVelocity(0.0f, -1.0f);
+		setVelocity(0.0f, -3.0f);
 	}
 	
 	public void setAcceleration(float x, float y) {

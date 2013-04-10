@@ -78,9 +78,9 @@ public class InvasionMicroGame extends MicroGame {
 	public static final int MAX_LAZERS = 100;
 	public int lazerIndex = 0;
 	
-	public Rectangle spawn1_1 = new Rectangle(250, 800, 115, 100);
+	public Rectangle spawn1_1 = new Rectangle(250, 700, 115, 100);
 	public Rectangle spawn1_2 = new Rectangle(500, 800, 115, 100);
-	public Rectangle spawn1_3 = new Rectangle(750, 800, 115, 100);
+	public Rectangle spawn1_3 = new Rectangle(750, 900, 115, 100);
 	
 	public Rectangle spawn2_1 = new Rectangle(0, 800, 115, 100);
 	public Rectangle spawn2_2 = new Rectangle(150, 800, 115, 100);
@@ -88,9 +88,9 @@ public class InvasionMicroGame extends MicroGame {
 	
 	public int spawnZoneIndex = 0;
 	public int spawnIndex = 0;
+	public static final int NUM_SPAWN_ZONES = 2;
 	public Rectangle spawnZones[][] = { {spawn1_1, spawn1_2, spawn1_3}, 
 										{spawn2_1, spawn2_2, spawn2_3} };
-	
 	// Game Objects.
 	public Ship playerShip = new Ship(480, 50);
 	public Ship enemyShips[] = new Ship[MAX_ENEMY_SHIPS];
@@ -138,10 +138,14 @@ public class InvasionMicroGame extends MicroGame {
 	@Override
 	public void updateRunning(float deltaTime) {		
 		updateBackground();
+
 		updatePlayerShip(deltaTime);
 		updateEnemyShips(deltaTime);
+		shipCollisionsTest();
+		
 		updateLazers();
-		objectCollisionsTest();
+		lazerCollisionsTest();
+
 		
 		// Checks for time-based win.
 		if (wonTimeBased(deltaTime)) {
@@ -208,8 +212,12 @@ public class InvasionMicroGame extends MicroGame {
 	public void generateEnemyShip() {
 		if (enemyShipIndex >= MAX_ENEMY_SHIPS)
 			enemyShipIndex = 0;
-		if (spawnIndex >= MAX_ENEMY_SHIPS)
+		if (spawnIndex >= MAX_ENEMY_SHIPS) {
 			spawnIndex = 0;
+			spawnZoneIndex++;
+		}
+		if (spawnZoneIndex >= NUM_SPAWN_ZONES)
+			spawnZoneIndex = 0;
 		
 		float x = spawnZones[spawnZoneIndex][spawnIndex].lowerLeft.x;
 		float y = spawnZones[spawnZoneIndex][spawnIndex].lowerLeft.y;
@@ -316,7 +324,52 @@ public class InvasionMicroGame extends MicroGame {
 		}
 	}
 	
-	public boolean objectCollisionsTest() {
+	public boolean shipCollisionsTest() {
+		boolean collision = false;
+		
+		// Collision Cases 2 & 3: Player or Enemy hit by Enemy.
+		for (int i = 0; i < MAX_ENEMY_SHIPS; i++) {
+			if (enemyShips[i] != null) {
+				// Collision Case NULL: Enemy enters a NULL Zone.
+				if (collision(enemyShips[i].bounds, topNullZone) || collision(enemyShips[i].bounds, bottomNullZone) ||
+					collision(enemyShips[i].bounds, leftNullZone) || collision(enemyShips[i].bounds, rightNullZone)) {
+					enemyShips[i].active = false;
+					collision = true;
+					break;
+//					return true;
+				}
+					
+				// Collision Case 2: Player hit by Enemy.
+				if (collision(playerShip.bounds, enemyShips[i].bounds)) {
+					AssetsManager.playSound(AssetsManager.explosionSound);
+					microGameState = MicroGameState.Lost;
+					playerShip.health = 0;
+					enemyShips[i].health = 0;
+					collision = true;
+//					return true;
+				}
+	
+				for (int j = 0; j < MAX_ENEMY_SHIPS; j++) {
+					if (enemyShips[j] != null) {
+						// Collision Case 3: Enemy hit by Enemy
+						if (enemyShips[i] != enemyShips[j]) {
+							if (collision(enemyShips[i].bounds, enemyShips[j].bounds)) {
+								AssetsManager.playSound(AssetsManager.explosionSound);
+								enemyShips[i].health = 0;
+								enemyShips[j].health = 0;
+								collision = true;
+//								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return collision;
+	}
+
+	public boolean lazerCollisionsTest() {
 		boolean collision = false;
 		
 		// Collision Cases 0 & 1: Player or Enemy hit by Lazer.
@@ -329,6 +382,7 @@ public class InvasionMicroGame extends MicroGame {
 					playerShip.health -= lazers[i].damage;
 					lazers[i].active = false;
 					collision = true;
+//					return true;
 				}
 				
 				for (int j = 0; j < MAX_ENEMY_SHIPS; j++) {
@@ -339,50 +393,16 @@ public class InvasionMicroGame extends MicroGame {
 							enemyShips[j].health -= lazers[i].damage;
 							lazers[i].active = false;
 							collision = true;
+//							return true;
 						}
 					}
 				}
 			}		// TODO: Could probably combine these loops better...
 		}
 		
-		// Collision Cases 2 & 3: Player or Enemy hit by Enemy.
-		for (int i = 0; i < MAX_ENEMY_SHIPS; i++) {
-			if (enemyShips[i] != null) {
-				// Collision Case NULL: Enemy enters a NULL Zone.
-				if (collision(enemyShips[i].bounds, topNullZone) || collision(enemyShips[i].bounds, bottomNullZone) ||
-					collision(enemyShips[i].bounds, leftNullZone) || collision(enemyShips[i].bounds, rightNullZone)) {
-					enemyShips[i].active = false;
-					break;
-				}
-					
-				// Collision Case 2: Player hit by Enemy.
-				if (collision(playerShip.bounds, enemyShips[i].bounds)) {
-					AssetsManager.playSound(AssetsManager.explosionSound);
-					microGameState = MicroGameState.Lost;
-					playerShip.health = 0;
-					enemyShips[i].health = 0;
-					collision = true;
-				}
-	
-				for (int j = 0; j < MAX_ENEMY_SHIPS; j++) {
-					if (enemyShips[j] != null) {
-						// Collision Case 3: Enemy hit by Enemy
-						if (enemyShips[i] != enemyShips[j]) {
-							if (collision(enemyShips[i].bounds, enemyShips[j].bounds)) {
-								AssetsManager.playSound(AssetsManager.explosionSound);
-								enemyShips[i].health = 0;
-								enemyShips[j].health = 0;
-								collision = true;
-							}
-						}
-					}
-				}
-			}
-		}
-		
 		return collision;
 	}
-
+	
 	public boolean playerShipWallCollisionTest() {
 		boolean collision = true;
 		
