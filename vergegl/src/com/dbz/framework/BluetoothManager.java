@@ -3,12 +3,19 @@ package com.dbz.framework;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 
 import com.dbz.framework.math.Rectangle;
@@ -20,11 +27,14 @@ public class BluetoothManager {
 		// --- Fields ---
 		// --------------
 
-		public BluetoothAdapter btAdapter = Screen.game.mBtAdapter;
-		public final BluetoothAdapter mAdapter = btAdapter; //TODO duplicate, can't remember why we did this
+		public final BluetoothAdapter btAdapter = Screen.game.mBtAdapter;
+		//public Set<BluetoothDevice> mPairedDevices; // Used to first connect to paired devices
+	    public Set<BluetoothDevice> mNewDevices = Collections.synchronizedSet(new HashSet<BluetoothDevice>()); // Contains list devices found per discovery iteration
+	    public static boolean isReceiverRunning = false; // Used to determine if broadcast receiver is enabled
 		private static final String NAME = "VergeBluetoothConnect";
 		private static final UUID MY_UUID = UUID.fromString("7d2b2c7a-e370-4500-a82a-47e1a76287be");
-
+		public boolean isSecureConnection = false; //Used to determine the type of connection to establish
+		
 		// Constants that indicate the current connection state
 		public static final int STATE_NONE = 0;       	// we're doing nothing
 		public static final int STATE_LISTEN = 1;     	// now listening for incoming connections
@@ -49,9 +59,10 @@ public class BluetoothManager {
 		public static int mState;				//current state of bluetooth connection
 		public String mConnectedDevice = ""; 	//reference to current device name for printing
 
+
 		// Debugging
 		private static final String TAG = "BluetoothManager";
-		private static final boolean D = true;
+		private static final boolean D = false;
 		
 		public Rectangle multiplayerBounds = new Rectangle(0,0,100,100);
 	    public static String connectionStatus = "Searching";
@@ -64,25 +75,49 @@ public class BluetoothManager {
 		// -------------------
 		
 		public BluetoothManager() {
-			Screen.game.messageRead = "";
+			Game.messageRead = "";
 			connectionStatus = "Searching";
+			// The BroadcastReceiver that listens for discovered devices and add the device to the new devices array
+			Screen.game.mReceiver = new BroadcastReceiver() {
+			        @Override
+			        public void onReceive(Context context, Intent intent) {
+			        	if (intent == null) 
+			        		return;
+			            String action = intent.getAction();
+			            handleBroadcastReceiver(intent, action);
+			        }
+			    };
 		}  
-		
-		/** Init bluetooth manager for use in mode */
-		public void startThreads(){
-
-			if(!btAdapter.isEnabled()){
-				btAdapter.enable();
-			}
-			
-			Screen.game.messageRead = "";
-			mControlThread = new ControlThread();
-			mControlThread.start();
-		} 
 
 		// ----------------------------
 		// -----Thread Wrappers--------
 		// ---------------------------
+
+		/** Auto-enables bluetooth and starts threads*/
+		public void startThreads(){
+			
+			if(!btAdapter.isEnabled()){
+				btAdapter.enable();
+			}
+			
+			Game.messageRead = "";
+			mControlThread = new ControlThread();
+			mControlThread.start();
+		} 
+		
+		
+		/** Ends discovery and stops all running threads*/
+		public void endThreads() {
+			
+			endDiscovery();
+			
+			if ( mConnectedThread != null )
+				mConnectedThread.write("NO".toString().getBytes());
+			this.stop(); //stop all threads
+//			if(game.mBtAdapter.isEnabled()){ TODO disable adapter when done when testing AND leave on if user already had bluetooth enabled
+//				game.mBtAdapter.disable();
+//			}
+		}
 
 		/**
 		 * Start the chat service. Specifically start AcceptThread to begin a
@@ -98,14 +133,15 @@ public class BluetoothManager {
 
 			setState(STATE_LISTEN);
 
-			//        TODO Pass encryption into begin such to spawn a secure thread if desired
-			//        if (mSecureAcceptThread == null) {
-			//            mSecureAcceptThread = new AcceptThread(true); //commenting out, we only want to connect insecure for now
-			//            mSecureAcceptThread.start();
-			//        }
-			if (mInsecureAcceptThread == null) {
-				mInsecureAcceptThread = new AcceptThread(false);
-				mInsecureAcceptThread.start();
+			if (isSecureConnection){ //secure or insecure connection (default insecure)
+		        if (mSecureAcceptThread == null) {
+		            mSecureAcceptThread = new AcceptThread(true);
+		            mSecureAcceptThread.start();
+		        }
+			} 
+			else if (mInsecureAcceptThread == null) {
+					mInsecureAcceptThread = new AcceptThread(false);
+					mInsecureAcceptThread.start();
 			}
 		}
 
@@ -252,8 +288,8 @@ public class BluetoothManager {
 				while(true) { //must wait BT enable() to finish before ensureDiscoverable(). Else we get a force close.
 					if(btAdapter.getState() == BluetoothAdapter.STATE_ON){
 						BluetoothManager.connectionStatus = "Searching";
-						Screen.game.mNewDevices.clear(); //clear previously found devices before launch
-						Screen.game.ensureDiscoverable(); //puts device in discoverable mode (user prompt)
+						mNewDevices.clear(); //clear previously found devices before launch
+						ensureDiscoverable(); //puts device in discoverable mode (user prompt)
 						break;
 					}
 				}
@@ -262,11 +298,11 @@ public class BluetoothManager {
 				while(true){
 					begin(); // accept thread
 					BluetoothManager.connectionStatus = "Searching";
-					Screen.game.mNewDevices.clear();
-					Screen.game.startDiscovery(); // right now ending on back press (hardware)
+					mNewDevices.clear();
+					startDiscovery(); // right now ending on back press (hardware)
 					while(BluetoothManager.getState() != STATE_READY){}
-					for (BluetoothDevice btd : Screen.game.mNewDevices) {
-						Log.d("Bluetooth", btd.getName());
+					for (BluetoothDevice btd : mNewDevices) {
+						if(D) Log.d("Bluetooth", btd.getName());
 						connect(btd, false);  // try connecting to the device, if fails. restart accept thread and continue this loop
 						// if connection successful, state_connected is active and proceeds to connectedThread (message passing)
 						try {
@@ -300,8 +336,8 @@ public class BluetoothManager {
 				// Create a new listening server socket
 				try {
 					if (secure) {
-						tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
-					} else { tmp = mAdapter.listenUsingInsecureRfcommWithServiceRecord(NAME, MY_UUID);
+						tmp = btAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
+					} else { tmp = btAdapter.listenUsingInsecureRfcommWithServiceRecord(NAME, MY_UUID);
 					}
 				} catch (IOException e) { Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);}
 
@@ -390,8 +426,7 @@ public class BluetoothManager {
 
 				// Make a connection to the BluetoothSocket
 				try {
-					// This is a blocking call and will only return on a
-					// successful connection or an exception
+					// This is a blocking call and will only return on a successful connection or an exception
 					//Screen.game.cancelDiscovery();
 					mmSocket.connect();
 				} catch (IOException e) {
@@ -438,7 +473,7 @@ public class BluetoothManager {
 			private final OutputStream mmOutStream;
 
 			public ConnectedThread(BluetoothSocket socket, String socketType) {
-				Log.d(TAG, "create ConnectedThread: " + socketType);
+				if(D) Log.d(TAG, "create ConnectedThread: " + socketType);
 				BluetoothManager.connectionStatus = "Connected";
 				mmSocket = socket;
 				InputStream tmpIn = null;
@@ -465,12 +500,11 @@ public class BluetoothManager {
 						bytes = mmInStream.read(buffer);
 
 						// Send the obtained bytes to the UI Activity
-						Screen.game.mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+						Game.mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 					} catch (IOException e) {Log.e(TAG, "disconnected", e);
 						//TODO Possible to synchronize device events here when the thread ends. i.e. both go back to some screen.
 							//ideally: when one player pauses and exits while other player is waiting for them to respond to continue game
 						BluetoothManager.connectionStatus = "Disconnected - Game Over!";
-//						}
 						break;
 					
 					} //break out of loop on disconnect	
@@ -485,7 +519,7 @@ public class BluetoothManager {
 				try {
 					mmOutStream.write(buffer);
 					// Share the sent message back to the UI Activity
-					Screen.game.mHandler.obtainMessage(MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
+					Game.mHandler.obtainMessage(MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
 				} catch (IOException e) { Log.e(TAG, "Exception during write", e);}
 			}
 
@@ -497,16 +531,99 @@ public class BluetoothManager {
 			}
 		}
 		
-		/** Ends discovery and stops all running threads*/
-		public void endThreads(){
-			Screen.game.endDiscovery();
-			if ( mConnectedThread != null )
-				mConnectedThread.write("NO".toString().getBytes());
-			this.stop(); //stop all threads
-//			if(game.mBtAdapter.isEnabled()){
-//				game.mBtAdapter.disable(); //uncomment - leaving enable for faster debugging
-//			}
-		}
+	    public void ensureDiscoverable() {
+	        if (btAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+	            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+	            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 120);
+	            Screen.game.startActivity(discoverableIntent);
+	        }
+	    }
+	    
+	    /**
+	     * Start device discover with the BluetoothAdapter
+	     */
+	    public void startDiscovery() {
+	        if(D) Log.d("Bluetooth", "startDiscovery()");
+	        isReceiverRunning = true;
+	        
+	        //Might not need all of these, but may come in handy when troubleshooting
+	        
+	        // Register for broadcasts when a device is discovered
+	        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+	        Screen.game.registerReceiver(Screen.game.mReceiver, filter);
+	        // Register for broadcasts when discovery has finished
+	        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+	        Screen.game.registerReceiver(Screen.game.mReceiver, filter);  
+	        // Register for broadcasts when device has connected
+	        filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+	        Screen.game.registerReceiver(Screen.game.mReceiver, filter);
+	        // Register for broadcasts when disconnect requested
+	        filter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+	        Screen.game.registerReceiver(Screen.game.mReceiver, filter);
+	        // Register for broadcasts when disconnected
+	        filter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+	        Screen.game.registerReceiver(Screen.game.mReceiver, filter);
+
+	        // If we're already discovering, stop it
+	        if (btAdapter.isDiscovering()) {
+	            btAdapter.cancelDiscovery();
+	        }
+
+	        // Request discover from BluetoothAdapter
+	        btAdapter.startDiscovery();
+	    }
+	    
+	    public void endDiscovery() {
+	    	
+	    	if(D) Log.d("Bluetooth", "stopDiscovery()");
+	    	 if (btAdapter != null) {
+	             btAdapter.cancelDiscovery();
+	         }
+	    	 if(isReceiverRunning) {
+	    		 Screen.game.unregisterReceiver(Screen.game.mReceiver);
+	    		 isReceiverRunning = false;
+	    	 }
+	    }
+	    
+	    public void cancelDiscovery(){
+	    	if(D) Log.d("Bluetooth", "cancelDiscovery()");
+		   	 if (btAdapter != null) {
+		            btAdapter.cancelDiscovery();
+		      }
+	    }
 		
+		/** Handles the call backs of bluetooth devices from Game's Broadcast Reciever.
+		 * The if-else statements are in a direct correlation to the intent filters created in Game.startDiscovery() */
+	    public final void handleBroadcastReceiver (Intent intent, String action){
+
+	    	if (BluetoothDevice.ACTION_FOUND.equals(action)) { // When discovery finds a device
+
+	    		BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);  // Get the BluetoothDevice object from the Intent
+
+	    		if(D) Log.d("BluetoothDiscovery", "Device Found");
+
+	    		if (device != null && device.getName() != null) {
+	    			mNewDevices.add(device);
+	    			if(getState() != BluetoothManager.STATE_CONNECTED)
+	    				BluetoothManager.connectionStatus = "Found " + device.getName();
+	    		}
+
+	    	} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action))  // done searching
+
+	    		if (getState() == BluetoothManager.STATE_LISTEN)
+	    			BluetoothManager.setState(BluetoothManager.STATE_READY);
+
+	    		else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action))  // Device is now connected
+	    			if(D) Log.d("BluetoothDiscovery", "connected");
+
+	    			else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action))  // Device is about to disconnect
+	    				if(D) Log.d("BluetoothDiscovery", "connecting");
+
+	    				else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)){ // Device has disconnected
+	    					if(D) Log.d("BluetoothDiscovery", "disconnected");		
+	    				}
+
+	    }
+
 }
 
