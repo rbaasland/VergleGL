@@ -17,6 +17,7 @@ import com.dbz.verge.microgames.objects.Lazer;
 import com.dbz.verge.microgames.objects.Ship;
 
 // TODO: *** Need to implement Speed/Levels.
+// TODO: Hit detection on walls causes Jitter.
 public class InvasionMicroGame extends MicroGame {
 
 	// --------------
@@ -26,7 +27,10 @@ public class InvasionMicroGame extends MicroGame {
 	// Assets
 	public static Texture invasionTexture;
 	public static TextureRegion invasionBackgroundRegion;
-	public static TextureRegion invasionShipRegion;
+	public static TextureRegion invasionPlayerShipRegion;
+	public static TextureRegion invasionPlayerLazerRegion;
+	public static TextureRegion invasionEnemyShipRegion;
+	public static TextureRegion invasionEnemyLazerRegion;
 
 	// Queue for lane selection
 	private Queue<Float> lanes = new LinkedList<Float>();
@@ -67,12 +71,25 @@ public class InvasionMicroGame extends MicroGame {
 	private Rectangle backgroundBoundsTwo = new Rectangle(0, 800, 1280, 800);
 
 	// Game Variables.
-	public static final int MAX_ENEMY_SHIPS = 1;
+	public static final int MAX_ENEMY_SHIPS = 3;
 	public int enemyShipsActive = 0;
 	public int enemyShipIndex = 0;
 
 	public static final int MAX_LAZERS = 100;
 	public int lazerIndex = 0;
+	
+	public Rectangle spawn1_1 = new Rectangle(250, 800, 115, 100);
+	public Rectangle spawn1_2 = new Rectangle(500, 800, 115, 100);
+	public Rectangle spawn1_3 = new Rectangle(750, 800, 115, 100);
+	
+	public Rectangle spawn2_1 = new Rectangle(0, 800, 115, 100);
+	public Rectangle spawn2_2 = new Rectangle(150, 800, 115, 100);
+	public Rectangle spawn2_3 = new Rectangle(300, 800, 115, 100);
+	
+	public int spawnZoneIndex = 0;
+	public int spawnIndex = 0;
+	public Rectangle spawnZones[][] = { {spawn1_1, spawn1_2, spawn1_3}, 
+										{spawn2_1, spawn2_2, spawn2_3} };
 	
 	// Game Objects.
 	public Ship playerShip = new Ship(480, 50);
@@ -94,13 +111,18 @@ public class InvasionMicroGame extends MicroGame {
 		singleTouchEnabled = true;
 		
 		playerShip.playerControlled = true;
+		playerShip.bounds.width = 125;
+		playerShip.bounds.height = 125;
 	}
 
 	@Override
 	public void load() {
 		invasionTexture = new Texture("invasion.png");
 		invasionBackgroundRegion = new TextureRegion(invasionTexture, 0, 0, 1280, 800);
-		invasionShipRegion = new TextureRegion(invasionTexture, 1300, 20, 280, 280);
+		invasionPlayerShipRegion = new TextureRegion(invasionTexture, 1300, 20, 280, 280);
+		invasionPlayerLazerRegion = new TextureRegion(invasionTexture, 1820, 10, 100, 100);
+		invasionEnemyShipRegion = new TextureRegion(invasionTexture, 1600, 20, 210, 180);
+		invasionEnemyLazerRegion = new TextureRegion(invasionTexture, 1930, 10, 100, 100);
 	}
 
 	@Override
@@ -186,7 +208,14 @@ public class InvasionMicroGame extends MicroGame {
 	public void generateEnemyShip() {
 		if (enemyShipIndex >= MAX_ENEMY_SHIPS)
 			enemyShipIndex = 0;
-		enemyShips[enemyShipIndex] = new Ship(480, 600);	// TODO: ***
+		if (spawnIndex >= MAX_ENEMY_SHIPS)
+			spawnIndex = 0;
+		
+		float x = spawnZones[spawnZoneIndex][spawnIndex].lowerLeft.x;
+		float y = spawnZones[spawnZoneIndex][spawnIndex].lowerLeft.y;
+		spawnIndex++;
+		
+		enemyShips[enemyShipIndex] = new Ship(x, y);
 		enemyShipsActive++;
 		enemyShipIndex++;
 	}
@@ -207,7 +236,7 @@ public class InvasionMicroGame extends MicroGame {
 
 	public void updatePlayerShip(float deltaTime) {
 		if (!playerShipWallCollisionTest())			
-			getPlayerShipInput();
+			getPlayerShipAccelerometerInput();
 		else {
 			playerShip.setAcceleration(0, 0);
 			playerShip.setVelocity(0, 0);
@@ -216,7 +245,7 @@ public class InvasionMicroGame extends MicroGame {
 		playerShip.update(deltaTime);
 	}
 	
-	public void getPlayerShipInput() {
+	public void getPlayerShipAccelerometerInput() {
 		float x = game.getInput().getAccelY() / 4;
 		
 		// Case 0: Turn from Right to Left.
@@ -253,8 +282,18 @@ public class InvasionMicroGame extends MicroGame {
 //					}		
 //				}	
 				
-				if (enemyShips[i].active)
+				if (enemyShips[i].active) {
 					enemyShips[i].update(deltaTime);
+					
+					if (enemyShips[i].aiFireLazer) {	//TODO: Clean this up.
+		        		if (lazerIndex >= MAX_LAZERS)
+		        			lazerIndex = 0;
+		        		lazers[lazerIndex] = enemyShips[i].fireLazer();
+		        		lazers[lazerIndex].playerLazer = false;
+		        		lazerIndex++;
+		        		enemyShips[i].aiFireLazer = false;
+					}
+				}
 				else {
 					enemyShips[i] = null;
 					enemyShipsActive--;
@@ -418,9 +457,6 @@ public class InvasionMicroGame extends MicroGame {
 	public void presentRunning() {
 		batcher.beginBatch(invasionTexture);
 		drawRunningBackground();
-//		batcher.endBatch();
-//		
-//		batcher.beginBatch(traffic);
 		drawRunningObjects();
 		batcher.endBatch();
 //		drawRunningBounds();

@@ -1,5 +1,7 @@
 package com.dbz.verge.microgames.objects;
 
+import android.util.Log;
+
 import com.dbz.framework.gl.SpriteBatcher;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
@@ -20,7 +22,7 @@ public class Ship {	// TODO: Add collision inside of GameObjects.
 	private Vector2 acceleration = new Vector2(0.0f, 0.0f);
 	private Vector2 velocity = new Vector2(0.0f, 0.0f);
 	private float mass = 1.0f;
-	private int width = 125, height = 125;
+	private int width = 115, height = 100;	// Player Ship : 125, 125
 	public Rectangle bounds;
 
 	// Game Logic.
@@ -30,10 +32,14 @@ public class Ship {	// TODO: Add collision inside of GameObjects.
 	public int health = 100;
 	private int lazerAmmo = 100;					// TODO: Lazer Overheat instead?
 
+	public float aiFireTimer = 0.0f;
+	public float aiFireSpeed = 1.0f;
+	public boolean aiFireLazer = false;
+	
 	// TODO: Color of Ship / Sprite to Draw. Have to redesign Graphics to be able to dynamically color.
 
-	public Ship(int positionX, int positionY) {
-		this.bounds = new Rectangle(positionX, positionY, width, height);
+	public Ship(float x, float y) {
+		this.bounds = new Rectangle(x, y, width, height);
 	}
 	
 	public void update(float deltaTime) {
@@ -58,7 +64,15 @@ public class Ship {	// TODO: Add collision inside of GameObjects.
 	}
 	
 	public void updateAI(float deltaTime) {
-		setAcceleration(0.0f, -1.0f);
+		aiFireTimer += deltaTime;
+		
+		if (aiFireTimer >= aiFireSpeed) {
+			aiFireLazer = true;
+			aiFireTimer = 0;
+		}
+		
+//		setAcceleration(0.0f, -1.0f);
+		setVelocity(0.0f, -1.0f);
 	}
 	
 	public void setAcceleration(float x, float y) {
@@ -117,16 +131,20 @@ public class Ship {	// TODO: Add collision inside of GameObjects.
 		Lazer lazer = null;
 		
 		if (lazerAmmo >= 0) {
-			lazer = new Lazer(bounds);
+			lazer = new Lazer(bounds, playerControlled);
+			Log.d("Invasion", "Player Controlled: " + playerControlled);
 			AssetsManager.playSound(AssetsManager.hitSound);
 			lazerAmmo--;
-		} 
+		}
 		
 		return lazer;
 	}
 	
 	// TODO: Do something about this..
-	public void draw(SpriteBatcher batcher) { 
-		batcher.drawSprite(bounds, InvasionMicroGame.invasionShipRegion); 
+	public void draw(SpriteBatcher batcher) {
+		if (playerControlled)
+			batcher.drawSprite(bounds, InvasionMicroGame.invasionPlayerShipRegion);
+		else
+			batcher.drawSprite(bounds, InvasionMicroGame.invasionEnemyShipRegion);
 	}
 }
