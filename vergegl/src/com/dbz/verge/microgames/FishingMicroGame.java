@@ -119,6 +119,7 @@ public class FishingMicroGame extends MicroGame{
 	public void updateRunning(float deltaTime) {
 		// Checks for time-based win.
 		if (fishCaught>=3) {
+			AssetsManager.reel.stop();
 			AssetsManager.playSound(AssetsManager.highJumpSound);
 			microGameState=MicroGameState.Won;
 			return;
@@ -126,6 +127,7 @@ public class FishingMicroGame extends MicroGame{
 
 		// Checks for water level based loss.
 		if(lostTimeBased(deltaTime)) {
+			AssetsManager.reel.stop();
 			AssetsManager.playSound(AssetsManager.hitSound);
 			microGameState = MicroGameState.Lost;
 			return;
@@ -192,9 +194,12 @@ public class FishingMicroGame extends MicroGame{
 		if(hook.fishOnLine==false)
 		{
 		moveHook();
+		AssetsManager.reel.stop();
 		}
 		else
 		{
+
+
 			float tempY=hook.bounds.lowerLeft.y;
 			tempY=tempY+speedUp;
 			hook.bounds.lowerLeft.set(hook.bounds.lowerLeft.x, tempY);
@@ -351,12 +356,15 @@ public class FishingMicroGame extends MicroGame{
 		float tempY=0;
 		for(int i=0;i<2;i++)
 		{
-			if(junk[i].caught==false&&junk[i].visible==true)
+			if(junk[i].caught==false&&junk[i].visible==true&&hook.fishOnLine==false)
 			{
 				if((hook.bounds.lowerLeft.x+23<=(junk[i].bounds.lowerLeft.x+junk[i].bounds.width))&&(hook.bounds.lowerLeft.x+23>=junk[i].bounds.lowerLeft.x))
 				{
 					if((hook.bounds.lowerLeft.y+54<=(junk[i].bounds.lowerLeft.y+junk[i].bounds.height))&&(hook.bounds.lowerLeft.y+54>=junk[i].bounds.lowerLeft.y))
 					{
+						AssetsManager.reel.setPlayBehavior(1);
+						AssetsManager.reel.loop();
+						AssetsManager.playSound(AssetsManager.reel);
 						hook.fishOnLine=true;
 						junk[i].caught=true;
 
@@ -366,12 +374,15 @@ public class FishingMicroGame extends MicroGame{
 		}
 		for(int i=0;i<numOfFish;i++)
 		{
-			if(fish[i].caught==false&&fish[i].visible==true)
+			if(fish[i].caught==false&&fish[i].visible==true&&hook.fishOnLine==false)
 			{
 				if((hook.bounds.lowerLeft.x+23<=(fish[i].bounds.lowerLeft.x+fish[i].bounds.width))&&(hook.bounds.lowerLeft.x+23>=fish[i].bounds.lowerLeft.x))
 				{
 					if((hook.bounds.lowerLeft.y+54<=(fish[i].bounds.lowerLeft.y+fish[i].bounds.height))&&(hook.bounds.lowerLeft.y+54>=fish[i].bounds.lowerLeft.y))
 					{
+						AssetsManager.reel.setPlayBehavior(1);
+						AssetsManager.reel.loop();
+						AssetsManager.playSound(AssetsManager.reel);
 						hook.fishOnLine=true;
 						fish[i].caught=true;
 

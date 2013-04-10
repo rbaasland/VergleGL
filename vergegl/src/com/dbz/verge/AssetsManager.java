@@ -139,6 +139,7 @@ public class AssetsManager {
     public static Sound clickSound;
     public static Sound firinMahLazer;
     public static Sound	pop;
+    public static Sound reel;
     
     /** Load Persistent Assets */   
     public static void load(Game game) {
@@ -252,6 +253,7 @@ public class AssetsManager {
         clickSound.setVolume(20);
         firinMahLazer = game.getAudio().newSound(R.raw.firin_mah_lazer);
         pop = game.getAudio().newSound(R.raw.pop);
+        reel=game.getAudio().newSound(R.raw.reel);
     }      
 
     public static void reload() {

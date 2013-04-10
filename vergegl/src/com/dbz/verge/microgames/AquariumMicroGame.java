@@ -72,8 +72,8 @@ public class AquariumMicroGame extends MicroGame{
 		fish[0].leftSide=new TextureRegion(aquariumTank,1415,130,128,100);
 		fish[2].rightSide=new TextureRegion(aquariumTank,1285,360,128,90);
 		fish[2].leftSide=new TextureRegion(aquariumTank,1415,360,128,90);
-		fish[1].rightSide=new TextureRegion(aquariumTank,1285,460,128,90);
-		fish[1].leftSide=new TextureRegion(aquariumTank,1415,460,128,90);
+		fish[1].rightSide=new TextureRegion(aquariumTank,1285,460,128,80);
+		fish[1].leftSide=new TextureRegion(aquariumTank,1415,460,128,80);
 
 	}
 
@@ -118,7 +118,6 @@ public class AquariumMicroGame extends MicroGame{
 		// Gets all TouchEvents and stores them in a list.
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 
-		//iterate though all touches, check if any of the touches are in the gaps of the circuit
 		for(TouchEvent touchEvent : touchEvents) {
 			touchPoint.set(touchEvent.x, touchEvent.y);
 			guiCam.touchToWorld(touchPoint);
@@ -126,18 +125,26 @@ public class AquariumMicroGame extends MicroGame{
 			// Sets isClosed to true if gap is touched. 
 			for (int i = 0; i < level+1; i++){
 				if(crackList[i].onScreen == true) {
-					if(touchEvent.type == TouchEvent.TOUCH_DOWN)
-					{
-						AssetsManager.playSound(AssetsManager.pop);
-					}
-					if(targetTouchDragged(touchEvent, touchPoint, crackList[i].bounds))
-						crackList[i].isLeaking = false;
 
+					if(targetTouchDragged(touchEvent, touchPoint, crackList[i].bounds))
+					{
+						crackList[i].isLeaking = false;
+						if(touchEvent.type == TouchEvent.TOUCH_DOWN)
+						{
+							AssetsManager.playSound(AssetsManager.pop);
+						}
+						if(touchEvent.type == TouchEvent.TOUCH_UP)
+						{
+							AssetsManager.playSound(AssetsManager.pop);
+							crackList[i].isLeaking = true;
+						}
+					}
 					if(touchEvent.type == TouchEvent.TOUCH_UP)
 					{
-						AssetsManager.playSound(AssetsManager.pop);
 						crackList[i].isLeaking = true;
 					}
+					
+
 				}
 			}
 
