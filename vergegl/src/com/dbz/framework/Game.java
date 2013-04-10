@@ -1,20 +1,14 @@
 package com.dbz.framework;
 
 import java.nio.IntBuffer;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
@@ -55,8 +49,8 @@ public abstract class Game extends Activity implements Renderer {
 	WakeLock wakeLock;
 	
 	// Bluetooth Message Passing
-    public String messageRead = "";
-    public String messageWrite = "";
+    public static String messageRead = "";
+    public static String messageWrite = "";
     
 	// Message types
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -271,7 +265,7 @@ public abstract class Game extends Activity implements Renderer {
 	// ---------------
 
     // The Handler that gets information back from BluetoothManager to pass messages between devices
-    public final Handler mHandler = new Handler() {
+    public static final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
