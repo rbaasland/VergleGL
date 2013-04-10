@@ -44,6 +44,9 @@ public class SurvivalMode extends Mode {
 	
 	public String otherPlayerIsReady = "NO";
 	
+    // Debugging
+    private static final boolean D = false;
+	
 	// -------------------
 	// --- Constructor ---
 	// -------------------
@@ -93,19 +96,18 @@ public class SurvivalMode extends Mode {
 			
 			if(BluetoothManager.mState == BluetoothManager.STATE_CONNECTED) {
 				otherPlayerIsReady = game.messageRead;
-				Log.d("SurvivalModeMultiplayer", otherPlayerIsReady);
+				if (D) Log.d("SurvivalModeMultiplayer", otherPlayerIsReady);
 				if (otherPlayerIsReady.equals("LOST")) {
 					modeState = ModeState.Won;
 					validHighScore(currentRound-1);
 				}
 				
-				// TODO Redundant to else if on line 112?
 				if (!otherPlayerIsReady.equals("YES"))
 					totalTransitionTime = 0;
 				
 				if (!loadComplete) {
 					loadNextMicroGame();
-					bluetoothManager.mConnectedThread.write("YES".toString().getBytes());
+					bluetoothManager.mConnectedThread.write("YES".toString().getBytes()); //Null pointer error randomly happens here
 				}
 				// After the time limit has past and load has completed, switch to running state.
 				else if (totalTransitionTime >= transitionTimeLimit && otherPlayerIsReady.equals("YES")) {
@@ -177,7 +179,7 @@ public class SurvivalMode extends Mode {
 
 		// Log out for testing purposes.
 		for(int i = 0; i < indexHistory.length; i++)
-			Log.d("indexHistory", "Index History = " + indexHistory[i]);
+			if (D) Log.d("indexHistory", "Index History = " + indexHistory[i]);
 
 		super.loadNextMicroGame();
 	}

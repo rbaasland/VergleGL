@@ -100,8 +100,11 @@ public abstract class Mode extends Screen {
     
     // Bluetooth variables
     public static boolean isMultiplayer = false; // used to check if multiplayer mode is active
-	public BluetoothManager bluetoothManager; // reference to start/end blueooth connection threads
+	public BluetoothManager bluetoothManager; // reference to start/end bluetooth connection threads
 	public float bluetoothCurrentTime = 0; // used to track the search/discovery time of search/connect screen
+	
+	//debugging
+	public static final boolean D = false;
     
     // -------------------
 	// --- Constructor ---
@@ -491,7 +494,7 @@ public abstract class Mode extends Screen {
 	    //batcher.endBatch();
 	    
 	    gl.glDisable(GL10.GL_BLEND);
-	    fpsCounter.logFrame();
+	    if(D) fpsCounter.logFrame();
 	}
 	
 	public void presentReady() {

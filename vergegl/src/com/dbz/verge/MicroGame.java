@@ -34,7 +34,7 @@ public abstract class MicroGame extends Screen {
 		Won,
 		Lost
 	}
-	
+	public boolean D = false;
 	public MicroGameState microGameState = MicroGameState.Ready;
 	
     // OpenGL Related Objects
@@ -452,7 +452,7 @@ public abstract class MicroGame extends Screen {
 	    //batcher.endBatch();
 	    
 	    gl.glDisable(GL10.GL_BLEND);
-	    fpsCounter.logFrame();
+	    if (D) fpsCounter.logFrame();
 	}
 	
 	public void presentReady() {
