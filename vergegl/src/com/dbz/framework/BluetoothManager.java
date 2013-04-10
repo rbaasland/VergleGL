@@ -75,7 +75,7 @@ public class BluetoothManager {
 		// -------------------
 		
 		public BluetoothManager() {
-			Screen.game.messageRead = "";
+			Game.messageRead = "";
 			connectionStatus = "Searching";
 			// The BroadcastReceiver that listens for discovered devices and add the device to the new devices array
 			Screen.game.mReceiver = new BroadcastReceiver() {
@@ -100,7 +100,7 @@ public class BluetoothManager {
 				btAdapter.enable();
 			}
 			
-			Screen.game.messageRead = "";
+			Game.messageRead = "";
 			mControlThread = new ControlThread();
 			mControlThread.start();
 		} 
@@ -500,7 +500,7 @@ public class BluetoothManager {
 						bytes = mmInStream.read(buffer);
 
 						// Send the obtained bytes to the UI Activity
-						Screen.game.mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+						Game.mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 					} catch (IOException e) {Log.e(TAG, "disconnected", e);
 						//TODO Possible to synchronize device events here when the thread ends. i.e. both go back to some screen.
 							//ideally: when one player pauses and exits while other player is waiting for them to respond to continue game
@@ -519,7 +519,7 @@ public class BluetoothManager {
 				try {
 					mmOutStream.write(buffer);
 					// Share the sent message back to the UI Activity
-					Screen.game.mHandler.obtainMessage(MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
+					Game.mHandler.obtainMessage(MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
 				} catch (IOException e) { Log.e(TAG, "Exception during write", e);}
 			}
 

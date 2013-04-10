@@ -11,14 +11,12 @@ import java.util.Random;
 import android.util.Log;
 
 import com.dbz.framework.BluetoothManager;
-import com.dbz.framework.BluetoothManager.*;
-import com.dbz.framework.gl.Screen;
+import com.dbz.framework.Game;
 import com.dbz.framework.input.FileIO;
 import com.dbz.framework.input.Input.TouchEvent;
 import com.dbz.framework.math.OverlapTester;
 import com.dbz.verge.AssetsManager;
 import com.dbz.verge.Mode;
-import com.dbz.verge.Mode.ModeState;
 
 // TODO: Implement better random number generation?
 //		...Add all MicroGames to this and TimeAttack
@@ -95,7 +93,7 @@ public class SurvivalMode extends Mode {
 			}
 			
 			if(BluetoothManager.mState == BluetoothManager.STATE_CONNECTED) {
-				otherPlayerIsReady = game.messageRead;
+				otherPlayerIsReady = Game.messageRead;
 				if (D) Log.d("SurvivalModeMultiplayer", otherPlayerIsReady);
 				if (otherPlayerIsReady.equals("LOST")) {
 					modeState = ModeState.Won;
@@ -111,7 +109,7 @@ public class SurvivalMode extends Mode {
 				}
 				// After the time limit has past and load has completed, switch to running state.
 				else if (totalTransitionTime >= transitionTimeLimit && otherPlayerIsReady.equals("YES")) {
-					game.messageRead = "NO";
+					Game.messageRead = "NO";
 					totalTransitionTime = 0;
 					modeState = ModeState.Running;
 					previousModeState = modeState; // TODO: seems counter intuitive, but it tells game how to handle pause
