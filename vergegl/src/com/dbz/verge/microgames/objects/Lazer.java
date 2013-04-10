@@ -1,5 +1,7 @@
 package com.dbz.verge.microgames.objects;
 
+import android.util.Log;
+
 import com.dbz.framework.gl.SpriteBatcher;
 import com.dbz.framework.math.Rectangle;
 import com.dbz.framework.math.Vector2;
@@ -32,8 +34,13 @@ public class Lazer {
 		acceleration.y = -acceleration.y;
 	}
 	
+	public void setVelocity(float x, float y) {
+		velocity.x = x;
+		velocity.y = y;
+	}
+	
 	// TODO: Do something about this...
 	public void draw(SpriteBatcher batcher) { 
-		batcher.drawSprite(bounds, InvasionMicroGame.trafficBlackCarRegion); 
+		batcher.drawSprite(bounds, InvasionMicroGame.invasionShipRegion); 
 	}
 }

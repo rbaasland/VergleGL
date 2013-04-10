@@ -16,6 +16,7 @@ import com.dbz.verge.MicroGame;
 import com.dbz.verge.microgames.objects.Lazer;
 import com.dbz.verge.microgames.objects.Ship;
 
+// TODO: *** Need to implement Speed/Levels.
 public class InvasionMicroGame extends MicroGame {
 
 	// --------------
@@ -23,15 +24,9 @@ public class InvasionMicroGame extends MicroGame {
 	// --------------
 
 	// Assets
-	public static Texture traffic;
-	public static TextureRegion trafficBackgroundRegion;
-	public static TextureRegion trafficBlueCarRegion;
-	public static TextureRegion trafficRedCarRegion;
-	public static TextureRegion trafficBlackCarRegion;
-	public static TextureRegion trafficMonsterCarRegion;
-	public static TextureRegion trafficCrushedBlueCarRegion;
-	public static TextureRegion trafficCrushedRedCarRegion;
-	public static TextureRegion trafficCrushedBlackCarRegion;
+	public static Texture invasionTexture;
+	public static TextureRegion invasionBackgroundRegion;
+	public static TextureRegion invasionShipRegion;
 
 	// Queue for lane selection
 	private Queue<Float> lanes = new LinkedList<Float>();
@@ -61,36 +56,40 @@ public class InvasionMicroGame extends MicroGame {
 	private static final Rectangle topWall = new Rectangle(0, 800, 1280, 20);
 	private static final Rectangle leftWall = new Rectangle(-20, 0, 20, 800);
 	private static final Rectangle rightWall = new Rectangle(1280, 0, 20, 800);
-	private static final Rectangle bottomWall = new Rectangle(-20, 0, 1280, 20);
+	private static final Rectangle bottomWall = new Rectangle(0, -20, 1280, 20);
 	
-	private Rectangle backgroundBounds = new Rectangle(0, 0, 1280, 800);
-	private Rectangle backgroundBounds2 = new Rectangle(0, 800, 1280, 800);
+	private static final Rectangle topNullZone = new Rectangle(-500, 1112, 2280, 100);
+	private static final Rectangle leftNullZone = new Rectangle(-600, -312, 100, 1425);
+	private static final Rectangle rightNullZone = new Rectangle(1780, -312, 100, 1425);
+	private static final Rectangle bottomNullZone = new Rectangle(-500, -412, 2280, 100);
+	
+	private Rectangle backgroundBoundsOne = new Rectangle(0, 0, 1280, 800);
+	private Rectangle backgroundBoundsTwo = new Rectangle(0, 800, 1280, 800);
 
 	// Game Variables.
 	public static final int MAX_ENEMY_SHIPS = 1;
 	public int enemyShipsActive = 0;
 	public int enemyShipIndex = 0;
 
-	public static final int MAX_LAZERS = 10;
+	public static final int MAX_LAZERS = 100;
 	public int lazerIndex = 0;
 	
 	// Game Objects.
-	public Ship playerShip = new Ship(480, 0);
+	public Ship playerShip = new Ship(480, 50);
 	public Ship enemyShips[] = new Ship[MAX_ENEMY_SHIPS];
 	public Lazer lazers[] = new Lazer[MAX_LAZERS];
 	
-	// TESTING // TODO: REMOVE. Would be Vectors.
-//	public float peakAcceleration = 0.0f;
+	// Player Ship Physics. // TODO: Try to implement in Ship object.
 	public boolean rightPeak = false;
 	public boolean leftPeak = false;
 	
 	// -------------------
 	// --- Constructor ---
 	// -------------------
-
+	// TODO: REORGANIZE ALL FILES.
 	public InvasionMicroGame() {
-		randomizeCarsLanes();		// TODO: ???
-		baseMicroGameTime = 100000.0f;
+		randomizeCarsLanes();		// TODO: *** ???
+		baseMicroGameTime = 10.0f;
 		accelerometerEnabled = true;
 		singleTouchEnabled = true;
 		
@@ -99,22 +98,16 @@ public class InvasionMicroGame extends MicroGame {
 
 	@Override
 	public void load() {
-		traffic = new Texture("traffic.png");
-		trafficBackgroundRegion = new TextureRegion(traffic, 0, 0, 1280, 800);
-		trafficBlueCarRegion = new TextureRegion(traffic, 0, 800, 80, 170);
-		trafficRedCarRegion = new TextureRegion(traffic, 80, 800, 80, 170);
-		trafficBlackCarRegion = new TextureRegion(traffic, 160, 800, 80, 170);
-		trafficMonsterCarRegion = new TextureRegion(traffic, 240, 800, 92, 170);
-		trafficCrushedBlueCarRegion = new TextureRegion(traffic, 412, 800, 80, 170);
-		trafficCrushedRedCarRegion = new TextureRegion(traffic, 494, 800, 80, 170);
-		trafficCrushedBlackCarRegion = new TextureRegion(traffic, 332, 800, 80, 170);
+		invasionTexture = new Texture("invasion.png");
+		invasionBackgroundRegion = new TextureRegion(invasionTexture, 0, 0, 1280, 800);
+		invasionShipRegion = new TextureRegion(invasionTexture, 1300, 20, 280, 280);
 	}
 
 	@Override
-	public void unload() { traffic.dispose(); }
+	public void unload() { invasionTexture.dispose(); }
 
 	@Override
-	public void reload() { traffic.reload(); }
+	public void reload() { invasionTexture.reload(); }
 
 	// ---------------------
 	// --- Update Method ---
@@ -122,7 +115,7 @@ public class InvasionMicroGame extends MicroGame {
 
 	@Override
 	public void updateRunning(float deltaTime) {		
-//		updateBackground();
+		updateBackground();
 		updatePlayerShip(deltaTime);
 		updateEnemyShips(deltaTime);
 		updateLazers();
@@ -171,14 +164,14 @@ public class InvasionMicroGame extends MicroGame {
 	// ------------------------------
 
 	@Override
-	public void reset() {	// TODO: Handle Resets.
+	public void reset() {	// TODO: *** Handle Resets.
 		super.reset();
 		lanes.clear();
 		randomizeCarsLanes();
 	}
 
 	// Shuffle car lanes and put in queue
-	public void randomizeCarsLanes() {	//TODO: ???
+	public void randomizeCarsLanes() {	//TODO: *** ???
 		
 		for (int i = 0; i < lanePosition.length; i++) {
 			int randTemp = rand.nextInt(lanePosition.length - 1);
@@ -193,52 +186,58 @@ public class InvasionMicroGame extends MicroGame {
 	public void generateEnemyShip() {
 		if (enemyShipIndex >= MAX_ENEMY_SHIPS)
 			enemyShipIndex = 0;
-		enemyShips[enemyShipIndex] = new Ship(480, 600);
+		enemyShips[enemyShipIndex] = new Ship(480, 600);	// TODO: ***
 		enemyShipsActive++;
 		enemyShipIndex++;
 	}
 	
 	// Moves the background
-	public void updateBackground() {		// TODO: Change background handling.
-		float accelX = (30-game.getInput().getAccelX()); // Accelerometer max X value is 10 so background scrolls at least 20
+	public void updateBackground() { // TODO: Change background handling.
+		float accelX = 1; //(30-game.getInput().getAccelX()); // Accelerometer max X value is 10 so background scrolls at least 20
 		backgroundSpeedY = (int) (accelX * speedScalar[speed - 1]);
-		if (backgroundBounds.lowerLeft.y >= -backgroundBounds.height + backgroundSpeedY )
-			backgroundBounds.lowerLeft.y -= backgroundSpeedY;
+		if (backgroundBoundsOne.lowerLeft.y >= -backgroundBoundsOne.height + backgroundSpeedY )
+			backgroundBoundsOne.lowerLeft.y -= backgroundSpeedY;
 		else
-			backgroundBounds.lowerLeft.y = backgroundBounds2.lowerLeft.y + backgroundBounds.height - backgroundSpeedY;
-		if (backgroundBounds2.lowerLeft.y >= -backgroundBounds2.height + backgroundSpeedY)
-			backgroundBounds2.lowerLeft.y -= backgroundSpeedY;
+			backgroundBoundsOne.lowerLeft.y = backgroundBoundsTwo.lowerLeft.y + backgroundBoundsOne.height - backgroundSpeedY;
+		if (backgroundBoundsTwo.lowerLeft.y >= -backgroundBoundsTwo.height + backgroundSpeedY)
+			backgroundBoundsTwo.lowerLeft.y -= backgroundSpeedY;
 		else
-			backgroundBounds2.lowerLeft.y = backgroundBounds.lowerLeft.y + backgroundBounds.height - backgroundSpeedY;
-		
+			backgroundBoundsTwo.lowerLeft.y = backgroundBoundsOne.lowerLeft.y + backgroundBoundsOne.height - backgroundSpeedY;	
 	}
 
 	public void updatePlayerShip(float deltaTime) {
-		if (!playerShipWallCollisionTest()) {			
-			float x = game.getInput().getAccelY() / 4;
-			
-			// Case 0: Turn from Right to Left.
-			if (x < playerShip.getAccelerationX() && !rightPeak) {
-				rightPeak = true;
-				leftPeak = false;
-				playerShip.reverseAcceleration();
-			}
-			
-			// Case 1: Turn from Left to Right.
-			else if (x > playerShip.getAccelerationX() && !leftPeak) {
-				leftPeak = true;
-				rightPeak = false;
-				playerShip.reverseAcceleration();
-			}
-					
-			// If Accelerometer is centered (generally), then clear acceleration.
-			if (x > -0.75f && x < 0.75f)
-				playerShip.setAcceleration(0.0f, 0.0f);
-			else 
-				playerShip.addAcceleration(x*2.0f, 0.0f);
+		if (!playerShipWallCollisionTest())			
+			getPlayerShipInput();
+		else {
+			playerShip.setAcceleration(0, 0);
+			playerShip.setVelocity(0, 0);
 		}
 		
 		playerShip.update(deltaTime);
+	}
+	
+	public void getPlayerShipInput() {
+		float x = game.getInput().getAccelY() / 4;
+		
+		// Case 0: Turn from Right to Left.
+		if (x < playerShip.getAccelerationX() && !rightPeak) {
+			rightPeak = true;
+			leftPeak = false;
+			playerShip.reverseAcceleration();
+		}
+		
+		// Case 1: Turn from Left to Right.
+		else if (x > playerShip.getAccelerationX() && !leftPeak) {
+			leftPeak = true;
+			rightPeak = false;
+			playerShip.reverseAcceleration();
+		}
+				
+		// Case 2: Accelerometer is centered (generally), then clear acceleration.
+		if (x > -0.75f && x < 0.75f)
+			playerShip.setAcceleration(0.0f, 0.0f);
+		else 
+			playerShip.setAcceleration(x*2.0f, 0.0f);
 	}
 	
 	public void updateEnemyShips(float deltaTime) {
@@ -247,6 +246,13 @@ public class InvasionMicroGame extends MicroGame {
 		
 		for (int i = 0; i < MAX_ENEMY_SHIPS; i++) {
 			if (enemyShips[i] != null) {
+//				if (enemyShipWallCollisionTest(enemyShips[i])) {
+//					if (!enemyShips[i].spawning) {
+//						playerShip.setAcceleration(0, 0);
+//						playerShip.setVelocity(0, 0);
+//					}		
+//				}	
+				
 				if (enemyShips[i].active)
 					enemyShips[i].update(deltaTime);
 				else {
@@ -260,7 +266,10 @@ public class InvasionMicroGame extends MicroGame {
 	public void updateLazers() {
 		for (int i = 0; i < MAX_LAZERS; i++) {
 			if (lazers[i] != null) {
-				if (lazers[i].active  && !lazerWallCollisionTest(lazers[i]))
+				if (lazerWallCollisionTest(lazers[i]))
+					lazers[i].active = false;
+				
+				if (lazers[i].active)
 					lazers[i].update();
 				else
 					lazers[i] = null;
@@ -271,10 +280,10 @@ public class InvasionMicroGame extends MicroGame {
 	public boolean objectCollisionsTest() {
 		boolean collision = false;
 		
-		// Case 0 & 1: Player or Enemy hit by Lazer.
+		// Collision Cases 0 & 1: Player or Enemy hit by Lazer.
 		for (int i = 0; i < MAX_LAZERS; i++) {
 			if (lazers[i] != null) {
-				// Case 0: Player hit by Lazer.
+				// Collision Case 0: Player hit by Lazer.
 				if (collision(playerShip.bounds, lazers[i].bounds)) {
 					AssetsManager.playSound(AssetsManager.explosionSound);
 					microGameState = MicroGameState.Lost;
@@ -285,7 +294,7 @@ public class InvasionMicroGame extends MicroGame {
 				
 				for (int j = 0; j < MAX_ENEMY_SHIPS; j++) {
 					if (enemyShips[j] != null) {
-						// Case 1: Enemy hit by Lazer.
+						// Collision Case 1: Enemy hit by Lazer.
 						if (collision(enemyShips[j].bounds, lazers[i].bounds)) {
 							AssetsManager.playSound(AssetsManager.explosionSound);
 							enemyShips[j].health -= lazers[i].damage;
@@ -294,13 +303,20 @@ public class InvasionMicroGame extends MicroGame {
 						}
 					}
 				}
-			}
+			}		// TODO: Could probably combine these loops better...
 		}
 		
-		// Case 2 & 3: Player or Enemy hit by Enemy.
+		// Collision Cases 2 & 3: Player or Enemy hit by Enemy.
 		for (int i = 0; i < MAX_ENEMY_SHIPS; i++) {
 			if (enemyShips[i] != null) {
-				// Case 2: Player hit by Enemy.
+				// Collision Case NULL: Enemy enters a NULL Zone.
+				if (collision(enemyShips[i].bounds, topNullZone) || collision(enemyShips[i].bounds, bottomNullZone) ||
+					collision(enemyShips[i].bounds, leftNullZone) || collision(enemyShips[i].bounds, rightNullZone)) {
+					enemyShips[i].active = false;
+					break;
+				}
+					
+				// Collision Case 2: Player hit by Enemy.
 				if (collision(playerShip.bounds, enemyShips[i].bounds)) {
 					AssetsManager.playSound(AssetsManager.explosionSound);
 					microGameState = MicroGameState.Lost;
@@ -311,7 +327,7 @@ public class InvasionMicroGame extends MicroGame {
 	
 				for (int j = 0; j < MAX_ENEMY_SHIPS; j++) {
 					if (enemyShips[j] != null) {
-						// Case 3: Enemy hit by Enemy
+						// Collision Case 3: Enemy hit by Enemy
 						if (enemyShips[i] != enemyShips[j]) {
 							if (collision(enemyShips[i].bounds, enemyShips[j].bounds)) {
 								AssetsManager.playSound(AssetsManager.explosionSound);
@@ -329,48 +345,53 @@ public class InvasionMicroGame extends MicroGame {
 	}
 
 	public boolean playerShipWallCollisionTest() {
-		boolean collision = false;
+		boolean collision = true;
 		
-		// Case 5: Any object goes off screen.
-		if (collision(playerShip.bounds, leftWall)) {
+		// Collision Case 4: Player Ship collides with Wall (Edge of Screen).
+		if (collision(playerShip.bounds, leftWall))
 			playerShip.bounds.lowerLeft.x = leftWall.lowerLeft.x + leftWall.width + 1;
-			playerShip.setAcceleration(0, 0);
-			playerShip.setVelocity(0, 0);
-			collision = true;
-		}
-		else if (collision(playerShip.bounds, rightWall)) {
+		else if (collision(playerShip.bounds, rightWall))
 			playerShip.bounds.lowerLeft.x = rightWall.lowerLeft.x - playerShip.bounds.width - 1;
-			playerShip.setAcceleration(0, 0);
-			playerShip.setVelocity(0, 0);
-			collision = true;
-		}
+		else
+			collision = false;
 		
 		return collision;
 	}
 	
-	public boolean enemyShipWallCollisionTest() {
-		boolean collision = false;
+	public boolean enemyShipWallCollisionTest(Ship enemyShip) {
+		boolean collision = true;
 		
-		// Case 5: Any object goes off screen.
-		if (collision(playerShip.bounds, leftWall)) {
-			playerShip.bounds.lowerLeft.x = leftWall.lowerLeft.x + leftWall.width + 1;
-			playerShip.setAcceleration(0, 0);
-			playerShip.setVelocity(0, 0);
-			collision = true;
-		}
-		else if (collision(playerShip.bounds, rightWall)) {
-			playerShip.bounds.lowerLeft.x = rightWall.lowerLeft.x - playerShip.bounds.width - 1;
-			playerShip.setAcceleration(0, 0);
-			playerShip.setVelocity(0, 0);
-			collision = true;
-		}
+		// Collision Case 5: Enemy Ship collides with Wall (Edge of Screen).
+		if (collision(enemyShip.bounds, topWall))
+			enemyShip.bounds.lowerLeft.y = topWall.lowerLeft.y - enemyShip.bounds.height - 1;
+		else if (collision(enemyShip.bounds, leftWall))
+			enemyShip.bounds.lowerLeft.x = leftWall.lowerLeft.x + leftWall.width + 1;
+		else if (collision(enemyShip.bounds, rightWall))
+			enemyShip.bounds.lowerLeft.x = rightWall.lowerLeft.x - enemyShip.bounds.width - 1;
+		else if (collision(enemyShip.bounds, bottomWall)) 
+			enemyShip.bounds.lowerLeft.y = bottomWall.lowerLeft.y + bottomWall.height + 1;
+		else
+			collision = false;
 		
 		return collision;
 	}
 	
-	public boolean lazerWallCollisionTest(Lazer lazer) {
-		return collision(lazer.bounds, topWall) || collision(lazer.bounds, bottomWall) || 
-			   collision(lazer.bounds, leftWall) || collision(lazer.bounds, rightWall);
+	public boolean lazerWallCollisionTest(Lazer lazer) {	// TODO: Code can definitely be generalized to be reused for PlayerShip, etc.
+		boolean collision = true;
+		
+		// Collision Case 6: Lazer collides with Wall (Edge of Screen).
+		if (collision(lazer.bounds, topWall))
+			lazer.bounds.lowerLeft.y = topWall.lowerLeft.y - lazer.bounds.height - 1;
+		else if (collision(lazer.bounds, leftWall))
+			lazer.bounds.lowerLeft.x = leftWall.lowerLeft.x + leftWall.width + 1;
+		else if (collision(lazer.bounds, rightWall))
+			lazer.bounds.lowerLeft.x = rightWall.lowerLeft.x - lazer.bounds.width - 1;
+		else if (collision(lazer.bounds, bottomWall)) 
+			lazer.bounds.lowerLeft.y = bottomWall.lowerLeft.y + bottomWall.height + 1;
+		else
+			collision = false;
+		
+		return collision;
 	}
 	
 	// Checks for collision.
@@ -395,8 +416,11 @@ public class InvasionMicroGame extends MicroGame {
 
 	@Override
 	public void presentRunning() {
-		batcher.beginBatch(traffic);
+		batcher.beginBatch(invasionTexture);
 		drawRunningBackground();
+//		batcher.endBatch();
+//		
+//		batcher.beginBatch(traffic);
 		drawRunningObjects();
 		batcher.endBatch();
 //		drawRunningBounds();
@@ -410,8 +434,8 @@ public class InvasionMicroGame extends MicroGame {
 
 	@Override
 	public void drawRunningBackground() {
-		batcher.drawSprite(backgroundBounds, trafficBackgroundRegion);
-		batcher.drawSprite(backgroundBounds2, trafficBackgroundRegion);
+		batcher.drawSprite(backgroundBoundsOne, invasionBackgroundRegion);
+		batcher.drawSprite(backgroundBoundsTwo, invasionBackgroundRegion);
 	}
 
 	@Override
@@ -437,11 +461,8 @@ public class InvasionMicroGame extends MicroGame {
 		batcher.beginBatch(AssetsManager.boundOverlay);
 		
 		// Lazer Button Bounds.
-//		batcher.drawSprite(lazerButtonBoundsOne, AssetsManager.boundOverlayRegion);
-//		batcher.drawSprite(lazerButtonBoundsTwo, AssetsManager.boundOverlayRegion);
-		
-		batcher.drawSprite(topWall, AssetsManager.boundOverlayRegion);
-		batcher.drawSprite(bottomWall, AssetsManager.boundOverlayRegion);
+		batcher.drawSprite(lazerButtonBoundsOne, AssetsManager.boundOverlayRegion);
+		batcher.drawSprite(lazerButtonBoundsTwo, AssetsManager.boundOverlayRegion);
 
 		batcher.endBatch();
 	}

@@ -35,7 +35,7 @@ public class GameGridMenu extends Menu {
 	// --------------
 	
 	// Page Variables.
-    private static int currentPage = 1;
+    private static int currentPage = 3;
     private static final int NUM_OF_PAGES = 3;
     
     // Bounding Boxes.
