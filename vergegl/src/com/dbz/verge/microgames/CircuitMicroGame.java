@@ -84,7 +84,7 @@ public class CircuitMicroGame extends MicroGame {
 
 
 	//General
-	public int sparkSpeed = 10; 	   // moved outside of spark class for easy changin'
+	public int sparkSpeed = 6; 	   // moved outside of spark class for easy changin'
 	private int directionIndex = 0;    // index for direction vector array
 	private int circuitNodesIndex = 0; // index tracks the current pair of nodes for touch detection
 	private boolean circuitCompleted = false; // if multi-touch connects circuit
@@ -102,7 +102,7 @@ public class CircuitMicroGame extends MicroGame {
 	// -------------------
 
 	public CircuitMicroGame() { 
-		speedScalar = new float[] { 1.0f, 1.2f, 1.3f };
+		speedScalar = new float[] { 1.05f, 1.2f, 1.3f };
 		multiTouchEnabled = true;
 	}
 	
@@ -257,7 +257,7 @@ public class CircuitMicroGame extends MicroGame {
 		isFirstRun = true;
 		spark.resetSpark();
 		Arrays.fill(isCircuitNodeTouched, false);
-		sparkSpeed = 10; 	 
+		sparkSpeed = 6; 	 
 		directionIndex = 0;    
 		circuitNodesIndex = 0; 
 		circuitCompleted = false; 
@@ -353,7 +353,7 @@ public class CircuitMicroGame extends MicroGame {
 		private static final float SPARK_RADIUS= 64;
 
 		private Vector2 startCoordinates; //store starting coordinates for spark	
-		private float stateTime = 0; //used for animation
+//		private float stateTime = 0; //used for animation
 		private int animationIndex = 0;
 		private int animationDelayCounter = 3;
 		private int frameCounter = 2; //used to slow down spark visual
@@ -364,9 +364,9 @@ public class CircuitMicroGame extends MicroGame {
 			startCoordinates = super.position.cpy();
 		}
 
-		public void update(float deltaTime) {
-			stateTime += deltaTime;
-		}
+//		public void update(float deltaTime) {
+//			stateTime += deltaTime;
+//		}
 
 		private void resetSpark(){
 			animationIndex = 0;
