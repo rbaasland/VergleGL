@@ -33,5 +33,18 @@ public class VergeGame extends Game {
         if(Settings.soundEnabled)
             AssetsManager.music.pause();
     }
-
+    
+    /* Used by hardware back button 
+     * Each instance of screen implements its own onBackPressed() 
+     * to define behavior when the back button is pressed. */
+	@Override 
+	public void onBackPressed() {
+		Screen currScreen = getCurrentScreen();
+		if(currScreen != null) 
+		{
+	    	AssetsManager.playSound(AssetsManager.clickSound);
+			currScreen.onBackPressed();
+		}
+	}
+	
 }

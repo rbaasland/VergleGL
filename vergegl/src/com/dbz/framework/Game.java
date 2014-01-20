@@ -25,7 +25,6 @@ import com.dbz.framework.gl.GLGraphics;
 import com.dbz.framework.gl.Screen;
 import com.dbz.framework.input.FileIO;
 import com.dbz.framework.input.Input;
-import com.dbz.verge.AssetsManager;
 
 public abstract class Game extends Activity implements Renderer {
 	enum GameState {
@@ -252,12 +251,6 @@ public abstract class Game extends Activity implements Renderer {
 		gl.glGetIntegerv(GL10.GL_SMOOTH_POINT_SIZE_RANGE, params);
 		if(D) Log.d("GL_PRIMATIVE_SIZE", "SMOOTH_POINT_SIZE_RANGE = " + params.get(0) + " to " + params.get(1));
 		
-	}
-
-	@Override  //used for hardware back button
-	public void onBackPressed() {
-    	AssetsManager.playSound(AssetsManager.clickSound);
-		screen.onBackPressed(); //lil strategy pattern-esk - each instance of screen implements its own onBackPressed to define behavior.
 	}
 	
 	// ---------------
